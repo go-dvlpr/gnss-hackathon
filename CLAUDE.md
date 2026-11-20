@@ -19,6 +19,8 @@ Built from the course lectures; each `LOCAL.md` sets hackathon mode (short, in c
 - `ai-product-engineer` — idea, MVP cut, one demo metric, money line, pitch. `references/hackathon.md` holds the day's timeline, checkpoints and paste-ready prompts; `references/ux-design.md` covers UI: brief, `DESIGN.md`, the four states, signs of AI-made design.
 - `ai-agent-engineer` — the LLM part: agent or workflow, a 10-case golden set, a quick RAG path, secrets and injection, parallel agents in one repo.
 
+- Design skills from the L17 lecturer (review, UX copy, research, UI styling, tokens, slides): list, sources and what was changed in `.claude/skills/DESIGN-SKILLS.md`. For a UI review use `heuristic-review` or `design-critique`; for the pitch deck, `slides`.
+
 Ask e.g. «розбери ідею з Project як ai-product-engineer» or «перевір LLM-частину як ai-agent-engineer».
 
 ## Priorities
