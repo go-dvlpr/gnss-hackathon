@@ -13,6 +13,14 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 
 Fill these in as soon as they are decided; agents read this file first.
 
+## Skills (`.claude/skills/`)
+
+Built from the course lectures; each `LOCAL.md` sets hackathon mode (short, in chat, in Ukrainian) and lists the lectures.
+- `ai-product-engineer` — idea, MVP cut, one demo metric, money line, pitch. `references/hackathon.md` holds the day's timeline, checkpoints and paste-ready prompts; `references/ux-design.md` covers UI: brief, `DESIGN.md`, the four states, signs of AI-made design.
+- `ai-agent-engineer` — the LLM part: agent or workflow, a 10-case golden set, a quick RAG path, secrets and injection, parallel agents in one repo.
+
+Ask e.g. «розбери ідею з Project як ai-product-engineer» or «перевір LLM-частину як ai-agent-engineer».
+
 ## Priorities
 
 1. The demo path works end to end. Build a thin vertical slice first, then improve it.
@@ -40,6 +48,7 @@ Fill these in as soon as they are decided; agents read this file first.
 ## For AI agents
 
 - Read this file and the code you are about to change before writing anything.
+- Before any UI work, read `DESIGN.md` if it exists; record accepted design decisions there.
 - Keep diffs minimal and scoped to the task; say what you skipped.
 - Ask before deleting files, changing the stack, or anything that touches `main` history.
 - If something in "Project" above is still TODO and you need it, ask instead of guessing.
