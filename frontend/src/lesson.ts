@@ -17,7 +17,7 @@ export type Lesson = {
   setName: (name: string) => void;
   /** Teachable unique letters of the name, in order. */
   letters: string[];
-  /** Letters, re-inserted misses, then the finale "ILY". */
+  /** Letters of the name (lesson 1) or the words (lesson 2), plus re-inserted misses. */
   queue: string[];
   pos: number;
   /** Current item, or undefined when the lesson is over. */
@@ -52,8 +52,8 @@ export function lettersOf(name: string): string[] {
 }
 
 export function queueOf(name: string): string[] {
-  const letters = lettersOf(name);
-  return letters.length ? [...letters, FINALE] : [];
+  // I LOVE YOU is taught in lesson 2 with the words, not at the end of the name.
+  return lettersOf(name);
 }
 
 /** Where a missed item goes: after two others, but always before the finale. */
