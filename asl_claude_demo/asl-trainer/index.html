@@ -1,0 +1,1420 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>ASL Fingerspelling Trainer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+<style>
+/* Layout: live camera stage on the left, coaching panel on the right; one column on narrow screens. */
+:root {
+  --bg: #eef1f5;
+  --surface: #ffffff;
+  --surface-2: #e5eaf0;
+  --line: #d4dbe4;
+  --ink: #0f1a24;
+  --muted: #566574;
+  --accent: #d9530d;
+  --accent-ink: #ffffff;
+  --accent-soft: #fce6d8;
+  --ok: #11804a;
+  --ok-soft: #dbf2e5;
+  --bad: #c22f2f;
+  --stage: #0c131a;
+  --ov-ok: #3ddc8a;
+  --ov-warn: #ffc247;
+  --ov-bad: #ff5c5c;
+  --ov-neutral: rgba(255, 255, 255, 0.85);
+  --font-display: "Space Grotesk", "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+  --radius: 16px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1016; --surface: #111a23; --surface-2: #18232e; --line: #243241; --ink: #e6edf3; --muted: #93a3b3;
+    --accent: #ff7a33; --accent-ink: #1b0d04; --accent-soft: #3a2014; --ok: #3ccb7f; --ok-soft: #12301f; --bad: #ff6b6b; --stage: #05090d;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1016; --surface: #111a23; --surface-2: #18232e; --line: #243241; --ink: #e6edf3; --muted: #93a3b3;
+  --accent: #ff7a33; --accent-ink: #1b0d04; --accent-soft: #3a2014; --ok: #3ccb7f; --ok-soft: #12301f; --bad: #ff6b6b; --stage: #05090d;
+  color-scheme: dark;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--font-body); -webkit-font-smoothing: antialiased; }
+button, input, select { font: inherit; color: inherit; }
+[hidden] { display: none !important; }
+.wrap { max-width: 1280px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+/* header */
+.top { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; padding-block: 14px; }
+.brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+.brand-mark { width: 34px; height: 34px; border-radius: 10px; background: var(--accent); color: var(--accent-ink); display: grid; place-items: center; font: 700 17px/1 var(--font-display); }
+.brand-name { font: 600 19px/1.1 var(--font-display); letter-spacing: -0.01em; }
+.brand-tag { font: 500 11px/1 var(--font-body); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 8px; }
+.tabs { display: flex; gap: 4px; background: var(--surface-2); padding: 4px; border-radius: 12px; flex-wrap: wrap; }
+.tabs button { border: 0; background: transparent; padding: 8px 14px; border-radius: 9px; cursor: pointer; font-weight: 500; color: var(--muted); }
+.tabs button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 1px 2px rgb(0 0 0 / 0.1); }
+.top-actions { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.lang { display: flex; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.lang button { border: 0; background: transparent; padding: 8px 10px; cursor: pointer; font: 600 12px/1 var(--font-body); letter-spacing: 0.04em; color: var(--muted); }
+.lang button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+.ghost { border: 1px solid var(--line); background: var(--surface); padding: 8px 12px; border-radius: 10px; cursor: pointer; }
+.ghost[aria-expanded="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.primary { border: 0; background: var(--accent); color: var(--accent-ink); padding: 11px 18px; border-radius: 12px; font-weight: 600; cursor: pointer; }
+.primary:disabled { opacity: 0.6; cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible, .file:focus-within { outline: 3px solid color-mix(in srgb, var(--accent) 65%, transparent); outline-offset: 2px; }
+
+/* main layout */
+.layout { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(300px, 1fr); gap: 16px; align-items: start; }
+@media (max-width: 900px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* camera stage */
+.stage { position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--stage); border-radius: var(--radius); overflow: hidden; }
+.stage video, .stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transform: scaleX(-1); }
+.chip { position: absolute; top: 12px; z-index: 2; display: inline-flex; gap: 8px; align-items: center; padding: 6px 11px; border-radius: 999px; background: rgb(8 12 16 / 0.72); color: #f1f5f9; font: 500 13px/1.2 var(--font-body); backdrop-filter: blur(6px); }
+.chip.status { left: 12px; max-width: calc(100% - 24px); }
+.chip.meta { right: 12px; font: 500 12px/1.2 var(--font-mono); }
+.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ov-warn); flex: none; }
+.chip.good .dot { background: var(--ov-ok); }
+.veil { position: absolute; inset: 0; z-index: 3; display: grid; align-content: center; justify-items: start; gap: 14px; padding: clamp(20px, 5vw, 48px); background: rgb(9 14 19 / 0.9); color: #eef3f7; }
+.veil h1 { margin: 0; max-width: 20ch; font: 600 clamp(24px, 3.4vw, 38px)/1.1 var(--font-display); letter-spacing: -0.015em; text-wrap: balance; }
+.veil h2 { margin: 0; font: 600 22px/1.2 var(--font-display); }
+.veil p { margin: 0; max-width: 52ch; color: #c5d0da; }
+.veil .steps { display: flex; gap: 8px; flex-wrap: wrap; }
+.veil .steps span { font: 600 13px/1 var(--font-display); border: 1px solid rgb(255 255 255 / 0.22); border-radius: 8px; padding: 6px 8px; color: #e8eef3; }
+.model-status { font: 500 12px/1.4 var(--font-mono) !important; color: #9fb0bf !important; }
+.err { color: #ffa1a1 !important; }
+.veil.calib { inset: auto 0 0 0; align-content: end; padding-top: 72px; background: linear-gradient(0deg, rgb(9 14 19 / 0.94) 55%, rgb(9 14 19 / 0)); }
+.calib-bar { width: min(320px, 100%); height: 6px; background: rgb(255 255 255 / 0.18); border-radius: 99px; overflow: hidden; }
+.calib-bar span { display: block; height: 100%; width: 0; background: var(--ov-ok); transition: width 0.1s linear; }
+.veil .ghost { background: transparent; color: #e8eef3; border-color: rgb(255 255 255 / 0.3); }
+
+/* panel */
+.panel { display: grid; gap: 12px; min-width: 0; }
+.card { position: relative; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; min-width: 0; }
+.picker { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.pill { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; cursor: pointer; font-weight: 500; }
+.pill small { margin-left: 6px; color: var(--muted); font-weight: 400; letter-spacing: 0.04em; }
+.pill[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.pill[aria-pressed="true"] small { color: inherit; opacity: 0.75; }
+.name-form { display: flex; gap: 6px; flex: 1 1 240px; margin-top: 4px; }
+.name-form input { flex: 1; min-width: 0; border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 7px 10px; text-transform: uppercase; letter-spacing: 0.06em; }
+.form-err { margin: 2px 0 0; color: var(--bad); font-size: 13px; width: 100%; }
+.eyebrow { font: 500 12px/1.2 var(--font-body); text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.target-row { display: flex; align-items: center; gap: 18px; margin-top: 10px; flex-wrap: wrap; }
+.glyph-wrap { position: relative; width: 132px; height: 132px; flex: none; }
+.ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+.ring circle { fill: none; stroke-width: 7; }
+.ring-bg { stroke: var(--surface-2); }
+.ring-fg { stroke: var(--accent); stroke-linecap: round; stroke-dasharray: 339.29; stroke-dashoffset: 339.29; transition: stroke-dashoffset 0.08s linear; }
+.target.done .ring-fg { stroke: var(--ok); }
+.glyph { position: absolute; inset: 0; display: grid; place-items: center; font: 700 68px/1 var(--font-display); letter-spacing: -0.02em; }
+.target.pop .glyph { animation: pop 0.45s ease-out; }
+@keyframes pop { 0% { transform: scale(1); } 40% { transform: scale(1.18); } 100% { transform: scale(1); } }
+.gain { position: absolute; right: -6px; top: -4px; font: 700 16px/1 var(--font-display); color: var(--ok); animation: rise 0.9s ease-out forwards; pointer-events: none; }
+@keyframes rise { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-26px); } }
+.word { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; min-width: 0; }
+.word span.l { width: 38px; height: 46px; display: grid; place-items: center; border-radius: 10px; background: var(--surface-2); font: 600 22px/1 var(--font-display); color: var(--muted); }
+.word span.l.cur { background: var(--accent-soft); color: var(--ink); outline: 2px solid var(--accent); }
+.word span.l.done { background: var(--ok-soft); color: var(--ok); }
+.word .tr { width: 100%; color: var(--muted); font-size: 14px; }
+.word span.l.sg { width: auto; padding: 0 10px; font-size: 15px; }
+.glyph.gloss { padding: 20px; font-size: 24px; line-height: 1.1; text-align: center; letter-spacing: 0.01em; }
+.picker.col { flex-direction: column; align-items: flex-start; }
+.desc { margin: 12px 0 0; max-width: 60ch; }
+.hint { margin-top: 12px; padding: 10px 12px; min-height: 46px; display: flex; align-items: center; border-radius: 12px; background: var(--accent-soft); font-weight: 500; }
+.hint.good { background: var(--ok-soft); color: var(--ok); }
+.hint.idle { background: var(--surface-2); color: var(--muted); font-weight: 400; }
+.looks { margin: 8px 0 0; font-size: 14px; color: var(--muted); }
+.looks b { font: 700 16px/1 var(--font-display); color: var(--ink); }
+.actions { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+.free-glyph { font: 700 120px/1 var(--font-display); height: 150px; display: grid; place-items: center; letter-spacing: -0.02em; }
+.bars { display: grid; gap: 6px; margin-top: 8px; }
+.bar { display: grid; grid-template-columns: 22px minmax(0, 1fr) 42px; gap: 8px; align-items: center; font-size: 13px; font-variant-numeric: tabular-nums; }
+.bar b { font: 600 15px/1 var(--font-display); }
+.bar i { display: block; height: 8px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
+.bar i span { display: block; height: 100%; background: var(--accent); }
+.bar em { font-style: normal; color: var(--muted); text-align: right; }
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 14px; }
+.stat { display: grid; gap: 2px; min-width: 0; }
+.stat-num { font: 600 22px/1.1 var(--font-display); font-variant-numeric: tabular-nums; }
+.stat-lbl { font-size: 12px; color: var(--muted); }
+.alpha-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; color: var(--muted); font-size: 13px; }
+.alpha-head b { color: var(--ink); font: 600 15px/1 var(--font-display); font-variant-numeric: tabular-nums; }
+.alpha-grid { display: grid; grid-template-columns: repeat(13, minmax(0, 1fr)); gap: 4px; margin-top: 10px; }
+.alpha-grid button { aspect-ratio: 1; border: 0; border-radius: 7px; padding: 0; background: var(--surface-2); color: var(--muted); font: 600 13px/1 var(--font-display); cursor: pointer; }
+.alpha-grid button.m1 { background: color-mix(in srgb, var(--ok) 24%, var(--surface)); color: var(--ink); }
+.alpha-grid button.m2 { background: var(--ok); color: var(--surface); }
+.alpha-grid button.cur { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+/* team panel */
+.debug { margin-top: 16px; }
+.debug-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr) minmax(0, 1fr); gap: 12px; }
+@media (max-width: 1000px) { .debug-grid { grid-template-columns: minmax(0, 1fr); } }
+.debug h3 { margin: 0 0 8px; font: 600 15px/1.2 var(--font-display); }
+.mono { font: 12px/1.6 var(--font-mono); white-space: pre; overflow-x: auto; margin: 0; }
+.ref-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px; }
+select { border: 1px solid var(--line); background: var(--surface); border-radius: 10px; padding: 8px 10px; }
+.file { display: inline-flex; align-items: center; }
+.muted { margin: 0; color: var(--muted); font-size: 13px; }
+
+.foot { color: var(--muted); font-size: 13px; padding-block: 18px 28px; max-width: 80ch; }
+.toasts { position: fixed; left: 50%; bottom: max(18px, env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 20; display: grid; gap: 8px; justify-items: center; pointer-events: none; }
+.toast { background: var(--ink); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 500; box-shadow: 0 6px 24px rgb(0 0 0 / 0.2); animation: toast 3s ease forwards; }
+.toast.ach::before { content: "★ "; color: var(--accent); }
+@keyframes toast { 0% { opacity: 0; transform: translateY(8px); } 8%, 85% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@media (max-width: 520px) {
+  .glyph-wrap { width: 112px; height: 112px; }
+  .glyph { font-size: 56px; }
+  .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <span class="brand-name" data-i18n="brand">Дактиль ASL</span>
+      <span class="brand-tag" data-i18n="tag">прототип</span>
+    </div>
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tab-learn" data-mode="learn" aria-selected="true" data-i18n="tabLearn">Абетка</button>
+      <button role="tab" id="tab-words" data-mode="words" aria-selected="false" data-i18n="tabWords">Слова</button>
+      <button role="tab" id="tab-signs" data-mode="signs" aria-selected="false" data-i18n="tabSigns">Жести</button>
+      <button role="tab" id="tab-free" data-mode="free" aria-selected="false" data-i18n="tabFree">Вільний режим</button>
+    </div>
+    <div class="top-actions">
+      <div class="lang" role="group" aria-label="Мова інтерфейсу / Interface language">
+        <button id="lang-uk" data-lang="uk" aria-pressed="true">УКР</button>
+        <button id="lang-en" data-lang="en" aria-pressed="false">ENG</button>
+      </div>
+      <button id="debugBtn" class="ghost" aria-expanded="false" aria-controls="debug" data-i18n="debugBtn">Що бачить модель</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage" id="stage">
+      <video id="video" playsinline muted></video>
+      <canvas id="overlay"></canvas>
+      <div class="chip status" id="statusChip" hidden><span class="dot"></span><span id="statusText"></span></div>
+      <div class="chip meta" id="metaChip" hidden></div>
+
+      <div class="veil" id="startVeil">
+        <h1 data-i18n="startTitle">Вивчайте дактильну абетку ASL власними руками</h1>
+        <p data-i18n="startText">Камера стежить за рукою, а підказки пояснюють, що виправити.</p>
+        <div class="steps" aria-hidden="true"><span>A</span><span>B</span><span>C</span><span>…</span><span>Z</span></div>
+        <button id="startBtn" class="primary" data-i18n="startBtn">Увімкнути камеру</button>
+        <p class="model-status" id="modelStatus">…</p>
+        <p class="err" id="camError" hidden></p>
+      </div>
+
+      <div class="veil calib" id="calibVeil" hidden>
+        <h2 data-i18n="calibTitle">Покажіть відкриту долоню</h2>
+        <p data-i18n="calibText">Тримайте долоню до камери, пальці вгору.</p>
+        <div class="calib-bar"><span id="calibFill"></span></div>
+        <button id="calibSkip" class="ghost" data-i18n="calibSkip">Пропустити</button>
+      </div>
+    </section>
+
+    <aside class="panel">
+      <div class="picker" id="levelPicker" aria-label="Рівні"></div>
+      <div class="picker" id="wordPicker" hidden>
+        <div class="picker" id="wordChips"></div>
+        <form class="name-form" id="nameForm" novalidate>
+          <input id="nameInput" maxlength="12" autocomplete="off" spellcheck="false" aria-label="Ім’я латиницею">
+          <button class="ghost" type="submit" data-i18n="nameGo">Показати</button>
+        </form>
+        <p class="form-err" id="nameErr" hidden></p>
+      </div>
+      <div class="picker col" id="signPicker" hidden>
+        <span class="eyebrow" data-i18n="phrases">Фрази</span>
+        <div class="picker" id="phraseChips"></div>
+        <span class="eyebrow" data-i18n="singleSigns">Окремі жести</span>
+        <div class="picker" id="signChips"></div>
+      </div>
+
+      <section class="card target" id="targetCard">
+        <div class="eyebrow" id="tgtMeta"></div>
+        <div class="target-row">
+          <div class="glyph-wrap" id="glyphWrap">
+            <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><circle class="ring-bg" cx="60" cy="60" r="54"/><circle class="ring-fg" id="ringFg" cx="60" cy="60" r="54"/></svg>
+            <div class="glyph" id="tgtLetter">A</div>
+          </div>
+          <div class="word" id="wordRow" hidden></div>
+        </div>
+        <p class="desc" id="tgtDesc"></p>
+        <div class="hint idle" id="hint" role="status" aria-live="polite"><span id="hintText"></span></div>
+        <p class="looks" id="looks" hidden></p>
+        <div class="actions">
+          <button id="howBtn" class="ghost"></button>
+          <button id="skipBtn" class="ghost" data-i18n="skip">Пропустити</button>
+        </div>
+      </section>
+
+      <section class="card" id="freeCard" hidden>
+        <div class="eyebrow" data-i18n="freeTitle">Покажіть будь-яку літеру</div>
+        <div class="free-glyph" id="freeLetter" aria-live="polite">—</div>
+        <div class="bars" id="freeBars"></div>
+      </section>
+
+      <section class="card stats">
+        <div class="stat"><span class="stat-num" id="sPoints">0</span><span class="stat-lbl" data-i18n="points">Бали</span></div>
+        <div class="stat"><span class="stat-num" id="sStreak">0</span><span class="stat-lbl" data-i18n="streak">Серія</span></div>
+        <div class="stat"><span class="stat-num" id="sBest">0</span><span class="stat-lbl" data-i18n="best">Рекорд</span></div>
+        <div class="stat"><span class="stat-num" id="sDays">0</span><span class="stat-lbl" data-i18n="days">Днів поспіль</span></div>
+      </section>
+
+      <section class="card">
+        <div class="alpha-head"><span data-i18n="mastered">Освоєно</span><b id="sMastered">0/26</b></div>
+        <div class="alpha-grid" id="alphaGrid"></div>
+      </section>
+    </aside>
+  </main>
+
+  <section class="debug" id="debug" hidden>
+    <div class="debug-grid">
+      <div class="card">
+        <h3 data-i18n="debugTitle">Що бачить модель</h3>
+        <pre class="mono" id="dbgFeatures">—</pre>
+      </div>
+      <div class="card">
+        <h3 data-i18n="topHdr">Найближчі літери</h3>
+        <div class="bars" id="dbgTop"></div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="refTitle">Еталони</h3>
+        <p class="muted" data-i18n="refHint"></p>
+        <div class="ref-row">
+          <select id="refLetter" aria-label="Літера"></select>
+          <button id="refRecord" class="primary"></button>
+        </div>
+        <p class="muted" id="refCount" style="margin-top:8px"></p>
+        <div class="ref-row">
+          <button id="refExport" class="ghost" data-i18n="refExport">Експорт JSON</button>
+          <label class="ghost file"><span data-i18n="refImport">Імпорт JSON</span><input type="file" id="refImport" accept=".json,application/json" hidden></label>
+          <button id="refClear" class="ghost" data-i18n="refClear">Очистити</button>
+          <button id="recalibBtn" class="ghost" data-i18n="recalib">Перекалібрувати</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot"><p data-i18n="privacy"></p></footer>
+</div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="asl-core.js"></script>
+<script type="module">
+import { FilesetResolver, HandLandmarker, FaceDetector } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs';
+
+const C = window.ASLCore;
+const WASM_URL = 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm';
+const MODEL_URL = 'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task';
+const FACE_URL = 'https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/1/blaze_face_short_range.tflite';
+const HOLD_MS = 650;       // a static letter has to be held this long
+const COOLDOWN_MS = 750;   // pause after a success before the next letter
+const HINT_DELAY_MS = 1500;
+const HINT_EVERY_MS = 900;
+const RING = 339.29;
+
+const $ = (id) => document.getElementById(id);
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('aslfs.' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('aslfs.' + k, JSON.stringify(v)); } catch { /* storage unavailable */ } },
+};
+
+const UI = {
+  uk: {
+    brand: 'Дактиль ASL', tag: 'прототип', tabLearn: 'Абетка', tabWords: 'Слова', tabFree: 'Вільний режим', debugBtn: 'Що бачить модель',
+    startTitle: 'Вивчайте дактильну абетку ASL власними руками',
+    startText: 'Камера стежить за рукою, а підказки пояснюють, який палець виправити. Відео обробляється у браузері й нікуди не надсилається.',
+    startBtn: 'Увімкнути камеру', loadingModel: 'Завантажую модель розпізнавання руки…', modelReady: 'Модель готова', modelFailed: 'Не вдалося завантажити модель. Перевірте інтернет і оновіть сторінку.',
+    camDenied: 'Немає доступу до камери. Дозвольте камеру для цієї сторінки й оновіть її.', camMissing: 'Камеру не знайдено.', camOther: 'Не вдалося увімкнути камеру: {e}',
+    calibTitle: 'Покажіть відкриту долоню', calibText: 'Тримайте долоню до камери, пальці вгору. Так застосунок дізнається, якою рукою ви показуєте.', calibSkip: 'Пропустити', calibDone: 'Готово, починаємо',
+    levelMeta: 'Рівень {lvl} · літера {n} з {total}', wordMeta: 'Слово · літера {n} з {total}', level: 'Рівень',
+    skip: 'Пропустити', showHow: 'Як показати', hideHow: 'Сховати опис',
+    points: 'Бали', streak: 'Серія', best: 'Рекорд', days: 'Днів поспіль', mastered: 'Освоєно літер',
+    holdIt: 'Так! Тримайте…', great: 'Чудово!', almost: 'Майже: тримайте форму рівно', hintIdle: 'Тут з’являться підказки',
+    looksLike: 'Зараз схоже на', levelDone: 'Рівень {n} пройдено', wordDone: 'Слово {w} готове', modelWait: 'Модель ще завантажується…',
+    nameGo: 'Показати', namePh: 'Своє ім’я латиницею', nameErr: 'Лише латинські літери A–Z, до 12 символів',
+    freeTitle: 'Покажіть будь-яку літеру', status_ok: 'Рука в кадрі',
+    privacy: 'Прототип для пітчу. Відео обробляється на вашому пристрої й нікуди не надсилається; бібліотеку й модель MediaPipe браузер завантажує з CDN. Правила для літер ще не перевірені на носіях мови.',
+    ach_first: 'Досягнення: перший жест', ach_streak10: 'Досягнення: серія з 10 літер', ach_alphabet: 'Досягнення: уся абетка', ach_word: 'Досягнення: перше слово', ach_name: 'Досягнення: своє ім’я дактилем',
+    debugTitle: 'Що бачить модель', topHdr: 'Найближчі літери', refTitle: 'Еталони носіїв мови',
+    refHint: 'Коли носій мови правильно показує літеру, запишіть еталон: розпізнавання цієї літери підлаштується під нього. Еталони зберігаються в цьому браузері, їх можна експортувати в JSON.',
+    refRecord: 'Записати «{l}»', refCountdown: 'Запис через {n}…', refRecording: 'Записую…', refSaved: 'Еталон «{l}» збережено', refFail: 'Руку не видно в кадрі, еталон не записано',
+    refExport: 'Експорт JSON', refImport: 'Імпорт JSON', refClear: 'Очистити', refClearConfirm: 'Ще раз, щоб видалити', refCleared: 'Еталони видалено',
+    refImported: 'Імпортовано еталонів: {n}', refBad: 'Файл не схожий на еталони цього застосунку', refCount: 'Записано еталонів: {n}, літер: {k}', recalib: 'Перекалібрувати',
+    fps: 'кадрів/с', fingersHdr: 'Пальці', thumbHdr: 'Великий палець', handHdr: 'Кисть',
+    fnames: { i: 'вказівний', m: 'середній', r: 'безіменний', p: 'мізинець' },
+    times: '{n} раз(и), найкраще {s} с',
+    tabSigns: 'Жести', phrases: 'Фрази', singleSigns: 'Окремі жести',
+    phraseMeta: 'Фраза · жест {n} з {total}', signMeta: 'Жест', phraseDone: 'Фразу «{p}» показано',
+    faceLoading: 'Завантажую модель обличчя…', faceFailed: 'Не вдалося завантажити модель обличчя',
+    ach_sign: 'Досягнення: перше слово жестом', ach_phrase: 'Досягнення: перша фраза',
+  },
+  en: {
+    brand: 'ASL Fingerspelling', tag: 'prototype', tabLearn: 'Alphabet', tabWords: 'Words', tabFree: 'Free play', debugBtn: 'What the model sees',
+    startTitle: 'Learn the ASL alphabet with your own hands',
+    startText: 'The camera follows your hand, and tips tell you which finger to fix. Video is processed in your browser and never leaves your device.',
+    startBtn: 'Turn on camera', loadingModel: 'Loading the hand model…', modelReady: 'Model ready', modelFailed: 'Could not load the model. Check your connection and reload the page.',
+    camDenied: 'No camera access. Allow the camera for this page and reload it.', camMissing: 'No camera found.', camOther: 'Could not start the camera: {e}',
+    calibTitle: 'Show your open palm', calibText: 'Hold your palm toward the camera with fingers up, so the app knows which hand you use.', calibSkip: 'Skip', calibDone: 'All set, let’s start',
+    levelMeta: 'Level {lvl} · letter {n} of {total}', wordMeta: 'Word · letter {n} of {total}', level: 'Level',
+    skip: 'Skip', showHow: 'How to sign it', hideHow: 'Hide description',
+    points: 'Points', streak: 'Streak', best: 'Best', days: 'Day streak', mastered: 'Letters learned',
+    holdIt: 'Yes! Hold it…', great: 'Great!', almost: 'Almost: hold the shape steady', hintIdle: 'Tips appear here',
+    looksLike: 'Right now it looks like', levelDone: 'Level {n} complete', wordDone: 'You spelled {w}', modelWait: 'The model is still loading…',
+    nameGo: 'Spell it', namePh: 'Your name in Latin letters', nameErr: 'Latin letters A–Z only, up to 12',
+    freeTitle: 'Sign any letter', status_ok: 'Hand in view',
+    privacy: 'Pitch prototype. Video is processed on your device and never uploaded; the browser downloads the MediaPipe library and model from a CDN. The letter rules have not yet been checked with Deaf signers.',
+    ach_first: 'Achievement: first sign', ach_streak10: 'Achievement: 10 in a row', ach_alphabet: 'Achievement: whole alphabet', ach_word: 'Achievement: first word', ach_name: 'Achievement: your name',
+    debugTitle: 'What the model sees', topHdr: 'Closest letters', refTitle: 'References from signers',
+    refHint: 'When a fluent signer shows a letter correctly, record a reference and recognition of that letter adapts to it. References stay in this browser and can be exported as JSON.',
+    refRecord: 'Record “{l}”', refCountdown: 'Recording in {n}…', refRecording: 'Recording…', refSaved: 'Reference “{l}” saved', refFail: 'No hand in view, nothing recorded',
+    refExport: 'Export JSON', refImport: 'Import JSON', refClear: 'Clear', refClearConfirm: 'Click again to delete', refCleared: 'References deleted',
+    refImported: 'References imported: {n}', refBad: 'This file does not look like references from this app', refCount: 'References recorded: {n}, letters: {k}', recalib: 'Recalibrate',
+    fps: 'fps', fingersHdr: 'Fingers', thumbHdr: 'Thumb', handHdr: 'Hand',
+    fnames: { i: 'index', m: 'middle', r: 'ring', p: 'pinky' },
+    times: '{n} time(s), best {s} s',
+    tabSigns: 'Signs', phrases: 'Phrases', singleSigns: 'Single signs',
+    phraseMeta: 'Phrase · sign {n} of {total}', signMeta: 'Sign', phraseDone: 'You signed “{p}”',
+    faceLoading: 'Loading the face model…', faceFailed: 'Could not load the face model',
+    ach_sign: 'Achievement: first word sign', ach_phrase: 'Achievement: first phrase',
+  },
+};
+
+const S = {
+  lang: store.get('lang', 'uk') === 'en' ? 'en' : 'uk',
+  mode: 'learn', level: 0, idx: 0, word: null, wIdx: 0,
+  target: null, targetStart: 0, showHow: true, token: 0,
+  points: store.get('points', 0), streak: 0, best: store.get('best', 0),
+  mastery: store.get('mastery', {}), templates: store.get('templates', {}),
+  calib: store.get('calib', null), ach: store.get('ach', {}), days: store.get('days', []),
+  debug: false, dbgAt: 0, freeShown: '', freeBarsAt: 0,
+  hold: null, lastOk: 0, pauseUntil: 0, hintKey: '', hintAt: 0, lastHand: -1e9,
+  trail: { 8: [], 20: [] }, motionSeen: {}, calibFrames: [], labelRun: { label: null, n: 0 },
+  recording: null, statusText: '', statusGood: null, looks: null, clearArmed: 0,
+  phrase: null, pIdx: 0, signHist: [], face: null, zoneDraw: null, signMastery: store.get('signMastery', {}),
+};
+
+function t(key, vars) {
+  let s = UI[S.lang][key] ?? UI.uk[key] ?? key;
+  if (vars) for (const k in vars) s = s.replace('{' + k + '}', vars[k]);
+  return s;
+}
+
+/* ---------- static UI ---------- */
+const video = $('video');
+const canvas = $('overlay');
+const ctx = canvas.getContext('2d');
+const css = getComputedStyle(document.documentElement);
+const OV = { ok: css.getPropertyValue('--ov-ok').trim(), warn: css.getPropertyValue('--ov-warn').trim(), bad: css.getPropertyValue('--ov-bad').trim(), neutral: css.getPropertyValue('--ov-neutral').trim() };
+
+function applyLang() {
+  document.documentElement.lang = S.lang;
+  document.querySelectorAll('[data-i18n]').forEach((el) => { el.textContent = t(el.dataset.i18n); });
+  $('nameInput').placeholder = t('namePh');
+  $('lang-uk').setAttribute('aria-pressed', String(S.lang === 'uk'));
+  $('lang-en').setAttribute('aria-pressed', String(S.lang === 'en'));
+  updateModelStatus();
+  renderLevelPicker();
+  renderWordPicker();
+  renderSignPicker();
+  renderTarget();
+  renderAlphabet();
+  renderRefPanel();
+  S.hintKey = '';
+}
+
+function renderSignPicker() {
+  const pe = $('phraseChips');
+  pe.innerHTML = '';
+  for (const p of C.PHRASES) {
+    const b = document.createElement('button');
+    b.className = 'pill';
+    b.setAttribute('aria-pressed', String(!!S.phrase && !S.phrase.single && S.phrase.id === p.id));
+    b.textContent = p[S.lang];
+    b.onclick = () => startPhrase(p);
+    pe.appendChild(b);
+  }
+  const se = $('signChips');
+  se.innerHTML = '';
+  for (const s of C.SIGNS) {
+    const b = document.createElement('button');
+    b.className = 'pill';
+    b.setAttribute('aria-pressed', String(!!S.phrase && !!S.phrase.single && S.phrase.signs[0] === s.id));
+    b.textContent = s.gloss;
+    b.title = C.SIGN_TEXT[S.lang][s.id][0];
+    b.onclick = () => startPhrase({ single: true, id: 'sign-' + s.id, signs: [s.id] });
+    se.appendChild(b);
+  }
+}
+
+function renderPhraseRow() {
+  const el = $('wordRow');
+  el.innerHTML = '';
+  S.phrase.signs.forEach((sid, i) => {
+    const s = document.createElement('span');
+    s.className = 'l sg' + (i < S.pIdx ? ' done' : i === S.pIdx ? ' cur' : '');
+    s.textContent = C.SIGN_BY_ID[sid].gloss;
+    el.appendChild(s);
+  });
+  const tr = document.createElement('span');
+  tr.className = 'tr';
+  tr.textContent = S.phrase.single ? C.SIGN_TEXT[S.lang][S.phrase.signs[0]][0] : S.phrase[S.lang];
+  el.appendChild(tr);
+  if (S.phrase.note) {
+    const n = document.createElement('span');
+    n.className = 'tr';
+    n.textContent = C.SIGN_TEXT[S.lang].note;
+    el.appendChild(n);
+  }
+}
+
+function renderLevelPicker() {
+  const el = $('levelPicker');
+  el.innerHTML = '';
+  C.GROUPS.forEach((g, i) => {
+    const b = document.createElement('button');
+    b.className = 'pill';
+    b.setAttribute('aria-pressed', String(S.mode === 'learn' && S.level === i));
+    b.textContent = t('level') + ' ' + (i + 1);
+    const small = document.createElement('small');
+    small.textContent = g.join(' ');
+    b.appendChild(small);
+    b.onclick = () => startLevel(i, 0);
+    el.appendChild(b);
+  });
+}
+
+function renderWordPicker() {
+  const el = $('wordChips');
+  el.innerHTML = '';
+  for (const w of C.WORDS) {
+    const b = document.createElement('button');
+    b.className = 'pill';
+    b.setAttribute('aria-pressed', String(!!S.word && S.word.w === w.w));
+    b.textContent = w.w;
+    if (S.lang === 'uk') b.title = w.uk;
+    b.onclick = () => startWord(w);
+    el.appendChild(b);
+  }
+}
+
+function renderTarget() {
+  const id = S.target;
+  if (!id) return;
+  const glyph = $('tgtLetter');
+  if (S.mode === 'signs' && S.phrase) {
+    glyph.textContent = C.SIGN_BY_ID[id].gloss;
+    glyph.classList.add('gloss');
+    $('tgtMeta').textContent = S.phrase.signs.length > 1 ? t('phraseMeta', { n: S.pIdx + 1, total: S.phrase.signs.length }) : t('signMeta');
+    renderPhraseRow();
+    $('wordRow').hidden = false;
+    $('tgtDesc').textContent = C.SIGN_TEXT[S.lang][id][1];
+  } else {
+    glyph.textContent = id;
+    glyph.classList.remove('gloss');
+    if (S.mode === 'learn') {
+      $('tgtMeta').textContent = t('levelMeta', { lvl: S.level + 1, n: S.idx + 1, total: C.GROUPS[S.level].length });
+      $('wordRow').hidden = true;
+    } else if (S.mode === 'words' && S.word) {
+      $('tgtMeta').textContent = t('wordMeta', { n: S.wIdx + 1, total: S.word.w.length });
+      renderWordRow();
+      $('wordRow').hidden = false;
+    }
+    $('tgtDesc').textContent = C.LETTER_TEXT[S.lang][id];
+    $('refLetter').value = id;
+  }
+  $('tgtDesc').hidden = !S.showHow;
+  $('howBtn').textContent = S.showHow ? t('hideHow') : t('showHow');
+  setHint(null);
+  setLooks(null);
+  setRing(0);
+  renderAlphabet();
+  renderRefPanel();
+}
+
+function renderWordRow() {
+  const el = $('wordRow');
+  el.innerHTML = '';
+  [...S.word.w].forEach((ch, i) => {
+    const s = document.createElement('span');
+    s.className = 'l' + (i < S.wIdx ? ' done' : i === S.wIdx ? ' cur' : '');
+    s.textContent = ch;
+    el.appendChild(s);
+  });
+  if (S.lang === 'uk' && S.word.uk) {
+    const tr = document.createElement('span');
+    tr.className = 'tr';
+    tr.textContent = S.word.uk;
+    el.appendChild(tr);
+  }
+}
+
+function renderAlphabet() {
+  const el = $('alphaGrid');
+  if (!el.childElementCount) {
+    for (const L of C.LETTERS) {
+      const b = document.createElement('button');
+      b.dataset.id = L.id;
+      b.textContent = L.id;
+      b.onclick = () => {
+        const lvl = C.GROUPS.findIndex((g) => g.includes(L.id));
+        if (S.mode !== 'learn') setMode('learn');
+        startLevel(lvl, C.GROUPS[lvl].indexOf(L.id));
+      };
+      el.appendChild(b);
+    }
+  }
+  let learned = 0;
+  for (const b of el.children) {
+    const m = S.mastery[b.dataset.id];
+    const n = m ? m.n : 0;
+    if (n) learned++;
+    b.className = (n >= 3 ? 'm2' : n ? 'm1' : '') + (b.dataset.id === S.target && S.mode !== 'free' ? ' cur' : '');
+    b.title = n ? b.dataset.id + ': ' + t('times', { n, s: (m.best / 1000).toFixed(1) }) : b.dataset.id;
+  }
+  $('sMastered').textContent = learned + '/26';
+}
+
+function renderStats() {
+  $('sPoints').textContent = S.points;
+  $('sStreak').textContent = S.streak;
+  $('sBest').textContent = S.best;
+  $('sDays').textContent = dayStreak();
+}
+
+function setHint(text, kind) {
+  const el = $('hint');
+  $('hintText').textContent = text || t('hintIdle');
+  el.classList.toggle('good', kind === 'good');
+  el.classList.toggle('idle', !text);
+}
+function showHint(text, key, now, immediate, kind) {
+  if (key === S.hintKey) return;
+  if (!immediate && now - S.hintAt < HINT_EVERY_MS) return;
+  S.hintKey = key;
+  S.hintAt = now;
+  setHint(text, kind);
+}
+function setLooks(id) {
+  if (id === S.looks) return;
+  S.looks = id;
+  const el = $('looks');
+  if (!id) { el.hidden = true; return; }
+  el.textContent = t('looksLike') + ' ';
+  const b = document.createElement('b');
+  b.textContent = id;
+  el.appendChild(b);
+  el.hidden = false;
+}
+let ringShown = -1;
+function setRing(p) {
+  const v = Math.round(p * 100) / 100;
+  if (v === ringShown) return;
+  ringShown = v;
+  $('ringFg').style.strokeDashoffset = String(RING * (1 - v));
+}
+function setStatus(text, good) {
+  if (text === S.statusText && good === S.statusGood) return;
+  S.statusText = text;
+  S.statusGood = good;
+  $('statusText').textContent = text;
+  $('statusChip').classList.toggle('good', !!good);
+  $('statusChip').hidden = false;
+}
+function toast(text, kind) {
+  const el = document.createElement('div');
+  el.className = 'toast' + (kind ? ' ' + kind : '');
+  el.textContent = text;
+  $('toasts').appendChild(el);
+  setTimeout(() => el.remove(), 3100);
+}
+function renderBars(el, items) {
+  el.innerHTML = '';
+  for (const it of items) {
+    const row = document.createElement('div');
+    row.className = 'bar';
+    const pct = Math.max(0, Math.min(100, Math.round(it.score * 100)));
+    row.innerHTML = `<b>${it.id}</b><i><span style="width:${pct}%"></span></i><em>${pct}%</em>`;
+    el.appendChild(row);
+  }
+}
+
+/* ---------- progress ---------- */
+const dayKey = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+function markDay() {
+  const k = dayKey(new Date());
+  if (!S.days.includes(k)) { S.days.push(k); S.days = S.days.slice(-120); store.set('days', S.days); }
+}
+function dayStreak() {
+  const set = new Set(S.days);
+  let n = 0;
+  const d = new Date();
+  while (set.has(dayKey(d))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function persist() {
+  store.set('points', S.points);
+  store.set('best', S.best);
+  store.set('mastery', S.mastery);
+  store.set('signMastery', S.signMastery);
+}
+function unlock(key) {
+  if (S.ach[key]) return;
+  S.ach[key] = Date.now();
+  store.set('ach', S.ach);
+  toast(t('ach_' + key), 'ach');
+}
+
+/* ---------- modes ---------- */
+function resetTargetState() {
+  S.hold = null;
+  S.hintKey = '';
+  S.pauseUntil = 0;
+  S.trail[8].length = 0;
+  S.trail[20].length = 0;
+  S.motionSeen = {};
+}
+function setMode(mode) {
+  S.mode = mode;
+  S.token++;
+  for (const b of document.querySelectorAll('.tabs button')) b.setAttribute('aria-selected', String(b.dataset.mode === mode));
+  $('levelPicker').hidden = mode !== 'learn';
+  $('wordPicker').hidden = mode !== 'words';
+  $('signPicker').hidden = mode !== 'signs';
+  $('targetCard').hidden = mode === 'free';
+  $('freeCard').hidden = mode !== 'free';
+  S.zoneDraw = null;
+  setHandCount(mode === 'signs' ? 2 : 1);
+  S.showHow = mode === 'learn' || mode === 'signs';
+  if (mode === 'learn') startLevel(S.level, S.idx);
+  else if (mode === 'words') startWord(S.word || pickWord());
+  else if (mode === 'signs') { startPhrase(S.phrase || C.PHRASES[0]); ensureFace(); }
+  else { S.target = null; S.freeShown = ''; $('freeLetter').textContent = '—'; renderAlphabet(); }
+}
+function startLevel(level, idx) {
+  S.token++;
+  S.level = level;
+  S.idx = idx;
+  S.target = C.GROUPS[level][idx];
+  S.targetStart = performance.now();
+  resetTargetState();
+  renderLevelPicker();
+  renderTarget();
+}
+function nextLearn() {
+  if (S.idx + 1 < C.GROUPS[S.level].length) { startLevel(S.level, S.idx + 1); return; }
+  toast(t('levelDone', { n: S.level + 1 }));
+  startLevel((S.level + 1) % C.GROUPS.length, 0);
+}
+function pickWord() {
+  const list = C.WORDS.filter((w) => !S.word || w.w !== S.word.w);
+  return list[Math.floor(Math.random() * list.length)];
+}
+function startWord(word) {
+  S.token++;
+  S.word = word;
+  S.wIdx = 0;
+  S.target = word.w[0];
+  S.targetStart = performance.now();
+  resetTargetState();
+  renderWordPicker();
+  renderTarget();
+}
+function nextWordLetter() {
+  if (S.wIdx + 1 < S.word.w.length) {
+    S.wIdx++;
+    S.target = S.word.w[S.wIdx];
+    S.targetStart = performance.now();
+    resetTargetState();
+    renderTarget();
+    return;
+  }
+  S.points += 20;
+  persist();
+  renderStats();
+  toast(t('wordDone', { w: S.word.w }));
+  unlock('word');
+  if (S.word.custom) unlock('name');
+  const token = ++S.token;
+  setTimeout(() => { if (token === S.token && S.mode === 'words') startWord(pickWord()); }, 900);
+}
+function startPhrase(p) {
+  S.token++;
+  S.phrase = p;
+  S.pIdx = 0;
+  setSignTarget();
+  renderSignPicker();
+}
+function setSignTarget() {
+  S.target = S.phrase.signs[S.pIdx];
+  S.targetStart = performance.now();
+  resetTargetState();
+  S.signHist.length = 0;
+  renderTarget();
+}
+function nextSign() {
+  if (S.pIdx + 1 < S.phrase.signs.length) { S.pIdx++; setSignTarget(); return; }
+  const phrase = S.phrase.signs.length > 1;
+  if (phrase) {
+    S.points += 20;
+    persist();
+    renderStats();
+    toast(t('phraseDone', { p: S.phrase[S.lang] }));
+    unlock('phrase');
+  }
+  const list = S.phrase.single ? C.SIGNS.map((s) => ({ single: true, id: 'sign-' + s.id, signs: [s.id] })) : C.PHRASES;
+  const i = list.findIndex((x) => x.id === S.phrase.id);
+  const next = list[(i + 1) % list.length];
+  const token = ++S.token;
+  setTimeout(() => { if (token === S.token && S.mode === 'signs') startPhrase(next); }, phrase ? 900 : 0);
+}
+
+function skip() {
+  if (S.mode === 'free' || !S.target) return;
+  S.streak = 0;
+  renderStats();
+  if (S.mode === 'learn') nextLearn();
+  else if (S.mode === 'words') nextWordLetter();
+  else if (S.mode === 'signs') nextSign();
+}
+
+function success(now) {
+  const id = S.target;
+  const ms = now - S.targetStart;
+  const gain = 10 + (ms < 3000 ? 5 : 0) + Math.min(S.streak, 10);
+  S.points += gain;
+  S.streak += 1;
+  S.best = Math.max(S.best, S.streak);
+  const M = S.mode === 'signs' ? S.signMastery : S.mastery;
+  const m = M[id] || { n: 0, best: null };
+  m.n += 1;
+  m.best = m.best == null ? Math.round(ms) : Math.min(m.best, Math.round(ms));
+  M[id] = m;
+  markDay();
+  persist();
+  S.hold = null;
+  S.pauseUntil = now + COOLDOWN_MS + 200;
+  S.trail[8].length = 0;
+  S.trail[20].length = 0;
+  S.motionSeen = {};
+  S.signHist.length = 0;
+  setRing(1);
+  setHint(t('great'), 'good');
+  S.hintKey = 'great';
+  const card = $('targetCard');
+  card.classList.add('pop', 'done');
+  const g = document.createElement('span');
+  g.className = 'gain';
+  g.textContent = '+' + gain;
+  $('glyphWrap').appendChild(g);
+  setTimeout(() => { card.classList.remove('pop', 'done'); g.remove(); }, COOLDOWN_MS);
+  unlock('first');
+  if (S.mode === 'signs') unlock('sign');
+  if (S.streak >= 10) unlock('streak10');
+  if (C.LETTERS.every((L) => S.mastery[L.id])) unlock('alphabet');
+  renderStats();
+  renderAlphabet();
+  const token = ++S.token;
+  setTimeout(() => {
+    if (token !== S.token) return;
+    if (S.mode === 'learn') nextLearn();
+    else if (S.mode === 'words') nextWordLetter();
+    else if (S.mode === 'signs') nextSign();
+  }, COOLDOWN_MS);
+}
+
+/* ---------- model and camera ---------- */
+let landmarker = null;
+let delegate = '';
+let modelState = 'loading';
+let visionFileset = null;
+let faceDetector = null;
+let faceState = 'idle';
+let wantHands = 1;          // two hands only in the signs mode: tracking a second hand costs speed
+let reconfiguring = false;
+function updateModelStatus() {
+  const el = $('modelStatus');
+  el.textContent = modelState === 'ready' ? t('modelReady') + ' · ' + delegate : modelState === 'failed' ? t('modelFailed') : t('loadingModel');
+  el.classList.toggle('err', modelState === 'failed');
+}
+async function loadModel() {
+  try {
+    const fileset = await FilesetResolver.forVisionTasks(WASM_URL);
+    visionFileset = fileset;
+    const opts = (d) => ({
+      baseOptions: { modelAssetPath: MODEL_URL, delegate: d },
+      runningMode: 'VIDEO', numHands: wantHands,
+      minHandDetectionConfidence: 0.5, minHandPresenceConfidence: 0.5, minTrackingConfidence: 0.5,
+    });
+    try { landmarker = await HandLandmarker.createFromOptions(fileset, opts('GPU')); delegate = 'GPU'; }
+    catch (e) { console.warn('GPU delegate failed, falling back to CPU', e); landmarker = await HandLandmarker.createFromOptions(fileset, opts('CPU')); delegate = 'CPU'; }
+    modelState = 'ready';
+    if (S.mode === 'signs') ensureFace();
+  } catch (e) {
+    console.error(e);
+    modelState = 'failed';
+  }
+  updateModelStatus();
+}
+
+async function setHandCount(n) {
+  wantHands = n;
+  if (!landmarker || reconfiguring) return;
+  reconfiguring = true;
+  try { await landmarker.setOptions({ numHands: n }); } catch (e) { console.error(e); }
+  reconfiguring = false;
+  if (wantHands !== n) setHandCount(wantHands); // the mode changed while reconfiguring
+}
+
+// The face model is loaded only for word signs: it tells where the chin, mouth and forehead are.
+async function ensureFace() {
+  if (faceDetector || faceState === 'loading' || !visionFileset) return;
+  faceState = 'loading';
+  const opts = (d) => ({ baseOptions: { modelAssetPath: FACE_URL, delegate: d }, runningMode: 'VIDEO', minDetectionConfidence: 0.5 });
+  try {
+    faceDetector = await FaceDetector.createFromOptions(visionFileset, opts(delegate || 'GPU'));
+  } catch (e) {
+    try { faceDetector = await FaceDetector.createFromOptions(visionFileset, opts('CPU')); }
+    catch (e2) { console.error(e2); faceState = 'failed'; return; }
+  }
+  faceState = 'ready';
+}
+
+async function startCamera() {
+  const btn = $('startBtn');
+  btn.disabled = true;
+  $('camError').hidden = true;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 960 }, height: { ideal: 720 } }, audio: false });
+    video.srcObject = stream;
+    await video.play();
+    $('stage').style.aspectRatio = video.videoWidth + ' / ' + video.videoHeight;
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    $('startVeil').hidden = true;
+    if (!S.calib) $('calibVeil').hidden = false;
+    S.targetStart = performance.now();
+    setStatus(modelState === 'ready' ? C.HINTS[S.lang].noHand : t('modelWait'), false);
+    requestAnimationFrame(loop);
+  } catch (e) {
+    const msg = e && (e.name === 'NotAllowedError' || e.name === 'SecurityError') ? t('camDenied')
+      : e && (e.name === 'NotFoundError' || e.name === 'OverconstrainedError') ? t('camMissing')
+      : t('camOther', { e: (e && e.message) || e });
+    $('camError').textContent = msg;
+    $('camError').hidden = false;
+    btn.disabled = false;
+  }
+}
+
+/* ---------- calibration: which way the palm faces ---------- */
+const calibrating = () => !$('calibVeil').hidden;
+function calibrate(f, label) {
+  if (calibrating()) {
+    const open = ['i', 'm', 'r', 'p'].every((k) => f.fingers[k].state === 'EXT');
+    if (open && Math.abs(f.orient.facingRaw) > 0.5) S.calibFrames.push(Math.sign(f.orient.facingRaw));
+    else S.calibFrames.length = 0;
+    $('calibFill').style.width = Math.min(100, S.calibFrames.length * 5) + '%';
+    if (S.calibFrames.length >= 20) {
+      const sign = Math.sign(S.calibFrames.reduce((a, b) => a + b, 0)) || 1;
+      S.calib = { sign, label };
+      store.set('calib', S.calib);
+      S.calibFrames.length = 0;
+      $('calibVeil').hidden = true;
+      toast(t('calibDone'));
+      S.targetStart = performance.now();
+    }
+    return;
+  }
+  // The user switched hands: MediaPipe reports the other hand for a while, so flip the sign.
+  if (!S.calib || !label || !S.calib.label) return;
+  if (label !== S.calib.label) {
+    S.labelRun = S.labelRun.label === label ? { label, n: S.labelRun.n + 1 } : { label, n: 1 };
+    if (S.labelRun.n >= 20) {
+      S.calib = { sign: -S.calib.sign, label };
+      store.set('calib', S.calib);
+      S.labelRun = { label: null, n: 0 };
+    }
+  } else if (S.labelRun.n) S.labelRun = { label: null, n: 0 };
+}
+
+/* ---------- frame loop ---------- */
+let lastVideoTime = -1;
+let smLm = null; // smoothed landmarks of the main hand (letters, motion trails)
+let steady = 0;
+const slots = [null, null]; // up to two tracked hands, each kept in its slot from frame to frame
+const fps = { n: 0, t0: 0, value: 0 };
+const copy = (p) => ({ x: p.x, y: p.y, z: p.z });
+function blend(dst, src, a) {
+  for (let i = 0; i < dst.length; i++) {
+    dst[i].x += a * (src[i].x - dst[i].x);
+    dst[i].y += a * (src[i].y - dst[i].y);
+    dst[i].z += a * (src[i].z - dst[i].z);
+  }
+}
+function qualityKey(f) {
+  if (!f.quality.inFrame) return 'edge';
+  if (f.quality.size < 0.09) return 'far';
+  if (f.quality.size > 0.5) return 'near';
+  return null;
+}
+
+function loop() {
+  requestAnimationFrame(loop);
+  if (!landmarker || reconfiguring || video.readyState < 2 || video.currentTime === lastVideoTime) return;
+  lastVideoTime = video.currentTime;
+  const now = performance.now();
+  let res;
+  try { res = landmarker.detectForVideo(video, now); } catch (e) { console.error(e); return; }
+  const hd = res.handedness || res.handednesses || [];
+  const hands = (res.landmarks || []).map((lm, i) => ({ lm, wl: res.worldLandmarks[i], label: hd[i] && hd[i][0] ? hd[i][0].categoryName : null }));
+  let faceDet = null;
+  if (S.mode === 'signs' && faceDetector) {
+    try {
+      const fr = faceDetector.detectForVideo(video, now);
+      faceDet = fr.detections && fr.detections.length ? fr.detections[0] : null;
+    } catch (e) { console.error(e); }
+  }
+  processFrame(hands, video.videoWidth, video.videoHeight, now, faceDet);
+}
+
+// Keep each detected hand in the same slot from frame to frame (closest wrist) and smooth it there.
+function trackHands(hands, now) {
+  for (let i = 0; i < 2; i++) if (slots[i] && now - slots[i].t > 300) slots[i] = null;
+  const wd = (s, h) => (s ? Math.hypot(s.lm[0].x - h.lm[0].x, s.lm[0].y - h.lm[0].y) : 0.6);
+  let order = [];
+  if (hands.length >= 2) {
+    order = wd(slots[0], hands[0]) + wd(slots[1], hands[1]) <= wd(slots[0], hands[1]) + wd(slots[1], hands[0]) ? [0, 1] : [1, 0];
+  } else if (hands.length === 1) {
+    order = [wd(slots[0], hands[0]) <= wd(slots[1], hands[0]) ? 0 : 1];
+  }
+  const vis = [];
+  order.forEach((i, k) => {
+    const h = hands[k];
+    let s = slots[i];
+    if (!s || wd(s, h) > 0.25) s = slots[i] = { lm: h.lm.map(copy), wl: h.wl.map(copy), prevRaw: null };
+    else { blend(s.lm, h.lm, 0.55); blend(s.wl, h.wl, 0.55); }
+    s.t = now;
+    s.label = h.label;
+    s.raw = h.lm;
+    s.slot = i;
+    vis.push(s);
+  });
+  return vis.sort((a, b) => a.slot - b.slot);
+}
+
+// One analysed frame: hands in, game state and drawing out. The smoke test calls it through window.ASLDebug.
+// hands: [{lm, wl, label}] - image landmarks, world landmarks and MediaPipe's handedness label for each hand.
+function processFrame(hands, W, H, now, faceDet) {
+  fps.n++;
+  if (now - fps.t0 > 1000) { fps.value = Math.round((fps.n * 1000) / (now - fps.t0)); fps.n = 0; fps.t0 = now; }
+  // the hand often covers part of the face, so the last face position is kept for 2 s
+  if (faceDet) { const z = C.faceZones(faceDet, W, H); if (z) S.face = { z, t: now }; }
+  if (!hands.length) { noHand(now); return; }
+  const vis = trackHands(hands, now);
+  for (const s of vis) s.f = C.computeFeatures(s.wl, s.lm, W, H);
+  // main hand: the bigger one on screen, usually the one closer to the camera
+  const main = vis.length > 1 && vis[1].f.palmPx > vis[0].f.palmPx ? vis[1] : vis[0];
+  S.lastHand = now;
+  smLm = main.lm;
+  const f = main.f;
+  if (main.prevRaw) {
+    let d = 0;
+    for (let i = 0; i < 21; i++) d += Math.hypot((main.raw[i].x - main.prevRaw[i].x) * W, (main.raw[i].y - main.prevRaw[i].y) * H);
+    steady = steady * 0.7 + (d / 21 / f.palmPx) * 0.3;
+  }
+  main.prevRaw = main.raw.map(copy);
+  calibrate(f, main.label);
+  const facing = S.calib ? f.orient.facingRaw * S.calib.sign : null;
+  const all = C.evaluateAll(f, { facing, templates: S.templates });
+  pushTrail(20, all.J.spec >= 0.7, f, now, W, H);
+  pushTrail(8, all.Z.spec >= 0.7, f, now, W, H);
+  if (C.detectJ(S.trail[20], now)) S.motionSeen.J = now;
+  if (C.detectZ(S.trail[8], now)) S.motionSeen.Z = now;
+  const motion = {};
+  for (const k in S.motionSeen) if (now - S.motionSeen[k] < 1200) motion[k] = true;
+  recordTick(f, now);
+  const q = qualityKey(f);
+  setStatus(q ? C.HINTS[S.lang][q] : t('status_ok'), !q);
+  if (S.debug) $('metaChip').textContent = fps.value + ' ' + t('fps') + ' · ' + delegate;
+
+  let drawn = vis.map((s) => ({ lm: s.lm, parts: null }));
+  let trail = null;
+  if (calibrating()) {
+    // just show the skeleton while calibrating
+  } else if (S.mode === 'free') {
+    updateFree(all, motion, now);
+    trail = all.J.spec >= 0.7 ? S.trail[20] : all.Z.spec >= 0.7 ? S.trail[8] : null;
+  } else if (S.mode === 'signs' && S.target) {
+    drawn = updateSign(vis, W, H, now);
+  } else if (S.target) {
+    drawn = [{ lm: main.lm, parts: updateTarget(f, all, motion, q, now) }];
+    const L = C.BY_ID[S.target];
+    if (L.track) trail = S.trail[L.track];
+  }
+  draw(drawn, trail, now);
+  updateDebug(f, all, motion, now);
+}
+
+function noHand(now) {
+  if (now - S.lastHand < 250) return;
+  setStatus(C.HINTS[S.lang].noHand, false);
+  S.hold = null;
+  if (now >= S.pauseUntil && !calibrating() && S.mode !== 'free' && S.target) {
+    setRing(0);
+    showHint(C.HINTS[S.lang].noHand, 'noHand', now, true);
+  }
+  if (S.mode === 'free' && S.freeShown !== '—') { S.freeShown = '—'; $('freeLetter').textContent = '—'; renderBars($('freeBars'), []); }
+  draw([]);
+}
+
+function pushTrail(idx, ok, f, now, W, H) {
+  const arr = S.trail[idx];
+  arr.push({ t: now, x: smLm[idx].x * W, y: smLm[idx].y * H, s: f.palmPx, ok });
+  while (arr.length && now - arr[0].t > 2500) arr.shift();
+}
+
+function updateTarget(f, all, motion, q, now) {
+  const id = S.target;
+  const L = C.BY_ID[id];
+  const r = all[id];
+  const parts = C.partDegrees(r);
+  if (now < S.pauseUntil) return parts;
+  const j = C.judge(id, all, motion);
+  let progress = 0;
+  if (L.motion) {
+    if (motion[id]) { success(now); return parts; }
+    const ready = r.score >= 0.7;
+    progress = ready ? 0.5 : 0;
+    if (q) showHint(C.HINTS[S.lang][q], 'q-' + q, now, true);
+    else if (ready) showHint(C.HINTS[S.lang]['motion_' + id], 'motion', now, true);
+    else specHint(r, now);
+  } else {
+    if (j.ok && !q) { if (!S.hold) S.hold = now; S.lastOk = now; }
+    else if (S.hold && now - S.lastOk > 160) S.hold = null;
+    progress = S.hold ? Math.min(1, (now - S.hold) / HOLD_MS) : 0;
+    if (progress >= 1) { success(now); return parts; }
+    if (S.hold) showHint(t('holdIt'), 'hold', now, true, 'good');
+    else if (q) showHint(C.HINTS[S.lang][q], 'q-' + q, now, true);
+    else if (steady > 0.09) showHint(C.HINTS[S.lang].moving, 'moving', now);
+    else specHint(r, now);
+  }
+  setRing(progress);
+  setLooks(j.looks && j.looks !== L.twin ? j.looks : null);
+  return parts;
+}
+function specHint(r, now) {
+  if (now - S.targetStart < HINT_DELAY_MS) { showHint(null, 'wait', now, true); return; }
+  const h = C.hintsFor(r, S.lang, 1)[0];
+  if (h) showHint(h.text, h.key, now);
+  else showHint(t('almost'), 'almost', now);
+}
+
+// Palm side for word signs: the hand MediaPipe labels like the calibrated one keeps the sign, the other hand flips it.
+function signFacing(s) {
+  if (!S.calib) return null;
+  const flip = s.label && S.calib.label && s.label !== S.calib.label ? -1 : 1;
+  return s.f.orient.facingRaw * S.calib.sign * flip;
+}
+
+// Word signs. Returns the hands to draw, each coloured by the handshape it has to show.
+function updateSign(vis, W, H, now) {
+  const sign = C.SIGN_BY_ID[S.target];
+  const two = sign.hands === 2;
+  const zones = S.face && now - S.face.t < 2000 ? S.face.z : null;
+  const second = vis[1] ? { f: vis[1].f, image: vis[1].lm, ctx: { facing: signFacing(vis[1]) } } : null;
+  const fr = C.signFrame(vis[0].f, vis[0].lm, W, H, zones, { facing: signFacing(vis[0]) }, now, second);
+  const resOf = [fr.res, fr.res2];
+  // a one-handed sign follows whichever hand fits it better
+  let lead = 0;
+  if (!two && vis.length > 1) {
+    const sc = (k) => (sign.shape ? fr.rec.hands[k].scores[sign.shape] : vis[k].f.palmPx);
+    lead = sc(1) > sc(0) ? 1 : 0;
+  }
+  const rec = lead === 0 ? fr.rec : Object.assign({}, fr.rec, fr.rec.hands[1]);
+  S.signHist.push(rec);
+  while (S.signHist.length && now - S.signHist[0].t > 2500) S.signHist.shift();
+
+  const drawn = vis.map((s) => ({ lm: s.lm, parts: null }));
+  const pair = two && vis.length > 1 ? C.pairOf(rec, sign.shapes[0], sign.shapes[1]) : null;
+  const shapeFor = (k) => {
+    const s = k === pair.a ? sign.shapes[0] : sign.shapes[1];
+    if (s !== 'OPEN') return s;
+    const sc = rec.hands[k].scores;
+    return sc.FLAT >= sc.FIVE ? 'FLAT' : 'FIVE';
+  };
+  if (pair) { drawn[0].parts = C.partDegrees(resOf[0][shapeFor(0)]); drawn[1].parts = C.partDegrees(resOf[1][shapeFor(1)]); }
+  else if (!two && sign.shape) drawn[lead].parts = C.partDegrees(resOf[lead][sign.shape]);
+  S.zoneDraw = !two && sign.zone && zones ? { c: zones[sign.zone], r: (sign.r || 0.85) * zones.d, p: rec.pts[sign.point] } : null;
+  if (now < S.pauseUntil) return drawn;
+
+  const det = C.detectSign(sign, S.signHist, now);
+  setRing(det.progress);
+  if (det.ok) { success(now); return drawn; }
+  const q = (two ? vis : [vis[lead]]).map((s) => qualityKey(s.f)).find(Boolean) || null;
+  const HT = C.HINTS[S.lang];
+  if (q) showHint(HT[q], 'q-' + q, now, true);
+  else if (det.need === 'twoHands') showHint(HT.twoHands, 'twoHands', now, true);
+  else if (det.need === 'face') showHint(faceState === 'ready' ? HT.face : t(faceState === 'failed' ? 'faceFailed' : 'faceLoading'), 'face-' + faceState, now, true);
+  else if (det.need === 'shape') {
+    let h = null;
+    if (now - S.targetStart >= HINT_DELAY_MS) {
+      if (pair) {
+        // hint for the hand that is further from its shape
+        const r0 = resOf[0][shapeFor(0)];
+        const r1 = resOf[1][shapeFor(1)];
+        h = C.hintsFor(r0.score <= r1.score ? r0 : r1, S.lang, 1)[0];
+      } else if (sign.shape) h = C.hintsFor(resOf[lead][sign.shape], S.lang, 1)[0];
+    }
+    if (h) showHint(h.text, h.key, now);
+    else if (now - S.targetStart < HINT_DELAY_MS) showHint(null, 'wait', now, true);
+    else showHint(t('almost'), 'almost', now);
+  } else if (det.need === 'zone') showHint(HT['zone_' + sign.id], 'zone', now, true);
+  else if (det.need === 'pose') showHint(HT['pose_' + sign.id], 'pose', now, true);
+  else if (det.need === 'motion') showHint(HT['motion_' + sign.id], 'motion', now, true);
+  else if (det.progress > 0) showHint(t('holdIt'), 'hold', now, true, 'good');
+  return drawn;
+}
+
+function updateFree(all, motion, now) {
+  const ranked = C.rank(all, motion);
+  const top = ranked[0];
+  const show = top && top.score >= C.ACCEPT ? top.id : '—';
+  if (show !== S.freeShown) { S.freeShown = show; $('freeLetter').textContent = show; }
+  if (now - S.freeBarsAt > 150) { S.freeBarsAt = now; renderBars($('freeBars'), ranked.slice(0, 3)); }
+}
+
+/* ---------- drawing ---------- */
+const CONN = {
+  palm: [[0, 1], [0, 5], [5, 9], [9, 13], [13, 17], [0, 17]],
+  t: [[1, 2], [2, 3], [3, 4]],
+  i: [[5, 6], [6, 7], [7, 8]],
+  m: [[9, 10], [10, 11], [11, 12]],
+  r: [[13, 14], [14, 15], [15, 16]],
+  p: [[17, 18], [18, 19], [19, 20]],
+};
+const colorFor = (d) => (d == null ? OV.neutral : d >= 0.8 ? OV.ok : d >= 0.5 ? OV.warn : OV.bad);
+// hands: [{lm, parts}] - parts colours each finger by how well it matches (null = neutral)
+function draw(hands, trail, now) {
+  const W = canvas.width;
+  const H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  if (!hands || !hands.length) return;
+  const lw = Math.max(2, W * 0.0065);
+  ctx.lineCap = 'round';
+  if (trail && trail.length > 1) {
+    ctx.lineWidth = lw * 1.4;
+    for (let i = 1; i < trail.length; i++) {
+      const age = (now - trail[i].t) / 1500;
+      if (age > 1) continue;
+      ctx.strokeStyle = `rgba(255, 194, 71, ${(0.85 * (1 - age)).toFixed(3)})`;
+      ctx.beginPath();
+      ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+      ctx.lineTo(trail[i].x, trail[i].y);
+      ctx.stroke();
+    }
+  }
+  for (const { lm, parts } of hands) {
+    for (const part of Object.keys(CONN)) {
+      ctx.strokeStyle = colorFor(parts ? parts[part] : null);
+      ctx.lineWidth = part === 'palm' ? lw * 0.8 : lw;
+      ctx.beginPath();
+      for (const [a, b] of CONN[part]) { ctx.moveTo(lm[a].x * W, lm[a].y * H); ctx.lineTo(lm[b].x * W, lm[b].y * H); }
+      ctx.stroke();
+    }
+    ctx.fillStyle = '#ffffff';
+    for (const p of lm) { ctx.beginPath(); ctx.arc(p.x * W, p.y * H, lw * 0.75, 0, Math.PI * 2); ctx.fill(); }
+  }
+  // word signs: where on the face the hand should go, and the point of the hand that has to get there
+  const zd = S.mode === 'signs' ? S.zoneDraw : null;
+  if (zd) {
+    const hit = Math.hypot(zd.p[0] - zd.c[0], zd.p[1] - zd.c[1]) <= zd.r;
+    ctx.save();
+    ctx.lineWidth = lw;
+    ctx.setLineDash(hit ? [] : [lw * 2, lw * 1.6]);
+    ctx.strokeStyle = hit ? OV.ok : 'rgba(255, 255, 255, 0.75)';
+    ctx.beginPath();
+    ctx.arc(zd.c[0], zd.c[1], zd.r, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = hit ? OV.ok : OV.warn;
+    ctx.beginPath();
+    ctx.arc(zd.p[0], zd.p[1], lw * 1.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+  }
+}
+
+/* ---------- team panel ---------- */
+const num = (x, d = 2) => (x >= 0 ? ' ' : '') + x.toFixed(d);
+const deg = (x) => String(Math.round(x)).padStart(4);
+function updateDebug(f, all, motion, now) {
+  if (!S.debug || now - S.dbgAt < 150) return;
+  S.dbgAt = now;
+  const fn = t('fnames');
+  const lines = [`${t('fingersHdr').padEnd(13)} state   MCP  PIP  DIP  tip`];
+  for (const k of ['i', 'm', 'r', 'p']) {
+    const d = f.fingers[k];
+    lines.push(`  ${fn[k].padEnd(11)} ${d.state.padEnd(6)} ${deg(d.mcp)} ${deg(d.pip)} ${deg(d.dip)} ${num(d.tipH)}`);
+  }
+  const th = f.thumb;
+  lines.push('', `${t('thumbHdr')}: lat ${num(th.lat)}  h ${num(th.h)}  front ${num(th.front)}  above ${num(th.above)}`);
+  lines.push(`  → tip i ${num(th.dIT)}  tip m ${num(th.dMT)}  joint m ${num(th.dMP)}  tip p ${num(th.dPT)}`);
+  lines.push(`  spread ${deg(th.spread)}°  parallel ${deg(th.par)}°  bend ${deg(th.bend)}°`);
+  lines.push('', `${t('handHdr')}: gap i-m ${num(f.gaps.im)}  m-r ${num(f.gaps.mr)}  r-p ${num(f.gaps.rp)}  cross ${num(f.crossIM)}  raise ${num(f.idxRaise)}`);
+  lines.push(`  dir ${deg(f.orient.hand)}°  palm ${S.calib ? num(f.orient.facingRaw * S.calib.sign) : '  —'}  size ${num(f.quality.size)}  motion ${num(steady)}`);
+  lines.push(`  ${fps.value} ${t('fps')} · ${delegate}`);
+  const sr = S.mode === 'signs' && S.signHist[S.signHist.length - 1];
+  if (sr) {
+    const top = Object.entries(sr.scores).sort((a, b) => b[1] - a[1]).slice(0, 4).map(([k, v]) => k + ' ' + v.toFixed(2));
+    lines.push('', 'shapes: ' + top.join('  '));
+    const sg = C.SIGN_BY_ID[S.target];
+    if (sg && sg.zone) {
+      const zd = sr.zones ? Math.hypot(sr.pts[sg.point][0] - sr.zones[sg.zone][0], sr.pts[sg.point][1] - sr.zones[sg.zone][1]) / sr.zones.d : null;
+      lines.push(`zone ${sg.zone}: ${zd == null ? '— (face: ' + faceState + ')' : zd.toFixed(2) + ' (≤ ' + (sg.r || 0.85) + ')'}`);
+    }
+  }
+  $('dbgFeatures').textContent = lines.join('\n');
+  renderBars($('dbgTop'), C.rank(all, motion).slice(0, 6));
+}
+
+function renderRefPanel() {
+  const n = Object.values(S.templates).reduce((s, a) => s + a.length, 0);
+  $('refCount').textContent = t('refCount', { n, k: Object.keys(S.templates).filter((k) => S.templates[k].length).length });
+  if (!S.recording) $('refRecord').textContent = t('refRecord', { l: $('refLetter').value || 'A' });
+  $('refClear').textContent = S.clearArmed > performance.now() ? t('refClearConfirm') : t('refClear');
+}
+function startRecording() {
+  if (S.recording) return;
+  const id = $('refLetter').value;
+  let n = 3;
+  const btn = $('refRecord');
+  btn.disabled = true;
+  const tick = () => {
+    if (n > 0) { btn.textContent = t('refCountdown', { n }); n--; setTimeout(tick, 700); return; }
+    btn.textContent = t('refRecording');
+    S.recording = { id, frames: [], until: performance.now() + 1200 };
+  };
+  tick();
+}
+function recordTick(f, now) {
+  const R = S.recording;
+  if (!R) return;
+  if (f.quality.inFrame) R.frames.push(C.toVector(f));
+  if (now < R.until) return;
+  S.recording = null;
+  $('refRecord').disabled = false;
+  if (R.frames.length < 10) { toast(t('refFail')); renderRefPanel(); return; }
+  const len = R.frames[0].length;
+  const avg = new Array(len).fill(0);
+  for (const v of R.frames) for (let i = 0; i < len; i++) avg[i] += v[i] / R.frames.length;
+  (S.templates[R.id] = S.templates[R.id] || []).push({ v: avg.map((x) => Math.round(x * 1e4) / 1e4), at: new Date().toISOString() });
+  store.set('templates', S.templates);
+  toast(t('refSaved', { l: R.id }));
+  renderRefPanel();
+}
+
+/* ---------- events ---------- */
+function init() {
+  for (const L of C.LETTERS) {
+    const o = document.createElement('option');
+    o.value = L.id;
+    o.textContent = L.id;
+    $('refLetter').appendChild(o);
+  }
+  $('startBtn').onclick = startCamera;
+  $('calibSkip').onclick = () => { $('calibVeil').hidden = true; S.targetStart = performance.now(); };
+  $('recalibBtn').onclick = () => { S.calib = null; store.set('calib', null); S.calibFrames.length = 0; if ($('startVeil').hidden) $('calibVeil').hidden = false; };
+  for (const b of document.querySelectorAll('.tabs button')) b.onclick = () => setMode(b.dataset.mode);
+  for (const b of document.querySelectorAll('.lang button')) b.onclick = () => { S.lang = b.dataset.lang; store.set('lang', S.lang); applyLang(); };
+  $('debugBtn').onclick = () => {
+    S.debug = !S.debug;
+    $('debug').hidden = !S.debug;
+    $('metaChip').hidden = !S.debug;
+    $('debugBtn').setAttribute('aria-expanded', String(S.debug));
+  };
+  $('howBtn').onclick = () => { S.showHow = !S.showHow; $('tgtDesc').hidden = !S.showHow; $('howBtn').textContent = S.showHow ? t('hideHow') : t('showHow'); };
+  $('skipBtn').onclick = skip;
+  $('nameForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const raw = $('nameInput').value.trim().toUpperCase();
+    if (!/^[A-Z]{1,12}$/.test(raw)) { $('nameErr').textContent = t('nameErr'); $('nameErr').hidden = false; return; }
+    $('nameErr').hidden = true;
+    startWord({ w: raw, uk: '', custom: true });
+  });
+  $('refLetter').onchange = renderRefPanel;
+  $('refRecord').onclick = startRecording;
+  $('refExport').onclick = () => {
+    const data = { format: 'asl-fingerspelling-references', version: 1, core: C.VERSION, created: new Date().toISOString(), templates: S.templates };
+    const blob = new Blob([JSON.stringify(data, null, 1)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'asl-references.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  $('refImport').onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+    try {
+      const data = JSON.parse(await file.text());
+      if (!data || data.format !== 'asl-fingerspelling-references' || typeof data.templates !== 'object') throw new Error('format');
+      let n = 0;
+      for (const id of Object.keys(data.templates)) {
+        if (!C.BY_ID[id] || !Array.isArray(data.templates[id])) continue;
+        for (const tpl of data.templates[id]) {
+          if (tpl && Array.isArray(tpl.v) && tpl.v.length && tpl.v.every(Number.isFinite)) {
+            (S.templates[id] = S.templates[id] || []).push({ v: tpl.v, at: String(tpl.at || '') });
+            n++;
+          }
+        }
+      }
+      store.set('templates', S.templates);
+      toast(t('refImported', { n }));
+    } catch {
+      toast(t('refBad'));
+    }
+    e.target.value = '';
+    renderRefPanel();
+  };
+  $('refClear').onclick = () => {
+    const now = performance.now();
+    if (S.clearArmed > now) {
+      S.templates = {};
+      store.set('templates', S.templates);
+      S.clearArmed = 0;
+      toast(t('refCleared'));
+    } else {
+      S.clearArmed = now + 3000;
+      setTimeout(renderRefPanel, 3050);
+    }
+    renderRefPanel();
+  };
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' && !(e.target instanceof HTMLInputElement) && !(e.target instanceof HTMLSelectElement)) skip();
+  });
+  applyLang();
+  setMode('learn');
+  renderStats();
+  loadModel();
+}
+init();
+window.ASLDebug = { processFrame, state: S, setMode, startWord, startPhrase, faceState: () => faceState };
+</script>
+</body>
+</html>
