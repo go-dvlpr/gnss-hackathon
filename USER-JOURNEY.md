@@ -42,11 +42,14 @@ Premium продаємо в одному місці — на **пейволі п
 ## Питання онбордингу
 
 Порядок: спершу мотивація (найлегше відповісти), канал — останнім.
+Ім'я з квізу стає ім'ям уроку 1: воно одразу видно на Lessons і в полі на `#/name`, де його можна
+змінити. В аналітику ім'я не потрапляє.
 
 | # | Питання | Варіанти | Навіщо нам | Звідки ідея |
 |---|---|---|---|---|
 | 1 | Why are you learning ASL? | Someone I love is Deaf or hard of hearing · I'm Deaf or hard of hearing myself · I'm curious about ASL and the Deaf community · For work or school · Something else | Сегментація: наш основний сегмент — перший варіант. Частка відповідей = перевірка гіпотези про сегмент | «Why are you learning?» — стандартне питання онбордингу Duolingo і Babbel |
-| 2 | Who are you learning for? (лише якщо 1 = близька людина) | Partner · Child · Parent · Brother or sister · Another relative · Friend | Персоналізація: урок 1 — ім'я цієї людини, тексти «your partner's name» | Наше: це головна відмінність продукту |
+| 2 | Who are you learning for? (лише якщо 1 = близька людина) | Partner · Child · Parent · Brother or sister · Friend · Someone else, і поле «Their first name» | Персоналізація: урок 1 — ім'я цієї людини, тексти «your partner's name» | Наше: це головна відмінність продукту |
+| 2б | What's your name? (усі інші відповіді на 1) | поле «Your first name» | Урок 1 — власне ім'я людини | Наше |
 | 3 | How much ASL do you know? | Nothing yet · A few signs · I can fingerspell · I can hold a simple conversation | Пізніше: пропустити алфавіт для тих, хто вже дактилює | «How much do you know?» — Duolingo, Babbel |
 | 4 | How much time a day? | 5 / 10 / 15 / 20 min (Casual, Regular, Serious, Intense) | Ціль на день для стріку й нагадувань | Щоденна ціль — Duolingo |
 | 5 | How did you hear about ILY? | TikTok · Instagram · YouTube · Google · Friend or family · Deaf school, club or community · Somewhere else | Атрибуція каналів: перевірити припущення «≥ 60% органіки з TikTok» з юніт-економіки | «How did you hear about us?» — Duolingo |
