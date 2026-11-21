@@ -1,14 +1,27 @@
+import { useState } from "react";
 import { Actions, BackHeader, Check, LessonProgress, Stage } from "../components";
-import { href } from "../router";
-import { useLesson } from "../lesson";
+import { go } from "../router";
+import { howTo, useLesson } from "../lesson";
 
 export default function CheckScreen() {
-  const { letters } = useLesson();
-  const letter = letters[0] ?? "L";
+  const { item = "L", isFinale, isLast, pos, tries, pass, next, skip } = useLesson();
+  const [earned, setEarned] = useState<number | null>(null);
+  const after = isLast ? "done" : "watch";
+
+  const start = () => {
+    // HACK: mock verdict until webcam + MediaPipe + classifier exist. The first letter of the
+    // lesson fails on try 1 so the demo shows the coach; every other try is right.
+    if (pos === 0 && tries === 1) {
+      go("coach");
+      return;
+    }
+    setEarned(pass());
+  };
+
   return (
     <>
-      <BackHeader back="quiz" />
-      <LessonProgress label="Step 3 of 3: sign it" />
+      <BackHeader back={isFinale ? "watch" : "quiz"} />
+      <LessonProgress step={3} label="sign it" />
       <main className="main check">
         <section aria-label="Your camera" className="camera">
           <div className="camera-stage">
@@ -20,7 +33,8 @@ export default function CheckScreen() {
             <div aria-hidden="true" className="corner corner--tr" />
             <div aria-hidden="true" className="corner corner--bl" />
             <div aria-hidden="true" className="corner corner--br" />
-            <div role="status" className="camera-status">
+            {/* HACK: mock camera status from the design; nothing is detected yet. */}
+            <div className="camera-status">
               <span>
                 <Check />
                 Hand in the frame
@@ -37,19 +51,63 @@ export default function CheckScreen() {
 
         <aside className="check-side">
           <div className="check-title">
-            <h1>Sign</h1>
-            <span className="big-letter">{letter}</span>
+            <h1 tabIndex={-1}>
+              {isFinale ? "Now sign them together" : "Sign"}
+              <span className={isFinale ? "big-letter big-letter--word" : "big-letter"}>{item}</span>
+            </h1>
           </div>
+          {/* HACK: placeholder until reference clips are recorded. */}
           <Stage label="Reference of the sign, looping" text="[reference, looping]" className="stage--4x3 stage--sm" />
-          <p className="body-17">[How to make the sign, same text as on the watch screen.]</p>
+          <p className="body-17">{isFinale ? `I love you. ${howTo(item, true)}` : howTo(item, true)}</p>
+          <div role="status" className="verdict-slot">
+            {earned !== null && (
+              <p className="verdict verdict--ok">
+                <Check color="currentColor" size={22} />
+                <span>Got it</span>
+                <span aria-hidden="true" className="stars">
+                  {"★".repeat(earned)}
+                </span>
+                <span className="sr-only">
+                  , {earned} star{earned > 1 ? "s" : ""}
+                </span>
+              </p>
+            )}
+          </div>
         </aside>
       </main>
       <Actions split>
-        <button className="btn-text">Skip this letter</button>
-        <a href={href("coach")} className="btn-primary">
-          <span aria-hidden="true" className="rec-dot" />
-          Start 3, 2, 1
-        </a>
+        {earned === null ? (
+          <>
+            <button
+              type="button"
+              className="btn-text"
+              onClick={() => {
+                skip();
+                go(after);
+              }}
+            >
+              Skip for now
+            </button>
+            <button type="button" className="btn-primary" onClick={start}>
+              <span aria-hidden="true" className="rec-dot" />
+              Start 3, 2, 1
+            </button>
+          </>
+        ) : (
+          <>
+            <span />
+            <button
+              type="button"
+              className="btn-primary"
+              onClick={() => {
+                next();
+                go(after);
+              }}
+            >
+              {isLast ? "Finish lesson" : "Next letter"}
+            </button>
+          </>
+        )}
       </Actions>
     </>
   );

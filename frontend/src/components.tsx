@@ -20,12 +20,17 @@ export function Check({ color = "#7FE0B0", size = 16 }: { color?: string; size?:
 }
 
 const Logo = () => <span className="logo">ILY</span>;
-const HelpLink = () => (
-  // HACK: "How checking works" page is not designed yet.
-  <a href="#" className="help-link" onClick={(e) => e.preventDefault()}>
-    How checking works
-  </a>
-);
+/** A control whose screen isn't built yet: shown, but not interactive. */
+export function ComingSoon({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return (
+    <span aria-disabled="true" title="Coming soon" className={`is-soon ${className}`}>
+      {children}
+    </span>
+  );
+}
+
+// HACK: "How checking works" page is not designed yet.
+const HelpLink = () => <ComingSoon className="help-link">How checking works</ComingSoon>;
 
 export function HomeHeader() {
   return (
@@ -35,7 +40,7 @@ export function HomeHeader() {
         <nav aria-label="Main" className="nav">
           <a href={href("lessons")} aria-current="page">Lessons</a>
           {/* HACK: Review screen is not designed yet. */}
-          <a href="#" onClick={(e) => e.preventDefault()}>Review</a>
+          <ComingSoon className="nav-soon">Review</ComingSoon>
         </nav>
         <HelpLink />
       </div>
@@ -63,23 +68,34 @@ export function BackHeader({ back, help = true }: { back: Route; help?: boolean 
   );
 }
 
-export function LessonProgress({ current = 0, label }: { current?: number; label: string }) {
-  const { name, letters } = useLesson();
+export function LessonProgress({ step, label }: { step: 1 | 2 | 3; label: string }) {
+  const { name, queue, pos } = useLesson();
   return (
-    <div aria-label="Lesson progress" className="progress">
+    <nav aria-label="Lesson progress" className="progress">
       <div className="wrap">
         <b>Lesson 1: {name}</b>
         <ol className="steps">
-          {letters.map((l, i) => (
-            <li key={i} aria-current={i === current ? "step" : undefined}>
-              {l}
-            </li>
-          ))}
+          {queue.map((l, i) => {
+            const done = i < pos;
+            return (
+              <li
+                key={i}
+                aria-current={i === pos ? "step" : undefined}
+                className={[done ? "is-done" : "", l.length > 1 ? "is-word" : ""].join(" ").trim() || undefined}
+              >
+                {done && <Check color="currentColor" size={12} />}
+                {l}
+                {done && <span className="sr-only"> done</span>}
+              </li>
+            );
+          })}
         </ol>
         <span className="spacer" />
-        <span className="progress-label">{label}</span>
+        <span className="progress-label">
+          Step {step} of 3: {label}
+        </span>
       </div>
-    </div>
+    </nav>
   );
 }
 
