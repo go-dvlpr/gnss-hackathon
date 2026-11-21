@@ -99,6 +99,42 @@ check is a GPT-6.2 Sol call (≈ $0.011), so the limit also caps the cost of fre
 daily free practice instead of a hard paywall. Free-to-Premium conversion is unknown; label it
 an assumption.
 
+### Problem slide (numbers checked 2026-11-21)
+
+Title: «Ти вчиш жести для близької людини — і не знаєш, чи показуєш їх правильно».
+- **Who:** hearing people in the US with a Deaf loved one. Over 90% of Deaf children are born to
+  hearing parents ([NIDCD](https://www.nidcd.nih.gov/health/statistics/quick-statistics-hearing),
+  citing Mitchell & Karchmer 2004). Over 6,000 US babies a year are found to have permanent
+  hearing loss ([CDC](https://www.cdc.gov/hearing-loss-children/data/index.html), 2022: 1.7 per
+  1,000 screened).
+- **Problem:** apps teach you to read signs but do not check how you sign; where a camera checks,
+  it only says "wrong".
+- **Evidence:**
+  - Demand: Lingvano grew from 500,000 learners in 2022 to 2.5 million in October 2024
+    ([press release](https://www.eschoolnews.com/newsline/2024/10/08/sign-language-learning-app-reaches-2-5-million-learners-milestone/));
+    85% are in the US and Canada ([Apple Developer](https://developer.apple.com/articles/lingvano/)).
+    Duolingo has no ASL course (October 2026).
+  - Trends (Google Trends, US, 5 years; team data from 2026-11-21, not rechecked): "learn ASL"
+    +30%, "duolingo asl" a breakout query.
+  - Reviews ([App Store, Lingvano](https://apps.apple.com/us/app/lingvano-learn-sign-language/id1547252782?see-all=reviews)):
+    2024-09-24, Echo.Works wants the app to "record you signing sometimes to make sure you're
+    signing correctly"; 2024-10-12, "Alarm loss alarming" misses a way to practise signs
+    themselves; 2023-12-17, powerful_princes expected the camera to recognise the sign. Copy the
+    exact wording for the slide from the link.
+- **Cost:** people pay about $100–120 a year (Lingvano $119.99, ASL Bloom about $99) and still do
+  not learn whether they sign correctly.
+- **Footnote:** «Доказів поки мало: скарг саме на "камера каже лише неправильно" — 2 з 717
+  нещодавніх відгуків трьох лідерів (21.11.2026)».
+- **Do not use:** "~95%" (say "over 90%"); Lingvano "5 million" (App Store marketing only; Lingvano
+  and [Expo](https://expo.dev/blog/scaling-sign-language-education-to-4-million-learners-with-expo)
+  say 4 million+); Lingvano revenue of $550,000 a month (a third-party estimate); "ASL is growing in
+  colleges" (third place in the [MLA census, fall 2021](https://www.mla.org/content/download/191324/file/Enrollments-in-Languages-Other-Than-English-in-US-Institutions-of-Higher-Education-Fall-2021.pdf),
+  but only +0.8% in five years: say "steadily third").
+- **For jury questions:** Lingvano already checks signs with AI and the camera (App Store review of
+  2026-01-05), so our difference is the coach that names the fix. The same reviewer dropped the
+  subscription over generative AI. Our answer: the LLM never decides right or wrong; it only
+  phrases the hint.
+
 ### Demo path (= Must)
 
 1. Open the page, allow the webcam, type the loved one's name.
