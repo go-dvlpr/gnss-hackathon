@@ -34,19 +34,23 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 - Per sign: watch (reference clip, 0.5× option) → try (3-2-1, 1.5 s) → check → fix → count.
 - Stars per sign: ★ first correct; ★★ three correct in a row without a hint; ★★★ correct in the
   mixed review round.
-- Lesson = 5 signs building "your first conversation with <name>", finale I LOVE YOU. A missed
-  sign comes back after two others; the lesson ends with a mixed review round.
+- Lesson = the letters of your loved one's name, then the finale I LOVE YOU. A missed letter
+  comes back after two others; the lesson ends with spelling the whole name. The eight words
+  are the next lesson.
 - Code decides correctness, stars and the review queue. The LLM writes only hints and a
   two-line lesson summary.
 
 ### Demo path (= Must)
 
 1. Open the page, allow the webcam, type the loved one's name.
-2. Lesson starts: HELLO reference clip plays.
-3. Sign it wrong on purpose → coach hint → retry → ★.
-4. Two more signs, one missed sign comes back.
+2. The app builds a lesson from the letters of the name; the first letter's reference shows.
+3. Sign a letter wrong on purpose → coach hint → retry → ★.
+4. Spell the rest of the name; a missed letter comes back.
 5. Finale: I LOVE YOU → lesson summary from the coach.
 6. Slide: eval results.
+
+Demo name: no J or Z (they move), and few of the fist letters A, E, M, N, S, T, which are
+easy to confuse. LILY works: L, I and Y look nothing alike.
 
 ### Not core
 
