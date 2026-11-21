@@ -456,6 +456,15 @@ figure {
   height: 136px;
 }
 
+/* Words: pill-shaped tile that grows with the label. */
+.tile.tile--word {
+  width: auto;
+  height: 72px;
+  padding: 0 20px;
+  font-size: 28px;
+  white-space: nowrap;
+}
+
 .tile:focus-visible {
   outline-color: var(--cobalt); /* ring sits on white, 3px away from the ink fill */
 }
@@ -696,40 +705,6 @@ figure {
   justify-content: center;
   color: var(--stage-text);
   font-size: 16px;
-}
-.corner {
-  position: absolute;
-  width: 46px;
-  height: 46px;
-  border: 0 solid var(--sun);
-}
-.corner--tl {
-  left: 50%;
-  top: 12%;
-  border-top-width: 4px;
-  border-left-width: 4px;
-  border-top-left-radius: 18px;
-}
-.corner--tr {
-  right: 14%;
-  top: 12%;
-  border-top-width: 4px;
-  border-right-width: 4px;
-  border-top-right-radius: 18px;
-}
-.corner--bl {
-  left: 50%;
-  bottom: 22%;
-  border-bottom-width: 4px;
-  border-left-width: 4px;
-  border-bottom-left-radius: 18px;
-}
-.corner--br {
-  right: 14%;
-  bottom: 22%;
-  border-bottom-width: 4px;
-  border-right-width: 4px;
-  border-bottom-right-radius: 18px;
 }
 .camera-status {
   position: absolute;
@@ -1052,26 +1027,6 @@ figure {
   .camera-stage {
     aspect-ratio: 3 / 4;
   }
-  .corner {
-    width: 36px;
-    height: 36px;
-  }
-  .corner--tl {
-    left: 18%;
-    top: 22%;
-  }
-  .corner--tr {
-    right: 18%;
-    top: 22%;
-  }
-  .corner--bl {
-    left: 18%;
-    bottom: 22%;
-  }
-  .corner--br {
-    right: 18%;
-    bottom: 22%;
-  }
   .camera-status {
     right: 16px;
     gap: 4px 12px;
@@ -1133,10 +1088,6 @@ img.stage--media {
 .camera-prompt {
   text-shadow: 0 1px 4px rgba(5, 10, 35, 0.8);
 }
-.camera-prompt--count {
-  font-size: 72px;
-  line-height: 80px;
-}
 .camera-meter {
   position: absolute;
   left: 16px;
@@ -1151,4 +1102,26 @@ img.stage--media {
   border-radius: inherit;
   background: var(--sun);
   transition: width 0.1s linear;
+}
+.lesson-grid {
+  height: 100%;
+  aspect-ratio: 1;
+  margin: 0 auto;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.lesson-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+/* Quiz answers that are words, not single letters */
+.answer.answer--word {
+  font-size: 28px;
+  line-height: 1.1;
+  padding: 0 12px;
+  text-align: center;
 }

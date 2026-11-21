@@ -8,6 +8,9 @@ export default function Quiz() {
   const [wrong, setWrong] = useState<string[]>([]);
   const options = quizOptions(item, letters, pos);
   const last = wrong[wrong.length - 1];
+  const tip = isWord(item)
+    ? "Look at the handshape and where the hand moves."
+    : "Look at the thumb and which fingers are up.";
 
   // The finale has no quiz.
   useEffect(() => {
@@ -40,7 +43,7 @@ export default function Quiz() {
                 <button
                   key={o}
                   type="button"
-                  className={isWrong ? "answer is-wrong" : "answer"}
+                  className={[isWrong ? "is-wrong" : "", isWord(o) ? "answer answer--word" : "answer"].join(" ").trim()}
                   aria-invalid={isWrong || undefined}
                   aria-disabled={isWrong || undefined}
                   onClick={isWrong ? undefined : () => pick(o)}
@@ -53,9 +56,9 @@ export default function Quiz() {
           </div>
           <p className="small muted quiz-feedback" aria-live="polite">
             {last ? (
-              <span className="fix-text">That's {labelOf(last)}. Look at the thumb and which fingers are up.</span>
+              <span className="fix-text">That's {labelOf(last)}. {tip}</span>
             ) : (
-              "Look at the thumb and which fingers are up."
+              tip
             )}
           </p>
         </section>

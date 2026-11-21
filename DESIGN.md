@@ -31,7 +31,7 @@ lines instead of cards, one blue for actions, yellow only for the camera's "eyes
 3. An error is advice: every "fix" says what to do and shows "you / reference".
 4. Teacher's words, no percentages. Not sure → say "Show it again", never "wrong".
 5. One primary (blue) action per screen, bottom right.
-6. Record only when the frame is ready: 3, 2, 1 countdown.
+6. No countdown: the check runs live and the try (8 s) starts when the camera first sees a hand.
 
 ## Screen layout
 

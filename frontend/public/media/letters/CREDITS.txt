@@ -1,0 +1,6 @@
+A–I, K–Y: wpclipart.com public-domain hand drawings from Wikimedia Commons, via the Spellhand SVG copies.
+https://commons.wikimedia.org/wiki/Category:ASL_letters
+https://github.com/luthfidi/spellhand/tree/main/public/letters/asl
+J and Z: outline paths from David Rakowski’s Gallaudet-TT, also used in the earlier ASL cards.
+https://commons.wikimedia.org/wiki/File:Asl_alphabet_gallaudet.svg
+All shapes were normalized to a shared canvas; the original geometry and directions were preserved.

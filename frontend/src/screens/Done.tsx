@@ -7,8 +7,8 @@ const list = (xs: string[]) =>
 
 // HACK: template summary until the coach LLM writes it. For LILY it reads like the design copy.
 function summary(letters: string[], stars: Record<string, number>): string {
-  const clean = letters.filter((l) => (stars[l] ?? 0) >= 2);
-  const worked = letters.filter((l) => (stars[l] ?? 0) === 1);
+  const clean = letters.filter((l) => (stars[l] ?? 0) >= 2).map(labelOf);
+  const worked = letters.filter((l) => (stars[l] ?? 0) === 1).map(labelOf);
   const parts: string[] = [];
   if (clean.length) parts.push(`${list(clean)} ${clean.length > 1 ? "were" : "was"} clean from the first try.`);
   if (worked.length)
@@ -21,7 +21,7 @@ function summary(letters: string[], stars: Record<string, number>): string {
 }
 
 export default function Done() {
-  const { lesson, name, letters: nameLetters, stars, reset } = useLesson();
+  const { lesson, name, letters: nameLetters, stars, reset, startWords } = useLesson();
   const letters = lesson === 2 ? WORDS : nameLetters;
   return (
     <>
@@ -30,18 +30,12 @@ export default function Done() {
         <h1 tabIndex={-1} className="display h-72 balance">
           {lesson === 2 ? `You can sign ${WORDS.length} words` : `You can spell ${name} in sign`}
         </h1>
-        <ol aria-label="Stars per letter" className="star-list">
-          {letters.map((l) => {
-            const n = stars[l] ?? 0;
-            return (
-              <li key={l}>
-                <span className="tile tile--lg">{labelOf(l)}</span>
-                <span role="img" aria-label={n ? `${l}: ${n} star${n > 1 ? "s" : ""}` : `${l}: not yet`} className="stars">
-                  {n ? "★".repeat(n) : "Not yet"}
-                </span>
-              </li>
-            );
-          })}
+        <ol aria-label={lesson === 2 ? "Words" : "Letters"} className="star-list">
+          {letters.map((l) => (
+            <li key={l}>
+              <span className={lesson === 2 ? "tile tile--word" : "tile tile--lg"}>{labelOf(l)}</span>
+            </li>
+          ))}
         </ol>
         <p className="lead done-summary">
           <b>Coach:</b> {summary(letters, stars)}
@@ -58,9 +52,23 @@ export default function Done() {
         >
           {lesson === 2 ? "Practice the words again" : "Practice the name again"}
         </button>
-        <a href={href("paywall")} className="btn-primary">
-          Start lesson 2
-        </a>
+        {/* Demo path: lesson 1 → lesson 2 → paywall. */}
+        {lesson === 2 ? (
+          <a href={href("paywall")} className="btn-primary">
+            Next lesson
+          </a>
+        ) : (
+          <button
+            type="button"
+            className="btn-primary"
+            onClick={() => {
+              startWords();
+              go("watch");
+            }}
+          >
+            Start lesson 2
+          </button>
+        )}
       </Actions>
     </>
   );

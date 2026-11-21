@@ -1,6 +1,13 @@
-import { HomeHeader, Stage } from "../components";
+import { HomeHeader, Media } from "../components";
 import { go, href } from "../router";
 import { useLesson } from "../lesson";
+
+// HACK: teaser videos reuse lesson-2 clips until we record these signs.
+const LOCKED: [title: string, words: string, video: string][] = [
+  ["Family", "Mom, dad, baby and love.", "ILY"],
+  ["At the table", "Eat, drink, water, milk and more.", "THANKYOU"],
+  ["Every day", "Help, play and where.", "YES"],
+];
 
 export default function Lessons() {
   const { letters, stars, startWords } = useLesson();
@@ -12,7 +19,14 @@ export default function Lessons() {
         <h1 tabIndex={-1} className="display h-56">Your lessons</h1>
         <ol className="lesson-list">
           <li className="lesson-row">
-            <Stage label="Lesson 1 image" text="[lesson image]" className="lesson-img" />
+            <div role="img" aria-label="Lesson 1: letters of the alphabet" className="stage stage--media lesson-img">
+              <div className="lesson-grid">
+                {/* Four letters: the name's own, padded with A, S, L, Y. */}
+                {[...new Set([...letters, "A", "S", "L", "Y"])].slice(0, 4).map((l) => (
+                  <img key={l} src={`/media/letters/${l}.svg`} alt="" />
+                ))}
+              </div>
+            </div>
             <div className="lesson-body">
               <span className="lesson-kicker">Lesson 1</span>
               <h2 className="lesson-title">Their name, letter by letter</h2>
@@ -36,7 +50,7 @@ export default function Lessons() {
             </a>
           </li>
           <li className="lesson-row">
-            <Stage label="Lesson 2 image" text="[lesson image]" className="lesson-img" />
+            <Media item="HELLO" label="Lesson 2: the sign for hello" className="lesson-img" />
             <div className="lesson-body">
               <span className="lesson-kicker">Lesson 2</span>
               <h2 className="lesson-title">Your first words</h2>
@@ -54,6 +68,17 @@ export default function Lessons() {
               Start
             </button>
           </li>
+          {/* HACK: locked teasers for the levels after the demo; asl-core already knows these signs. */}
+          {LOCKED.map(([title, words, video], i) => (
+            <li key={title} className="lesson-row">
+              <Media item={video} label={`Lesson ${i + 3}: ${title}`} className="lesson-img" />
+              <div className="lesson-body">
+                <span className="lesson-kicker">Lesson {i + 3}</span>
+                <h2 className="lesson-title lesson-title--locked">{title}</h2>
+                <p className="body-17 muted">{words} Opens after lesson {i + 2}.</p>
+              </div>
+            </li>
+          ))}
         </ol>
       </main>
     </>

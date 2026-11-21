@@ -174,7 +174,7 @@ export function snapshot(video: HTMLVideoElement, overlay: HTMLCanvasElement): s
 }
 
 /**
- * Start the camera and judge `item` on every frame. `reset()` starts a new try.
+ * Start the camera and judge `item` on every frame.
  * `ready` rejects when the camera or the models fail.
  */
 export function watch(video: HTMLVideoElement, canvas: HTMLCanvasElement, item: string, onReading: (r: Reading) => void) {
@@ -313,9 +313,6 @@ export function watch(video: HTMLVideoElement, canvas: HTMLCanvasElement, item: 
 
   return {
     ready,
-    reset() {
-      Object.assign(st, { start: performance.now(), hist: [], hold: null, hint: null, hintKey: "", hintAt: 0 });
-    },
     stop() {
       stopped = true;
       cancelAnimationFrame(raf);

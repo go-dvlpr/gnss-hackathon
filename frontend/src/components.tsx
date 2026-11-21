@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { href, type Route } from "./router";
-import { useLesson } from "./lesson";
+import { labelOf, useLesson } from "./lesson";
 
 export function ArrowLeft() {
   return (
@@ -101,12 +101,12 @@ export function BackHeader({ back, help = true }: { back?: Route; help?: boolean
 }
 
 export function LessonProgress({ step, label, back }: { step: 1 | 2 | 3; label: string; back: Route }) {
-  const { name, queue, pos } = useLesson();
+  const { lesson, name, queue, pos } = useLesson();
   return (
     <nav aria-label="Lesson progress" className="progress">
       <div className="wrap">
         <BackLink to={back} />
-        <b>Lesson 1: {name}</b>
+        <b>{lesson === 2 ? "Lesson 2: words" : `Lesson 1: ${name}`}</b>
         <ol className="steps">
           {queue.map((l, i) => {
             const done = i < pos;
@@ -117,7 +117,7 @@ export function LessonProgress({ step, label, back }: { step: 1 | 2 | 3; label: 
                 className={[done ? "is-done" : "", l.length > 1 ? "is-word" : ""].join(" ").trim() || undefined}
               >
                 {done && <Check color="currentColor" size={12} />}
-                {l}
+                {labelOf(l)}
                 {done && <span className="sr-only"> done</span>}
               </li>
             );
@@ -151,7 +151,7 @@ export function Stage({ label, text, className = "" }: { label: string; text: st
 
 /**
  * Reference for a letter (image) or a word (video), from public/media/. Shows the placeholder
- * until the file exists: letters/{L}.png, signs/{ID}.mp4 (ID as in asl-core, e.g. THANKYOU, ILY).
+ * until the file exists: letters/{L}.svg, signs/{ID}.mp4 (ID as in asl-core, e.g. THANKYOU, ILY).
  */
 export function Media({
   item,
@@ -183,7 +183,7 @@ export function Media({
   return (
     <div className={`stage stage--media ${className}`}>
       {isLetter ? (
-        <img src={`/media/letters/${item}.png`} alt={label} style={style} onError={() => setBroken(true)} />
+        <img src={`/media/letters/${item}.svg`} alt={label} style={style} onError={() => setBroken(true)} />
       ) : (
         <video
           ref={video}
