@@ -6,6 +6,14 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 
 - **Name:** ILY — the ASL handshape for "I love you", which is also the demo finale.
   Tagline: "Learn to sign to the one you love".
+- **Pitch story (presenter, keep the wording):**
+  1. Problem slide: «Наш сегмент — чуючі люди з глухою близькою людиною: партнером, дитиною,
+     батьками. Вони вчать мову, щоб бути ближче, а не заради кар'єри. «I love you» — перше, що
+     такій людині хочеться сказати жестами.» Number for it: over 90% of Deaf children in the US
+     are born to hearing parents (Mitchell & Karchmer 2004, Sign Language Studies 4(2)).
+  2. Demo finale: the name LILY is the letters L, I, Y; the ILY handshape combines exactly
+     I + L + Y. «Ви щойно вивчили I, L і Y. Покажіть їх разом — це I love you. Так називається
+     наш продукт.»
 - **Idea:** A practice game for hearing people in the US who learn ASL for a Deaf loved one
   (partner, friend, relative). The webcam checks each sign you make, and an AI coach says what
   to fix. Leaders (Lingvano, ASL Bloom) already check signs with the camera but only say
