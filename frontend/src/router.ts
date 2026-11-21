@@ -14,6 +14,7 @@ export const ROUTES = [
   "coach",
   "done",
   "paywall",
+  "how",
 ] as const;
 
 export type Route = (typeof ROUTES)[number];

@@ -53,7 +53,8 @@ name, current one outlined in cobalt, step label on the right) → content → a
 ## Decisions taken in code
 
 - Hash routes, one per screen: `#/lessons`, `#/name`, `#/watch`, `#/quiz`, `#/check`,
-  `#/coach`, `#/done`, `#/paywall`.
+  `#/coach`, `#/done`, `#/paywall`, `#/how` ("How checking works": numbered steps divided by
+  lines, then privacy and limits; Back returns to the previous screen).
 - Funnel screens (not on the design board, built from the same tokens): `#/welcome` (the
   default route), `#/signup`, `#/login`, `#/onboarding` (one question per screen, radio rows,
   Continue in the action bar; the last answer opens Lessons). No plan summary, sign-up
@@ -70,3 +71,10 @@ name, current one outlined in cobalt, step label on the right) → content → a
 - Letters and ILY are static photos: the watch screen has only "Mirror" (no pause / speed).
 - The action bar is sticky at the bottom, so the primary button is always on screen.
 - Mobile: first pass only (16px gutter, smaller headings, stacked columns); the design is desktop.
+- Welcome (landing): hero with the looping `ILY.mp4` and a Sun hand frame + "✓ I love you" status
+  drawn over it (`HACK:` decoration, not a live check); then "Three letters, one sentence"
+  (I + L + Y = the ILY clip); then the three steps next to an example coach hint. Still one
+  primary button, in the sticky action bar.
+- Lesson order: each sign is watch → sign it ("Step 1/2 of 2"); the quiz is one round after the
+  last sign ("Final quiz: n of m"), not after each sign. Lesson 1 quizzes the letters only, not
+  the I LOVE YOU finale.
