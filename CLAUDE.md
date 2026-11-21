@@ -60,12 +60,11 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 - **What we teach, in order** (references recorded from a video dictionary):
   1. The ASL alphabet, all letters. J and Z have movement; the other letters are static
      handshapes.
-  2. Basic words and phrases: hello, goodbye, yes, no, please, thank you, sorry, help, stop,
-     more, good, bad, water, hungry, bathroom, friend, I love you, what, where, who, when, why,
-     how, nice to meet you, name, my, your, understand, don't understand, know, don't know, want,
-     need, like, love, eat, drink, sleep, work, home, family, mom, dad, child, happy, sad, tired,
-     sick, today, tomorrow. Many use two hands or a place on the face, so they need
-     `numHands: 2` and face landmarks; add them in small batches, each checked on held-out people.
+  2. Eight words, all one-handed, so no face landmarks are needed: HELLO, GOODBYE, YES, NO,
+     PLEASE, THANK YOU, SORRY, I LOVE YOU. Goal: after the demo the jury can sign a few of them.
+     Hard pairs, keep them in the eval set: HELLO vs THANK YOU (flat hand moving out, from the
+     forehead vs the chin), PLEASE vs SORRY (circle on the chest, flat hand vs fist), YES vs SORRY
+     (fist, nod vs circle). The rest of the team's list is the pitch slide "next".
 - **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout, hosted
   on Vercel. MediaPipe Tasks Vision runs in the browser. Frameworks: TODO. LLM provider: OpenAI
   (key in `.env` and Vercel env vars, name in `.env.example`; called from the backend only).
