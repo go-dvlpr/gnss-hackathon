@@ -959,6 +959,15 @@ button.back {
   flex-direction: column;
   gap: 10px;
 }
+.choice-list--grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 720px) {
+  .choice-list--grid {
+    grid-template-columns: 1fr;
+  }
+}
 .choice {
   min-height: 52px;
   padding: 10px 18px;

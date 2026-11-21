@@ -33,7 +33,11 @@ export default function NameScreen() {
             }}
           >
             <label htmlFor="name">
-              {profile.who ? `${capitalize(lovedOne(profile))}'s first name` : "Who are you learning for?"}
+              {profile.who
+                ? `${capitalize(lovedOne(profile))}'s first name`
+                : profile.reason
+                  ? "Your first name"
+                  : "Who are you learning for?"}
             </label>
             <input
               id="name"

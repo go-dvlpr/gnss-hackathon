@@ -1,12 +1,14 @@
 import { createContext, useContext } from "react";
 
 export type Reason = "loved" | "self" | "curious" | "work" | "other";
-export type Who = "partner" | "child" | "parent" | "sibling" | "relative" | "friend";
+export type Who = "partner" | "child" | "parent" | "sibling" | "friend" | "other";
 
 export type Profile = {
   email: string;
   reason?: Reason;
   who?: Who;
+  /** First name for lesson 1. */
+  name?: string;
   level?: string;
   goal?: string;
   source?: string;
@@ -19,10 +21,12 @@ export type Funnel = {
 
 export type Option = { value: string; label: string; hint?: string };
 export type Question = {
-  key: "reason" | "who" | "level" | "goal" | "source";
+  key: "reason" | "who" | "name" | "level" | "goal" | "source";
   title: string;
   lead?: string;
   options: Option[];
+  /** Also ask for the first name used in lesson 1. */
+  askName?: { label: string };
   /** Asked only when this returns true. */
   when?: (p: Profile) => boolean;
 };
@@ -45,14 +49,23 @@ export const QUESTIONS: Question[] = [
     title: "Who are you learning for?",
     lead: "Lesson 1 is their name, letter by letter.",
     when: (p) => p.reason === "loved",
+    askName: { label: "Their first name" },
     options: [
       { value: "partner", label: "My partner" },
       { value: "child", label: "My child" },
       { value: "parent", label: "My parent" },
       { value: "sibling", label: "My brother or sister" },
-      { value: "relative", label: "Another relative" },
       { value: "friend", label: "A friend" },
+      { value: "other", label: "Someone else" },
     ],
+  },
+  {
+    key: "name",
+    title: "What's your name?",
+    lead: "Lesson 1 is your name, letter by letter.",
+    when: (p) => !!p.reason && p.reason !== "loved",
+    options: [],
+    askName: { label: "Your first name" },
   },
   {
     key: "level",
@@ -95,8 +108,8 @@ const WHO_LABEL: Record<Who, string> = {
   child: "child",
   parent: "parent",
   sibling: "brother or sister",
-  relative: "relative",
   friend: "friend",
+  other: "loved one",
 };
 
 /** "your partner", or a neutral phrase when we don't know who. */

@@ -2,20 +2,28 @@ import { useState } from "react";
 import { Actions, ArrowLeft, BackLink, Logo } from "../components";
 import { go } from "../router";
 import { QUESTIONS, track, useFunnel, type Profile } from "../funnel";
+import { lettersOf, useLesson } from "../lesson";
 
 export default function Onboarding() {
   const { profile, update } = useFunnel();
+  const { setName } = useLesson();
   const questions = QUESTIONS.filter((q) => !q.when || q.when(profile));
   const [step, setStep] = useState(0);
   const total = questions.length;
   const q = questions[Math.min(step, total - 1)];
   const answer = profile[q.key];
   const last = step === total - 1;
+  const name = profile.name ?? "";
+  const nameOk = lettersOf(name).length > 0;
+  const ready = (q.options.length === 0 || !!answer) && (!q.askName || nameOk);
 
   const next = () => {
-    track("onboarding_answered", { question: q.key, answer });
+    // The typed name is personal data: it never goes to analytics.
+    track("onboarding_answered", { question: q.key, answer: q.key === "name" ? undefined : answer });
     if (last) {
-      track("onboarding_completed", { ...profile, email: undefined });
+      // Set at the end: setName resets the lesson, which remounts this screen.
+      if (nameOk) setName(name.trim());
+      track("onboarding_completed", { ...profile, email: undefined, name: undefined });
       go("lessons");
     } else {
       setStep(step + 1);
@@ -63,29 +71,52 @@ export default function Onboarding() {
             <h1 tabIndex={-1} className="display h-48 balance">{q.title}</h1>
             {q.lead && <p className="lead muted">{q.lead}</p>}
           </legend>
-          <ul className="choice-list">
-            {q.options.map((o) => (
-              <li key={o.value}>
-                <label className="choice">
-                  <input
-                    type="radio"
-                    name={q.key}
-                    value={o.value}
-                    checked={answer === o.value}
-                    onChange={() => choose(o.value)}
-                  />
-                  <span className="choice-text">
-                    {o.label}
-                    {o.hint && <small>{o.hint}</small>}
-                  </span>
-                </label>
-              </li>
-            ))}
-          </ul>
+          {q.options.length > 0 && (
+            <ul className={q.key === "who" ? "choice-list choice-list--grid" : "choice-list"}>
+              {q.options.map((o) => (
+                <li key={o.value}>
+                  <label className="choice">
+                    <input
+                      type="radio"
+                      name={q.key}
+                      value={o.value}
+                      checked={answer === o.value}
+                      onChange={() => choose(o.value)}
+                    />
+                    <span className="choice-text">
+                      {o.label}
+                      {o.hint && <small>{o.hint}</small>}
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+          )}
+          {q.askName && (
+            <div className="field field--compact">
+              <label htmlFor="first-name">{q.askName.label}</label>
+              <input
+                id="first-name"
+                value={name}
+                onChange={(e) => update({ name: e.target.value })}
+                autoComplete="off"
+                aria-invalid={name && !nameOk ? true : undefined}
+                aria-describedby={name && !nameOk ? "first-name-error first-name-help" : "first-name-help"}
+              />
+              {name && !nameOk && (
+                <span id="first-name-error" className="field-error">
+                  Use letters A to Z
+                </span>
+              )}
+              <span id="first-name-help" className="tiny muted">
+                J and Z move, so we'll teach those later.
+              </span>
+            </div>
+          )}
         </fieldset>
       </main>
       <Actions>
-        <button type="button" className="btn-primary btn-primary--wide" disabled={!answer} onClick={next}>
+        <button type="button" className="btn-primary btn-primary--wide" disabled={!ready} onClick={next}>
           {last ? "Start learning" : "Continue"}
         </button>
       </Actions>
