@@ -54,8 +54,11 @@ export function ComingSoon({ children, className = "" }: { children: ReactNode; 
   );
 }
 
-// HACK: "How checking works" page is not designed yet.
-const HelpLink = () => <ComingSoon className="help-link">How checking works</ComingSoon>;
+const HelpLink = () => (
+  <a href={href("how")} className="help-link">
+    How checking works
+  </a>
+);
 
 export function HomeHeader() {
   return (
@@ -100,7 +103,8 @@ export function BackHeader({ back, help = true }: { back?: Route; help?: boolean
   );
 }
 
-export function LessonProgress({ step, label, back }: { step: 1 | 2 | 3; label: string; back: Route }) {
+/** Per sign: step 1 watch, step 2 sign it. Without a step (the final quiz) only the label shows. */
+export function LessonProgress({ step, label, back }: { step?: 1 | 2; label: string; back: Route }) {
   const { lesson, name, queue, pos } = useLesson();
   return (
     <nav aria-label="Lesson progress" className="progress">
@@ -125,7 +129,7 @@ export function LessonProgress({ step, label, back }: { step: 1 | 2 | 3; label: 
         </ol>
         <span className="spacer" />
         <span className="progress-label">
-          Step {step} of 3: {label}
+          {step ? `Step ${step} of 2: ${label}` : label}
         </span>
       </div>
     </nav>

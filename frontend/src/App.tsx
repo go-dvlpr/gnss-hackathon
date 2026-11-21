@@ -9,6 +9,7 @@ import CheckScreen from "./screens/Check";
 import Coach from "./screens/Coach";
 import Done from "./screens/Done";
 import Paywall from "./screens/Paywall";
+import How from "./screens/How";
 import Welcome from "./screens/Welcome";
 import { Login, Signup } from "./screens/Auth";
 import Onboarding from "./screens/Onboarding";
@@ -27,6 +28,7 @@ const SCREENS: Record<Route, ComponentType> = {
   coach: Coach,
   done: Done,
   paywall: Paywall,
+  how: How,
 };
 
 const TITLES: Record<Route, string> = {
@@ -42,6 +44,7 @@ const TITLES: Record<Route, string> = {
   coach: "Coach",
   done: "Lesson done",
   paywall: "Premium",
+  how: "How checking works",
 };
 
 type State = {
