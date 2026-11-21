@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Распознавание жестов ASL</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Распознавание жестов ASL</h1>
+    <div class="camera">
+      <video id="camera" autoplay muted playsinline aria-label="Изображение с камеры"></video>
+      <canvas id="hands" aria-hidden="true"></canvas>
+    </div>
+    <p>Начните запись, покажите жесты и нажмите «Остановить и распознать». В OpenAI отправляются координаты кистей и время кадров.</p>
+    <div class="controls">
+      <button id="start" type="button" disabled>Начать запись</button>
+      <button id="recognize" type="button" disabled>Остановить и распознать</button>
+      <button id="stop" type="button" disabled>Выключить камеру</button>
+    </div>
+    <p id="status" role="status">Загружаем страницу…</p>
+    <section class="result" aria-labelledby="result-label">
+      <h2 id="result-label">Последняя фраза</h2>
+      <output id="result" aria-atomic="true">
+        <span id="gloss">—</span>
+        <span id="translation" hidden></span>
+      </output>
+    </section>
+  </main>
+</body>
+</html>

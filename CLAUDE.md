@@ -122,6 +122,13 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
 - **Run locally:** TODO
 - **Deploy / demo URL:** Vercel; URL TODO
 
+### ASL recognition prototype
+
+The standalone [ASL prototype](asl-demo/README.md) evaluates transcription of MediaPipe hand
+landmarks with GPT-6.2 Sol. Run it with `cd asl-demo && go run .` after loading the local
+`.env` described in the README. The app serves `http://127.0.0.1:8080` and accepts a
+manually recorded landmark sequence at `POST /api/recognize`.
+
 The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
 
 ## Skills (`.claude/skills/`)
