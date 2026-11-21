@@ -29,7 +29,7 @@ export default function Quiz() {
   return (
     <>
       <BackHeader />
-      <LessonProgress step={2} label="quiz" back="watch" />
+      <LessonProgress label="Quiz" back="watch" />
       <main className="main quiz">
         <Media item={item} label="The sign to recognise" className="stage--4x3 quiz-media" />
         <section className="quiz-side">

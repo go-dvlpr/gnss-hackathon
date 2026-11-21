@@ -61,7 +61,7 @@ export default function CheckScreen() {
   return (
     <>
       <BackHeader />
-      <LessonProgress step={3} label="sign it" back={isFinale ? "watch" : "quiz"} />
+      <LessonProgress step={2} label="sign it" back={isFinale ? "watch" : "quiz"} />
       <main className="main check">
         <section aria-label="Your camera" className="camera">
           <div className="camera-stage">
