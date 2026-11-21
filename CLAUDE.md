@@ -65,7 +65,9 @@ $119.99/year or $17.99–19.99/month. The monthly plan is a proposal; the team c
 
 Unit economics for the slide. The model with formulas, the three scenarios and a 24-month P&L
 is [research/asl-unit-economics.xlsx](research/asl-unit-economics.xlsx) (sheet «Слайд»);
-change numbers there first, then here. ⚠️ = our assumption.
+change numbers there first, then here. ⚠️ = our assumption. The workbook opens on the target
+scenario, so the sheets «Юніт», «Воронка» and «P&L» show target numbers; set «Припущення»!B4 to 1
+or 2 to see the pessimistic or base ones. The sheets «Слайд» and «Сценарії» show all three.
 - Net after Stripe (2.9% + $0.30) and 2% refunds: $90.04/year, $14.91/month.
 - Model cost: $0. Recognition is MediaPipe Hand Landmarker in the browser (free, on the device;
   the browser loads it from a public CDN), and hints come from rules. No OpenAI or Anthropic
@@ -73,18 +75,21 @@ change numbers there first, then here. ⚠️ = our assumption.
   payment fees and hosting (in overhead). The workbook keeps reference rows in case a paid LLM
   comes back.
 - LTV (13 months; 24% first annual renewal in Education, RevenueCat; 13.7% monthly churn ⚠️;
-  60% annual plans ⚠️) ≈ $104; gross margin ≈ 100% of net revenue.
+  60% annual plans ⚠️) ≈ $104 ($106 in the target scenario with 70% annual plans); gross margin
+  ≈ 100% of net revenue.
 - CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion.
 - Scenarios:
   - pessimistic, 3% conversion: the paywall after the name lesson works far worse than planned,
     but the daily Free limit still beats plain freemium (median 2.1%, RevenueCat 2026); 15% of
     payers come without ads (Deaf community and ASL class word of mouth, search ⚠️): CAC ≈ $99,
     LTV/CAC ≈ 1.05;
-  - base, 5.2% with the paywall after the name lesson, 15% organic ⚠️: CAC ≈ $57, LTV/CAC ≈ 1.8;
+  - base, 5.2% with the paywall after the name lesson, 15% organic ⚠️: CAC ≈ $57, LTV/CAC ≈ 1.82;
   - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, 20% organic signups
-    (TikTok): LTV ≈ $106, CAC ≈ $35, LTV/CAC ≈ 3.0.
-- Break-even ≈ 1,400–1,550 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month
-  ads: first profitable month 10, cumulative profit from month 16, cash need ≈ $22,000.
+    (TikTok): LTV ≈ $106, CAC ≈ $35, LTV/CAC ≈ 3.03.
+- Break-even on $15,000/month overhead ⚠️: ≈ 1,430 payers (pessimistic, base), ≈ 1,540 (target).
+  Target P&L with $10,000/month ads: first profitable month 10, cumulative profit from month 16,
+  cash need ≈ $22,000. Pessimistic and base stay at a loss for 24 months (−$375,000 and
+  −$210,000).
 
 Unit economics in plain words (for the presenter, Ukrainian):
 - Юніт-економіка відповідає на одне питання: чи заробляємо ми на одному платному користувачі
@@ -96,11 +101,11 @@ Unit economics in plain words (for the presenter, Ukrainian):
 - **Скільки людина приносить за весь час (LTV):** за 13 місяців ~$104. Річну підписку через рік
   поновлюють ~24%, з місячної частина людей іде щомісяця.
 - **Скільки коштує її залучити (CAC):** клік у Meta ~$0.70. Зі 100 тих, хто клікнув, ~20
-  починають урок, тобто ~$3.50 за людину. Платять 3–8 зі 100, частина приходить без реклами.
-  Разом один платник коштує $35–99.
+  починають урок, тобто ~$3.50 за людину. З тих, хто почав урок, платять 3–8 зі 100, і частина
+  платників приходить без реклами. Разом один платник коштує $35–99.
 - **LTV : CAC:** песимістичний сценарій 1.05 (вклали $1 у рекламу, повернули ~$1.05, тобто ледь
-  у нуль), базовий 1.8, цільовий 3.0 (здорова планка з лекцій).
-- **Коли виходимо в плюс:** постійні витрати ~$15 000 на місяць, тож треба ~1 500 платників. У
+  у нуль), базовий 1.82, цільовий 3.03 (здорова планка з лекцій).
+- **Коли виходимо в плюс:** постійні витрати ~$15 000 на місяць, тож треба ~1 430–1 540 платників. У
   цільовому сценарії перший прибутковий місяць — 10-й, усе вкладене повертається на 16-му,
   для старту треба ~$22 000.
 - **Де не окупаємося (кажемо чесно):** у песимістичному і базовому сценаріях бізнес за 24 місяці
