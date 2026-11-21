@@ -1,37 +1,69 @@
 import { useEffect, useState } from "react";
-import { BackHeader, LessonProgress, Media } from "../components";
+import { BackHeader, Check, LessonProgress, Media } from "../components";
 import { go } from "../router";
-import { isWord, labelOf, quizOptions, useLesson } from "../lesson";
+import { FINALE, isWord, labelOf, quizOptions, useLesson } from "../lesson";
 
+/** Pause on a right answer before the next question, so the ✓ is seen. */
+const RIGHT_MS = 700;
+
+/**
+ * Quiz round at the end of the lesson, after every sign was watched and signed: one question per
+ * sign. A missed question comes back once at the end of the round.
+ * HACK: round progress lives in this screen only; a reload restarts the round.
+ */
 export default function Quiz() {
-  const { item = "L", isFinale, letters, pos, miss } = useLesson();
+  const { lesson, queue, letters } = useLesson();
+  const [round, setRound] = useState<string[]>(() =>
+    queue.filter((x, i) => queue.indexOf(x) === i && !(lesson === 1 && x === FINALE)),
+  );
+  const [qi, setQi] = useState(0);
   const [wrong, setWrong] = useState<string[]>([]);
-  const options = quizOptions(item, letters, pos);
+  const [right, setRight] = useState(false);
+  const [requeued, setRequeued] = useState<string[]>([]);
+  const item = round[qi];
+
+  useEffect(() => {
+    if (item === undefined) go("done");
+  }, [item]);
+
+  useEffect(() => {
+    if (!right) return;
+    const t = setTimeout(() => {
+      setRight(false);
+      setWrong([]);
+      setQi((i) => i + 1);
+    }, RIGHT_MS);
+    return () => clearTimeout(t);
+  }, [right]);
+
+  if (item === undefined) return null;
+
+  const options = quizOptions(item, letters, qi);
   const last = wrong[wrong.length - 1];
   const tip = isWord(item)
     ? "Look at the handshape and where the hand moves."
     : "Look at the thumb and which fingers are up.";
 
-  // The finale has no quiz.
-  useEffect(() => {
-    if (isFinale) go("check");
-  }, [isFinale]);
-
   const pick = (o: string) => {
+    if (right) return;
     if (o === item) {
-      go("check");
+      setRight(true);
       return;
     }
     setWrong((w) => (w.includes(o) ? w : [...w, o]));
-    miss(); // Comes back after two others.
+    // A miss comes back once, at the end of the round.
+    if (!requeued.includes(item)) {
+      setRequeued((r) => [...r, item]);
+      setRound((r) => [...r, item]);
+    }
   };
 
   return (
     <>
       <BackHeader />
-      <LessonProgress step={2} label="quiz" back="watch" />
+      <LessonProgress label={`Final quiz: ${Math.min(qi + 1, round.length)} of ${round.length}`} back="check" />
       <main className="main quiz">
-        <Media item={item} label="The sign to recognise" className="stage--4x3 quiz-media" />
+        <Media key={qi} item={item} label="The sign to recognise" className="stage--4x3 quiz-media" />
         <section className="quiz-side">
           <h1 tabIndex={-1} className="display h-48">
             {isWord(item) ? "Which word is this?" : "Which letter is this?"}
@@ -39,13 +71,16 @@ export default function Quiz() {
           <div role="group" aria-label="Answers" className="answers">
             {options.map((o) => {
               const isWrong = wrong.includes(o);
+              const isRight = right && o === item;
               return (
                 <button
                   key={o}
                   type="button"
-                  className={[isWrong ? "is-wrong" : "", isWord(o) ? "answer answer--word" : "answer"].join(" ").trim()}
+                  className={[isWrong ? "is-wrong" : "", isRight ? "is-right" : "", isWord(o) ? "answer answer--word" : "answer"]
+                    .join(" ")
+                    .trim()}
                   aria-invalid={isWrong || undefined}
-                  aria-disabled={isWrong || undefined}
+                  aria-disabled={isWrong || right || undefined}
                   onClick={isWrong ? undefined : () => pick(o)}
                 >
                   {labelOf(o)}
@@ -55,8 +90,14 @@ export default function Quiz() {
             })}
           </div>
           <p className="small muted quiz-feedback" aria-live="polite">
-            {last ? (
-              <span className="fix-text">That's {labelOf(last)}. {tip}</span>
+            {right ? (
+              <span className="ok-text">
+                <Check color="currentColor" /> Right, that's {labelOf(item)}.
+              </span>
+            ) : last ? (
+              <span className="fix-text">
+                That's {labelOf(last)}. {tip}
+              </span>
             ) : (
               tip
             )}
