@@ -4,14 +4,67 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 
 ## Project
 
-- **Idea:** TODO — one sentence: who has what problem, what we build.
-- **Hypothesis and success metric:** TODO — what the demo should prove and how we would measure it.
-- **Demo path:** TODO — the exact steps shown on stage. Everything else is optional.
-- **Stack:** TODO
-- **Run locally:** TODO (one command)
-- **Deploy / demo URL:** TODO
+- **Idea:** A practice game for hearing people in the US who learn ASL for a Deaf loved one
+  (partner, friend, relative). The webcam checks each sign you make, and an AI coach says what
+  to fix. Leaders (Lingvano, ASL Bloom) already check signs with the camera but only say
+  "wrong"; App Store reviews complain that correct signs are rejected.
+- **Hypothesis:** We believe that feedback naming what to fix, for hearing US adults learning
+  ASL for a Deaf loved one, will raise the share of signs done right on the second try, because
+  competitors' cameras only say "wrong". Evidence is thin (2 of 717 recent reviews of three
+  leaders, 2026-11-21); say so in the pitch.
+- **Demo metric:** recognition accuracy on people the references never saw
+  (leave-one-person-out), plus false accepts on random movement. No retention or revenue claims.
+- **Stop bar (checkpoint 14:30, before the lunch merge):** TODO — team confirms. Proposal:
+  false rejects ≤ 15%, false accepts ≤ 5% on held-out people. If the MediaPipe spike cannot
+  tell the words apart, fall back to static handshapes (letters + "I love you").
 
-Fill these in as soon as they are decided; agents read this file first.
+### Core feature — build this first, nothing else until it works
+
+**Sign check with a coach:** the webcam records one sign → the browser recognises it →
+verdict and confidence → if wrong, the coach names what to fix → retry.
+- Vision: MediaPipe Hand Landmarker (`@mediapipe/tasks-vision`, in the browser, no key) → our
+  classifier (DTW nearest neighbour against recorded references). Recognition stays in the
+  browser: it must answer in under a second.
+- Coach: the code computes the difference from the reference (which finger, where the movement
+  starts); the LLM only phrases it. The LLM never decides right or wrong. Low confidence →
+  "show it again", not a guess. The LLM key lives on the backend only.
+
+### Learning loop — around the core
+
+- Per sign: watch (reference clip, 0.5× option) → try (3-2-1, 1.5 s) → check → fix → count.
+- Stars per sign: ★ first correct; ★★ three correct in a row without a hint; ★★★ correct in the
+  mixed review round.
+- Lesson = 5 signs building "your first conversation with <name>", finale I LOVE YOU. A missed
+  sign comes back after two others; the lesson ends with a mixed review round.
+- Code decides correctness, stars and the review queue. The LLM writes only hints and a
+  two-line lesson summary.
+
+### Demo path (= Must)
+
+1. Open the page, allow the webcam, type the loved one's name.
+2. Lesson starts: HELLO reference clip plays.
+3. Sign it wrong on purpose → coach hint → retry → ★.
+4. Two more signs, one missed sign comes back.
+5. Finale: I LOVE YOU → lesson summary from the coach.
+6. Slide: eval results.
+
+### Not core
+
+- **Should:** the four UI states (empty, loading, error, success), slow-motion reference,
+  streak, backup video of the demo, cost log per LLM call.
+- **Could (after 14:30):** more words, fingerspelling the name, MOM/DAD (needs face landmarks),
+  LLM-planned next lesson.
+- **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation, login and
+  payments (mock with `HACK:`), push notifications, native mobile app, other sign languages.
+
+- **Words:** TODO (5–6 ASL words with distinct movement, e.g. HELLO, THANK YOU, YES, NO, PLEASE;
+  references recorded from a video dictionary).
+- **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout.
+  MediaPipe Tasks Vision runs in the browser. Frameworks: TODO. LLM provider: TODO (key in
+  `.env`, name in `.env.example`).
+- **Status:** MediaPipe feasibility spike in progress (TODO: who, branch); record the result here.
+- **Run locally:** TODO
+- **Deploy / demo URL:** TODO
 
 The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
 

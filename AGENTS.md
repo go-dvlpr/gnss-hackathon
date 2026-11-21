@@ -2,6 +2,8 @@
 
 This is a one-day hackathon on Saturday, 2026-11-21, from 10:30 to 20:00. Several people and AI sessions share the repository. Build a thin end-to-end slice of the live demo first and keep `main` runnable.
 
+**Product in one line:** a webcam game for learning ASL signs; the core feature is the sign check with a coach (browser recognition with MediaPipe + an LLM that phrases what to fix). Build and fix the core feature and the demo path before anything listed under "Not core" in CLAUDE.md › Project.
+
 ## Project context
 
 Read the Project section of [CLAUDE.md](CLAUDE.md) for the idea, hypothesis, success metric, demo steps, stack, local run command, and demo URL. Read [PLAN.md](PLAN.md) for the day plan: timeline, roles, judging criteria, the mandatory pitch slides, evals, and the README sections required at code freeze. Ask the team when a decision marked TODO blocks your task. Update the shared instructions in the same commit when changing the API, environment variables, or run command that teammates rely on.
