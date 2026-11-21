@@ -30,6 +30,26 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 - **Stop bar (checkpoint 14:30, before the lunch merge):** TODO — team confirms. Proposal:
   false rejects ≤ 15%, false accepts ≤ 5% on held-out people. If words cannot be told apart,
   the demo stays on letters + "I love you".
+- **Measured so far (synthetic only, 2026-11-21):** `node tests/synthetic.test.js` in
+  [asl_claude_demo/asl-trainer](asl_claude_demo/asl-trainer/README.md):
+  - 26 letters, both hands, 40 noisy samples each (2.5 mm noise, up to 12° rotation): 95–100%
+    accepted, the lowest is I at 95%;
+  - 0 false accepts between the canonical poses of different letters;
+  - J and Z motion, and every word and two-handed sign check (ILY, MOM, THANK YOU, MORE, LOVE…),
+    pass.
+
+  These are synthetic hands: thresholds are not tuned on live hands yet (see the README), so
+  this is not the demo metric. Say "synthetic" on the evals slide.
+- **Live run for the evals slide (AI engineer 3; write the results here):**
+  1. 2–3 people who did not record references or tune thresholds.
+  2. Each signs the letters of LILY (L, I, Y), ILY and 3–5 words from the lesson: about 25
+     attempts in total. Note which sign was asked and the verdict.
+  3. 5 clips of random movement: scratching the head, waving, reaching for the mouse.
+  4. Count false rejects (correct signs not accepted ÷ correct attempts), false accepts (random
+     clips or wrong signs accepted ÷ those clips) and accuracy on these people.
+  5. Slide: "N attempts, M accepted", the two worst pairs (risky ones in the README: M/N/S/T,
+     E/S, C/O, P/Q) and what we do about them.
+  6. Compare with the stop bar: if words miss it, the demo stays on letters + "I love you".
 
 ### Core feature — build this first, nothing else until it works
 
