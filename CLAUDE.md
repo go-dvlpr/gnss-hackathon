@@ -39,8 +39,10 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
   classifier (DTW nearest neighbour against recorded references). Recognition stays in the
   browser: it must answer in under a second.
 - Coach: the code computes the difference from the reference (which finger, where the movement
-  starts); the LLM only phrases it. The LLM never decides right or wrong. Low confidence →
-  "show it again", not a guess. The LLM key lives on the backend only.
+  starts), and the same rule gives the hint text, as in
+  [asl_claude_demo](asl_claude_demo/asl-trainer/README.md). No OpenAI or Anthropic: we use only
+  a free model, and no model decides right or wrong. Low confidence → "show it again", not a
+  guess.
 
 ### Learning loop — around the core
 
@@ -53,8 +55,8 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 - Lesson = the letters of your loved one's name, then the finale I LOVE YOU. A missed letter
   (quiz or camera) comes back after two others; the lesson ends with spelling the whole name.
   The eight words are the next lesson.
-- Code decides correctness, stars and the review queue. The LLM writes only hints and a
-  two-line lesson summary.
+- Code decides correctness, stars and the review queue. Hints and the two-line lesson summary
+  come from rules (or a free model), never from a paid API.
 
 ### Free and Premium
 
@@ -65,26 +67,21 @@ Unit economics for the slide. The model with formulas, the three scenarios and a
 is [research/asl-unit-economics.xlsx](research/asl-unit-economics.xlsx) (sheet «Слайд»);
 change numbers there first, then here. ⚠️ = our assumption.
 - Net after Stripe (2.9% + $0.30) and 2% refunds: $90.04/year, $14.91/month.
-- LLM cost, GPT-6.2 Sol ($2 in, $0.10 cached in, $10 out per 1M tokens):
-  - a coach hint ≈ $0.004 (~800 in + 250 out ⚠️);
-  - one AI check of a sign as `asl-demo` does it now ≈ $0.011 (~3,700 in, of them ~1,250 cached,
-    plus ~600 out ⚠️);
-  - per payer per month (96 checks + 48 hints): ≈ $1.26, or $0.20 once recognition moves to the
-    browser (DTW);
-  - a free user (~40 checks + 10 hints ⚠️) ≈ $0.48, counted in CAC.
+- Model cost: $0. Recognition is MediaPipe Hand Landmarker in the browser (free, on the device;
+  the browser loads it from a public CDN), and hints come from rules. No OpenAI or Anthropic
+  calls, so a check costs nothing for payers and free users alike. The remaining costs are
+  payment fees and hosting (in overhead). The workbook keeps reference rows in case a paid LLM
+  comes back.
 - LTV (13 months; 24% first annual renewal in Education, RevenueCat; 13.7% monthly churn ⚠️;
-  60% annual plans ⚠️) ≈ $92.
-- CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion,
-  plus the free users' LLM cost.
+  60% annual plans ⚠️) ≈ $104; gross margin ≈ 100% of net revenue.
+- CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion.
 - Scenarios:
-  - pessimistic, 2.1% freemium conversion (RevenueCat 2026): CAC ≈ $194, LTV/CAC ≈ 0.5;
-  - base, 5.2% with the paywall after the name lesson, recognition by the LLM: CAC ≈ $77,
-    LTV/CAC ≈ 1.2;
-  - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, recognition in the
-    browser, 20% organic signups (TikTok): LTV ≈ $104, CAC ≈ $35, LTV/CAC ≈ 2.9.
-- Break-even ≈ 1,600 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month ads: first
-  profitable month 13, cumulative profit from month 19, cash need ≈ $30,000.
-- Replace the token counts with the `usage` lines that `asl-demo` logs.
+  - pessimistic, 2.1% freemium conversion (RevenueCat 2026): CAC ≈ $167, LTV/CAC ≈ 0.6;
+  - base, 5.2% with the paywall after the name lesson: CAC ≈ $67, LTV/CAC ≈ 1.5;
+  - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, 20% organic signups
+    (TikTok): LTV ≈ $106, CAC ≈ $35, LTV/CAC ≈ 3.0.
+- Break-even ≈ 1,400–1,550 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month
+  ads: first profitable month 10, cumulative profit from month 16, cash need ≈ $22,000.
 
 | | Free | Premium |
 |---|---|---|
@@ -94,8 +91,8 @@ change numbers there first, then here. ⚠️ = our assumption.
 | Sign reading mode | — | yes |
 
 AI review stays in Free with a daily limit: it is the feature that sets us apart, so people must
-try it before paying. Recognition in the browser costs nothing, but in today's `asl-demo` each
-check is a GPT-6.2 Sol call (≈ $0.011), so the limit also caps the cost of free users. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
+try it before paying. Recognition runs on the device with a free model and costs nothing; the
+limit exists to sell Premium, not to save money. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
 daily free practice instead of a hard paywall. Free-to-Premium conversion is unknown; label it
 an assumption.
 
@@ -132,8 +129,8 @@ Title: «Ти вчиш жести для близької людини — і н
   but only +0.8% in five years: say "steadily third").
 - **For jury questions:** Lingvano already checks signs with AI and the camera (App Store review of
   2026-01-05), so our difference is the coach that names the fix. The same reviewer dropped the
-  subscription over generative AI. Our answer: the LLM never decides right or wrong; it only
-  phrases the hint.
+  subscription over generative AI. Our answer: no OpenAI or Anthropic; a free model runs on the
+  device, and rules decide right or wrong and write the hint.
 
 ### Demo path (= Must)
 
@@ -168,8 +165,8 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
 - **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout, hosted
   on Vercel. MediaPipe Tasks Vision runs in the browser. Frontend: Vite + React + TypeScript in
   [frontend/](frontend/) (hash routes, one file per screen in `frontend/src/screens/`; design
-  notes in [DESIGN.md](DESIGN.md)). Backend framework: TODO. LLM provider: OpenAI
-  (key in `.env` and Vercel env vars, name in `.env.example`; called from the backend only).
+  notes in [DESIGN.md](DESIGN.md)). Backend framework: TODO. No OpenAI or Anthropic:
+  only a free model (MediaPipe Hand Landmarker in the browser) and rule-based hints, so no LLM key.
 - **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
   the result here.
 - **Run locally:** `cd frontend && npm install && npm run dev` → http://localhost:5173.
@@ -181,7 +178,9 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
 The standalone [ASL prototype](asl-demo/README.md) evaluates transcription of MediaPipe hand
 landmarks with GPT-6.2 Sol. Run it with `cd asl-demo && go run .` after loading the local
 `.env` described in the README. The app serves `http://127.0.0.1:8080` and accepts a
-manually recorded landmark sequence at `POST /api/recognize`.
+manually recorded landmark sequence at `POST /api/recognize`. It was a spike: the product does not
+use OpenAI or Anthropic (team decision, 2026-11-21). The free on-device approach is
+[asl_claude_demo](asl_claude_demo/asl-trainer/README.md): MediaPipe plus rules.
 
 The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
 
