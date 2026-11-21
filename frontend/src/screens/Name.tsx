@@ -1,9 +1,13 @@
-import { BackHeader } from "../components";
+import { Actions, BackHeader } from "../components";
 import { go } from "../router";
 import { allLettersOf, isTeachable, useLesson } from "../lesson";
+import { lovedOne, useFunnel } from "../funnel";
+
+const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function NameScreen() {
   const { name, setName, letters, reset } = useLesson();
+  const { profile } = useFunnel();
   const canStart = letters.length > 0;
   const tiles = allLettersOf(name);
   return (
@@ -28,7 +32,9 @@ export default function NameScreen() {
               go("watch");
             }}
           >
-            <label htmlFor="name">Who are you learning for?</label>
+            <label htmlFor="name">
+              {profile.who ? `${capitalize(lovedOne(profile))}'s first name` : "Who are you learning for?"}
+            </label>
             <input
               id="name"
               value={name}
@@ -46,15 +52,6 @@ export default function NameScreen() {
               Their first name. J and Z move, so we'll teach those later.
             </span>
           </form>
-          <button
-            type="submit"
-            form="name-form"
-            disabled={!canStart}
-            className="btn-primary btn-primary--wide"
-            style={{ alignSelf: "flex-start" }}
-          >
-            Start lesson 1
-          </button>
         </section>
 
         <section aria-label="Your lesson" className="name-preview">
@@ -82,6 +79,11 @@ export default function NameScreen() {
           </p>
         </section>
       </main>
+      <Actions>
+        <button type="submit" form="name-form" disabled={!canStart} className="btn-primary btn-primary--wide">
+          Start lesson 1
+        </button>
+      </Actions>
     </>
   );
 }

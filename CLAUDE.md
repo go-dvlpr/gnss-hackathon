@@ -171,6 +171,9 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
   only a free model (MediaPipe Hand Landmarker in the browser) and rule-based hints, so no LLM key.
 - **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
   the result here.
+- **Funnel (mock, `HACK:`):** `/` opens Welcome → onboarding quiz → Lessons
+  (no sign-up in this path); no plan picker or checkout. For the demo path open `#/name` directly. Steps, questions and events:
+  [USER-JOURNEY.md](USER-JOURNEY.md).
 - **Run locally:** `cd frontend && npm install && npm run dev` → http://localhost:5173.
   Vercel: set Root Directory to `frontend` (Vite preset, build `npm run build`, output `dist`).
 - **Deploy / demo URL:** Vercel; URL TODO
