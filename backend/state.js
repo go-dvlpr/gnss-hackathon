@@ -1,4 +1,4 @@
-const sign = /^(?:[A-IK-Y]|ILY|HELLO|YES|NO|THANKYOU)$/;
+const sign = /^(?:[A-Z]|ILY|HELLO|YES|NO|THANKYOU)$/;
 const choices = {
   reason: ["loved", "self", "curious", "work", "other"],
   who: ["partner", "child", "parent", "sibling", "relative", "friend"],

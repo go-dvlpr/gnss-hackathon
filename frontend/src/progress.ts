@@ -47,7 +47,7 @@ export function initialState(name = DEFAULT_NAME): AccountState {
 
 const LEGACY_KEY = "ily.lesson.v1";
 const isSign = (value: unknown): value is string =>
-  typeof value === "string" && /^(?:[A-IK-Y]|ILY|HELLO|YES|NO|THANKYOU)$/.test(value);
+  typeof value === "string" && /^(?:[A-Z]|ILY|HELLO|YES|NO|THANKYOU)$/.test(value);
 
 export function legacyProgress(): Progress {
   try {
