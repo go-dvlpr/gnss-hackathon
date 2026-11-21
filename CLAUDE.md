@@ -167,7 +167,7 @@ Title: «Ти вчиш жести для близької людини — і н
 
 ### Demo path (= Must)
 
-1. Open the page, allow the webcam, type the loved one's name.
+1. Open the page, create an account or log in, and type the loved one's name. Allow the webcam before the first check.
 2. Quiz: one question on a letter of the name ("is this L, I or Y?").
 3. AI review: sign a letter wrong on purpose → coach hint → retry → ★.
 4. Spell the rest of the name; a missed letter comes back.
@@ -183,7 +183,7 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
 - **Should:** the four UI states (empty, loading, error, success), slow-motion reference,
   streak, backup video of the demo.
 - **Could (after 14:30):** more words, fingerspelling the name, MOM/DAD (needs face landmarks).
-- **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation, login and
+- **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation,
   payments (mock with `HACK:`), push notifications, native mobile app, other sign languages.
 
 - **What we teach, in order** (references recorded from a video dictionary):
@@ -194,28 +194,18 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
      Hard pairs, keep them in the eval set: HELLO vs THANK YOU (flat hand moving out, from the
      forehead vs the chin), PLEASE vs SORRY (circle on the chest, flat hand vs fist), YES vs SORRY
      (fist, nod vs circle). The rest of the team's list is the pitch slide "next".
-- **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout, hosted
-  on Vercel. MediaPipe Tasks Vision runs in the browser. Frontend: Vite + React + TypeScript in
-  [frontend/](frontend/) (hash routes, one file per screen in `frontend/src/screens/`; design
-  notes in [DESIGN.md](DESIGN.md)). Backend framework: TODO. No OpenAI or Anthropic:
-  only a free model (MediaPipe Hand Landmarker in the browser) and rule-based hints, so no LLM key.
-- **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
-  the result here.
-- **Funnel (mock, `HACK:`):** `/` opens Welcome → onboarding quiz → Lessons
-  (no sign-up in this path); no plan picker or checkout. For the demo path open `#/name` directly. Steps, questions and events:
-  [USER-JOURNEY.md](USER-JOURNEY.md).
-- **Run locally:** `cd frontend && npm install && npm run dev` → http://localhost:5173.
-  Vercel: set Root Directory to `frontend` (Vite preset, build `npm run build`, output `dist`).
-- **Deploy / demo URL:** Vercel; URL TODO
+- **Stack:** Vite + React + TypeScript, Node.js HTTP API, PostgreSQL, and Docker Compose.
+  Nginx serves the built frontend and proxies `/api/` on the same origin. MediaPipe and
+  rule-based coaching run in the browser. See [DESIGN.md](DESIGN.md) for the UI.
+- **Funnel:** Welcome → onboarding quiz → email registration → name → first lesson.
+  Returning users sign in and resume from the lesson list. Payments remain mocked.
+  See [USER-JOURNEY.md](USER-JOURNEY.md).
+- **Run locally:** create a local `.env` as described in [README.md](README.md), then
+  run `docker compose up --build -d --wait` and open http://localhost:5173.
+- **Persistence:** PostgreSQL stores accounts, sessions, onboarding answers, and progress
+  for each lesson. See [README.md](README.md) for the API and environment variables.
 
-### ASL recognition prototype
-
-The standalone [ASL prototype](asl-demo/README.md) evaluates transcription of MediaPipe hand
-landmarks with GPT-6.2 Sol. Run it with `cd asl-demo && go run .` after loading the local
-`.env` described in the README. The app serves `http://127.0.0.1:8080` and accepts a
-manually recorded landmark sequence at `POST /api/recognize`. It was a spike: the product does not
-use OpenAI or Anthropic (team decision, 2026-11-21). The free on-device approach is
-[asl_claude_demo](asl_claude_demo/asl-trainer/README.md): MediaPipe plus rules.
+The browser recognition prototype lives in [asl_claude_demo](asl_claude_demo/asl-trainer/README.md).
 
 The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
 

@@ -2,9 +2,9 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "frontend",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev"],
+      "name": "ily",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "up", "--build"],
       "port": 5173,
       "url": "http://localhost:5173"
     }

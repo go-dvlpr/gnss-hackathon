@@ -21,7 +21,7 @@ function summary(letters: string[], stars: Record<string, number>): string {
 }
 
 export default function Done() {
-  const { lesson, name, letters: nameLetters, stars, reset, startWords } = useLesson();
+  const { lesson, name, letters: nameLetters, stars, reset, openLesson } = useLesson();
   const letters = lesson === 2 ? WORDS : nameLetters;
   return (
     <>
@@ -61,10 +61,7 @@ export default function Done() {
           <button
             type="button"
             className="btn-primary"
-            onClick={() => {
-              startWords();
-              go("watch");
-            }}
+            onClick={() => openLesson(2)}
           >
             Start lesson 2
           </button>

@@ -13,10 +13,10 @@ export default function Onboarding() {
   const last = step === total - 1;
 
   const next = () => {
-    track("onboarding_answered", { question: q.key, answer });
+    track("onboarding_answered", { question: q.key });
     if (last) {
-      track("onboarding_completed", { ...profile, email: undefined });
-      go("lessons");
+      track("onboarding_completed");
+      go(profile.email ? "lessons" : "signup");
     } else {
       setStep(step + 1);
       window.scrollTo(0, 0);
