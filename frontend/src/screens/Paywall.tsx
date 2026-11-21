@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BackHeader } from "../components";
+import { Actions, BackHeader } from "../components";
 import { href } from "../router";
 
 // HACK: mock paywall, no payments (see CLAUDE.md › Won't).
@@ -44,20 +44,19 @@ export default function Paywall() {
             ))}
           </tbody>
         </table>
-
-        <div className="paywall-actions">
-          {/* HACK: no payments (see CLAUDE.md › Won't); the button only shows a note. */}
-          <button type="button" className="btn-primary btn-primary--wide" onClick={() => setNote(true)}>
-            Go Premium for $99.99 a year
-          </button>
-          <a href={href("lessons")} style={{ fontWeight: 600 }}>
-            Come back tomorrow
-          </a>
-        </div>
         <p role="status" className="small muted">
           {note ? "Demo: payments are mocked." : ""}
         </p>
       </main>
+      <Actions split>
+        <a href={href("lessons")} className="btn-text">
+          Come back tomorrow
+        </a>
+        {/* HACK: no payments (see CLAUDE.md › Won't); the button only shows a note. */}
+        <button type="button" className="btn-primary" onClick={() => setNote(true)}>
+          Go Premium for $99.99 a year
+        </button>
+      </Actions>
     </>
   );
 }

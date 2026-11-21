@@ -54,6 +54,11 @@ name, current one outlined in cobalt, step label on the right) → content → a
 
 - Hash routes, one per screen: `#/lessons`, `#/name`, `#/watch`, `#/quiz`, `#/check`,
   `#/coach`, `#/done`, `#/paywall`.
+- Funnel screens (not on the design board, built from the same tokens): `#/welcome` (the
+  default route), `#/signup`, `#/login`, `#/onboarding` (one question per screen, radio rows,
+  Continue in the action bar; the last answer opens Lessons). No plan summary, sign-up
+  step, plan picker or checkout after the quiz.
+  Journey: USER-JOURNEY.md.
 - Lessons → "Continue" goes to the name screen (the design linked straight to Watch).
 - The name typed on the name screen drives the letter tiles, progress strip and the Done title.
 - Logo: the ILY handshape mark from `assets/icons/ily-mark.svg`, same geometry, filled solid white
