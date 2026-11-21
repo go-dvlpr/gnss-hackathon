@@ -15,7 +15,7 @@ export type Lesson = {
   openLesson: (id: 1 | 2) => void;
   name: string;
   setName: (name: string) => void;
-  /** Teachable unique letters of the name, in order (no J or Z). */
+  /** Teachable unique letters of the name, in order. */
   letters: string[];
   /** Letters, re-inserted misses, then the finale "ILY". */
   queue: string[];
@@ -40,8 +40,8 @@ export type Lesson = {
   reset: () => void;
 };
 
-// Letters A–Z only. J and Z move, so we teach them later.
-export const isTeachable = (l: string) => /^[A-Z]$/.test(l) && l !== "J" && l !== "Z";
+// Letters A–Z only. J and Z are checked by the fingertip path (recognizer.ts).
+export const isTeachable = (l: string) => /^[A-Z]$/.test(l);
 
 export function allLettersOf(name: string): string[] {
   return name.toUpperCase().replace(/[^A-Z]/g, "").split("");
