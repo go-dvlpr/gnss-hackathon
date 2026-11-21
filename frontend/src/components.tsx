@@ -39,7 +39,7 @@ export function LogoMark({ size = 32 }: { size?: number }) {
   );
 }
 
-const Logo = () => (
+export const Logo = () => (
   <span className="logo" aria-label="ILY">
     <LogoMark />
     <span className="logo-word" aria-hidden="true">ILY</span>

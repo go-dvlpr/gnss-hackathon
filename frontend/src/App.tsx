@@ -9,8 +9,16 @@ import CheckScreen from "./screens/Check";
 import Coach from "./screens/Coach";
 import Done from "./screens/Done";
 import Paywall from "./screens/Paywall";
+import Welcome from "./screens/Welcome";
+import { Login, Signup } from "./screens/Auth";
+import Onboarding from "./screens/Onboarding";
+import { FunnelContext, type Profile } from "./funnel";
 
 const SCREENS: Record<Route, ComponentType> = {
+  welcome: Welcome,
+  signup: Signup,
+  login: Login,
+  onboarding: Onboarding,
   lessons: Lessons,
   name: NameScreen,
   watch: Watch,
@@ -22,6 +30,10 @@ const SCREENS: Record<Route, ComponentType> = {
 };
 
 const TITLES: Record<Route, string> = {
+  welcome: "Learn to sign to the one you love",
+  signup: "Save your plan",
+  login: "Log in",
+  onboarding: "Getting to know you",
   lessons: "Your lessons",
   name: "Who are you learning for",
   watch: "Watch",
@@ -81,6 +93,12 @@ function load(): State {
 export default function App() {
   const route = useRoute();
   const [s, setS] = useState<State>(load);
+  // HACK: onboarding answers live in memory only; a reload starts over.
+  const [profile, setProfile] = useState<Profile>({ email: "" });
+  const funnel = useMemo(
+    () => ({ profile, update: (patch: Partial<Profile>) => setProfile((p) => ({ ...p, ...patch })) }),
+    [profile],
+  );
 
   useEffect(() => {
     try {
@@ -144,11 +162,13 @@ export default function App() {
 
   const Screen = SCREENS[route];
   return (
-    <LessonContext.Provider value={lesson}>
-      <div className="page">
-        {/* Keyed so per-screen state (quiz picks, check verdict) resets for each item. */}
-        <Screen key={`${route}-${s.pos}`} />
-      </div>
-    </LessonContext.Provider>
+    <FunnelContext.Provider value={funnel}>
+      <LessonContext.Provider value={lesson}>
+        <div className="page">
+          {/* Keyed so per-screen state (quiz picks, check verdict) resets for each item. */}
+          <Screen key={`${route}-${s.pos}`} />
+        </div>
+      </LessonContext.Provider>
+    </FunnelContext.Provider>
   );
 }

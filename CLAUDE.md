@@ -76,8 +76,11 @@ change numbers there first, then here. ⚠️ = our assumption.
   60% annual plans ⚠️) ≈ $104; gross margin ≈ 100% of net revenue.
 - CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion.
 - Scenarios:
-  - pessimistic, 2.1% freemium conversion (RevenueCat 2026): CAC ≈ $167, LTV/CAC ≈ 0.6;
-  - base, 5.2% with the paywall after the name lesson: CAC ≈ $67, LTV/CAC ≈ 1.5;
+  - pessimistic, 3% conversion: the paywall after the name lesson works far worse than planned,
+    but the daily Free limit still beats plain freemium (median 2.1%, RevenueCat 2026); 15% of
+    payers come without ads (Deaf community and ASL class word of mouth, search ⚠️): CAC ≈ $99,
+    LTV/CAC ≈ 1.05;
+  - base, 5.2% with the paywall after the name lesson, 15% organic ⚠️: CAC ≈ $57, LTV/CAC ≈ 1.8;
   - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, 20% organic signups
     (TikTok): LTV ≈ $106, CAC ≈ $35, LTV/CAC ≈ 3.0.
 - Break-even ≈ 1,400–1,550 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month
@@ -168,6 +171,9 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
   only a free model (MediaPipe Hand Landmarker in the browser) and rule-based hints, so no LLM key.
 - **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
   the result here.
+- **Funnel (mock, `HACK:`):** `/` opens Welcome → onboarding quiz → Lessons
+  (no sign-up in this path); no plan picker or checkout. For the demo path open `#/name` directly. Steps, questions and events:
+  [USER-JOURNEY.md](USER-JOURNEY.md).
 - **Run locally:** `cd frontend && npm install && npm run dev` → http://localhost:5173.
   Vercel: set Root Directory to `frontend` (Vite preset, build `npm run build`, output `dist`).
 - **Deploy / demo URL:** Vercel; URL TODO
