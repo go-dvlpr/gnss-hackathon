@@ -64,15 +64,15 @@ export default function Watch() {
                 <span className={isWord(item) ? "big-letter big-letter--word" : "big-letter"}>{labelOf(item)}</span>
               </h1>
               <p className="lead">{howTo(item)}</p>
-              <p className="small muted">Next, pick it out of a few look-alikes, then sign it yourself.</p>
+              <p className="small muted">Next, sign it to your webcam. A quick quiz on all the signs comes at the end.</p>
             </>
           )}
         </aside>
       </main>
       <Actions>
-        {/* The finale has no quiz: straight to the camera. */}
-        <a href={href(isFinale ? "check" : "quiz")} className="btn-primary">
-          {isFinale ? "Got it, let me sign it" : "Got it, quiz me"}
+        {/* The quiz is one round at the end of the lesson, so every sign goes straight to the camera. */}
+        <a href={href("check")} className="btn-primary">
+          Got it, let me sign it
         </a>
       </Actions>
     </>

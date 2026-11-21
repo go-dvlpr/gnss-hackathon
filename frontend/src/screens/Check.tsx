@@ -17,7 +17,8 @@ export default function CheckScreen() {
   const video = useRef<HTMLVideoElement>(null);
   const overlay = useRef<HTMLCanvasElement>(null);
   const tryLog = useRef({ hint: null as string | null, looks: null as string | null });
-  const after = isLast ? "done" : "watch";
+  // The quiz round comes after the last sign.
+  const after = isLast ? "quiz" : "watch";
 
   useEffect(() => {
     const c = watch(video.current!, overlay.current!, item, setReading);
@@ -61,7 +62,7 @@ export default function CheckScreen() {
   return (
     <>
       <BackHeader />
-      <LessonProgress step={2} label="sign it" back={isFinale ? "watch" : "quiz"} />
+      <LessonProgress step={2} label="sign it" back="watch" />
       <main className="main check">
         <section aria-label="Your camera" className="camera">
           <div className="camera-stage">

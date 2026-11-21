@@ -46,8 +46,9 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 
 ### Learning loop — around the core
 
-- Per sign: watch (reference clip, 0.5× option) → quiz (recognise it) → AI review (sign it
-  yourself: 3-2-1, 1.5 s → check → coach hint → retry) → review round at the end.
+- Per sign: watch (reference clip, 0.5× option) → AI review (sign it yourself → check → coach
+  hint → retry). After the last sign: one quiz round over all the signs of the lesson (a missed
+  question comes back once at the end), then Done.
 - Quiz: show a sign, pick the word or letter from 4 options; or the reverse. The code picks the
   wrong options from the hard pairs of the eval set (PLEASE gets THANK YOU as an option). No LLM.
 - Stars per sign: ★ first correct; ★★ three correct in a row without a hint; ★★★ correct in the
