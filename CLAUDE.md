@@ -66,7 +66,9 @@ $119.99/year or $17.99–19.99/month. The monthly plan is a proposal; the team c
 
 Unit economics for the slide. The model with formulas, the three scenarios and a 24-month P&L
 is [research/asl-unit-economics.xlsx](research/asl-unit-economics.xlsx) (sheet «Слайд»);
-change numbers there first, then here. ⚠️ = our assumption.
+change numbers there first, then here. ⚠️ = our assumption. The workbook opens on the target
+scenario, so the sheets «Юніт», «Воронка» and «P&L» show target numbers; set «Припущення»!B4 to 1
+or 2 to see the pessimistic or base ones. The sheets «Слайд» and «Сценарії» show all three.
 - Net after Stripe (2.9% + $0.30) and 2% refunds: $90.04/year, $14.91/month.
 - Model cost: $0. Recognition is MediaPipe Hand Landmarker in the browser (free, on the device;
   the browser loads it from a public CDN), and hints come from rules. No OpenAI or Anthropic
@@ -74,18 +76,46 @@ change numbers there first, then here. ⚠️ = our assumption.
   payment fees and hosting (in overhead). The workbook keeps reference rows in case a paid LLM
   comes back.
 - LTV (13 months; 24% first annual renewal in Education, RevenueCat; 13.7% monthly churn ⚠️;
-  60% annual plans ⚠️) ≈ $104; gross margin ≈ 100% of net revenue.
+  60% annual plans ⚠️) ≈ $104 ($106 in the target scenario with 70% annual plans); gross margin
+  ≈ 100% of net revenue.
 - CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion.
 - Scenarios:
   - pessimistic, 3% conversion: the paywall after the name lesson works far worse than planned,
     but the daily Free limit still beats plain freemium (median 2.1%, RevenueCat 2026); 15% of
     payers come without ads (Deaf community and ASL class word of mouth, search ⚠️): CAC ≈ $99,
     LTV/CAC ≈ 1.05;
-  - base, 5.2% with the paywall after the name lesson, 15% organic ⚠️: CAC ≈ $57, LTV/CAC ≈ 1.8;
+  - base, 5.2% with the paywall after the name lesson, 15% organic ⚠️: CAC ≈ $57, LTV/CAC ≈ 1.82;
   - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, 20% organic signups
-    (TikTok): LTV ≈ $106, CAC ≈ $35, LTV/CAC ≈ 3.0.
-- Break-even ≈ 1,400–1,550 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month
-  ads: first profitable month 10, cumulative profit from month 16, cash need ≈ $22,000.
+    (TikTok): LTV ≈ $106, CAC ≈ $35, LTV/CAC ≈ 3.03.
+- Break-even on $15,000/month overhead ⚠️: ≈ 1,430 payers (pessimistic, base), ≈ 1,540 (target).
+  Target P&L with $10,000/month ads: first profitable month 10, cumulative profit from month 16,
+  cash need ≈ $22,000. Pessimistic and base stay at a loss for 24 months (−$375,000 and
+  −$210,000).
+
+Unit economics in plain words (for the presenter, Ukrainian):
+- Юніт-економіка відповідає на одне питання: чи заробляємо ми на одному платному користувачі
+  більше, ніж витрачаємо, щоб його залучити.
+- **Скільки платить людина:** $94.99 на рік або $15.99 на місяць. Після комісії Stripe і
+  повернень лишається ~$90 і ~$15.
+- **Скільки коштує її обслужити:** ≈ $0. Розпізнавання жестів працює в браузері користувача; за
+  перевірки ми не платимо жодному API.
+- **Скільки людина приносить за весь час (LTV):** за 13 місяців ~$104. Річну підписку через рік
+  поновлюють ~24%, з місячної частина людей іде щомісяця.
+- **Скільки коштує її залучити (CAC):** клік у Meta ~$0.70. Зі 100 тих, хто клікнув, ~20
+  починають урок, тобто ~$3.50 за людину. З тих, хто почав урок, платять 3–8 зі 100, і частина
+  платників приходить без реклами. Разом один платник коштує $35–99.
+- **LTV : CAC:** песимістичний сценарій 1.05 (вклали $1 у рекламу, повернули ~$1.05, тобто ледь
+  у нуль), базовий 1.82, цільовий 3.03 (здорова планка з лекцій).
+- **Коли виходимо в плюс:** постійні витрати ~$15 000 на місяць, тож треба ~1 430–1 540 платників. У
+  цільовому сценарії перший прибутковий місяць — 10-й, усе вкладене повертається на 16-му,
+  для старту треба ~$22 000.
+- **Де не окупаємося (кажемо чесно):** у песимістичному і базовому сценаріях бізнес за 24 місяці
+  в мінусі (−$375 тис. і −$210 тис.). Реклама окупається, а постійні витрати — ні. У
+  песимістичному річна оплата (~$90) навіть не покриває CAC (~$99) одразу; він повертається
+  лише завдяки поновленням і місячним оплатам.
+- **Для журі одним реченням:** кожна перевірка нам нічого не коштує; платник приносить ~$104,
+  залучення коштує $35–99; бізнес живе, якщо після безкоштовного уроку платять 5–8 людей зі
+  100, і саме цю конверсію ми перевіряємо першою.
 
 | | Free | Premium |
 |---|---|---|
@@ -138,7 +168,7 @@ Title: «Ти вчиш жести для близької людини — і н
 
 ### Demo path (= Must)
 
-1. Open the page, allow the webcam, type the loved one's name.
+1. Open the page, create an account or log in, and type the loved one's name. Allow the webcam before the first check.
 2. Quiz: one question on a letter of the name ("is this L, I or Y?").
 3. AI review: sign a letter wrong on purpose → coach hint → retry → ★.
 4. Spell the rest of the name; a missed letter comes back.
@@ -154,7 +184,7 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
 - **Should:** the four UI states (empty, loading, error, success), slow-motion reference,
   streak, backup video of the demo.
 - **Could (after 14:30):** more words, fingerspelling the name, MOM/DAD (needs face landmarks).
-- **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation, login and
+- **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation,
   payments (mock with `HACK:`), push notifications, native mobile app, other sign languages.
 
 - **What we teach, in order** (references recorded from a video dictionary):
@@ -165,28 +195,18 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
      Hard pairs, keep them in the eval set: HELLO vs THANK YOU (flat hand moving out, from the
      forehead vs the chin), PLEASE vs SORRY (circle on the chest, flat hand vs fist), YES vs SORRY
      (fist, nod vs circle). The rest of the team's list is the pitch slide "next".
-- **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout, hosted
-  on Vercel. MediaPipe Tasks Vision runs in the browser. Frontend: Vite + React + TypeScript in
-  [frontend/](frontend/) (hash routes, one file per screen in `frontend/src/screens/`; design
-  notes in [DESIGN.md](DESIGN.md)). Backend framework: TODO. No OpenAI or Anthropic:
-  only a free model (MediaPipe Hand Landmarker in the browser) and rule-based hints, so no LLM key.
-- **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
-  the result here.
-- **Funnel (mock, `HACK:`):** `/` opens Welcome → onboarding quiz → Lessons
-  (no sign-up in this path); no plan picker or checkout. For the demo path open `#/name` directly. Steps, questions and events:
-  [USER-JOURNEY.md](USER-JOURNEY.md).
-- **Run locally:** `cd frontend && npm install && npm run dev` → http://localhost:5173.
-  Vercel: set Root Directory to `frontend` (Vite preset, build `npm run build`, output `dist`).
-- **Deploy / demo URL:** Vercel; URL TODO
+- **Stack:** Vite + React + TypeScript, Node.js HTTP API, PostgreSQL, and Docker Compose.
+  Nginx serves the built frontend and proxies `/api/` on the same origin. MediaPipe and
+  rule-based coaching run in the browser. See [DESIGN.md](DESIGN.md) for the UI.
+- **Funnel:** Welcome → onboarding quiz → email registration → name → first lesson.
+  Returning users sign in and resume from the lesson list. Payments remain mocked.
+  See [USER-JOURNEY.md](USER-JOURNEY.md).
+- **Run locally:** create a local `.env` as described in [README.md](README.md), then
+  run `docker compose up --build -d --wait` and open http://localhost:5173.
+- **Persistence:** PostgreSQL stores accounts, sessions, onboarding answers, and progress
+  for each lesson. See [README.md](README.md) for the API and environment variables.
 
-### ASL recognition prototype
-
-The standalone [ASL prototype](asl-demo/README.md) evaluates transcription of MediaPipe hand
-landmarks with GPT-6.2 Sol. Run it with `cd asl-demo && go run .` after loading the local
-`.env` described in the README. The app serves `http://127.0.0.1:8080` and accepts a
-manually recorded landmark sequence at `POST /api/recognize`. It was a spike: the product does not
-use OpenAI or Anthropic (team decision, 2026-11-21). The free on-device approach is
-[asl_claude_demo](asl_claude_demo/asl-trainer/README.md): MediaPipe plus rules.
+The browser recognition prototype lives in [asl_claude_demo](asl_claude_demo/asl-trainer/README.md).
 
 The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
 

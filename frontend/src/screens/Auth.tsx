@@ -3,12 +3,12 @@ import { Actions, BackHeader } from "../components";
 import { go, href } from "../router";
 import { track, useFunnel } from "../funnel";
 
-type Mode = "signup" | "login";
+import type { AuthMode } from "../account";
 type Errors = { email?: string; password?: string };
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-function validate(mode: Mode, email: string, password: string): Errors {
+function validate(mode: AuthMode, email: string, password: string): Errors {
   const errors: Errors = {};
   if (!EMAIL.test(email.trim())) errors.email = "Enter an email like name@example.com.";
   if (mode === "signup" && password.length < 8) errors.password = "Use at least 8 characters.";
@@ -16,28 +16,33 @@ function validate(mode: Mode, email: string, password: string): Errors {
   return errors;
 }
 
-// HACK: no backend auth yet (CLAUDE.md › Won't). Nothing is sent or stored; the password is only checked for length.
-function Auth({ mode }: { mode: Mode }) {
-  const { update } = useFunnel();
+function Auth({ mode }: { mode: AuthMode }) {
+  const { authenticate } = useFunnel();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<Errors>({});
   const [busy, setBusy] = useState(false);
   const signup = mode === "signup";
 
-  const finish = (method: string, mail = "") => {
-    update({ email: mail });
-    track(signup ? "signup_completed" : "login_completed", { method });
-    go(signup ? "name" : "lessons");
-  };
+  const [submitError, setSubmitError] = useState("");
 
-  const onSubmit = (e: FormEvent) => {
+  const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (busy) return;
     const found = validate(mode, email, password);
     setErrors(found);
+    setSubmitError("");
     if (found.email || found.password) return;
     setBusy(true);
-    setTimeout(() => finish("email", email.trim()), 600);
+    try {
+      const hasProgress = await authenticate(mode, email, password);
+      track(signup ? "signup_completed" : "login_completed", { method: "email" });
+      go(signup && !hasProgress ? "name" : "lessons");
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Couldn't sign in. Try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   return (
@@ -51,13 +56,6 @@ function Auth({ mode }: { mode: Mode }) {
           </p>
         </div>
 
-        <div className="oauth">
-          <button type="button" className="btn-secondary" onClick={() => finish("google")}>
-            Continue with Google
-          </button>
-        </div>
-        <p className="divider">or with email</p>
-
         <form id="auth-form" className="auth-form" onSubmit={onSubmit} noValidate>
           <div className="field field--compact">
             <label htmlFor="email">Email</label>
@@ -65,6 +63,7 @@ function Auth({ mode }: { mode: Mode }) {
               id="email"
               type="email"
               autoComplete="email"
+              maxLength={254}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               aria-invalid={errors.email ? true : undefined}
@@ -81,6 +80,7 @@ function Auth({ mode }: { mode: Mode }) {
             <input
               id="password"
               type="password"
+              maxLength={128}
               autoComplete={signup ? "new-password" : "current-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -99,6 +99,7 @@ function Auth({ mode }: { mode: Mode }) {
               )
             )}
           </div>
+          {submitError && <p role="alert" className="field-error">{submitError}</p>}
         </form>
 
         <p className="small muted">

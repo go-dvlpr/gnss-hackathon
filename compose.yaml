@@ -1,0 +1,46 @@
+name: ily
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ily
+      POSTGRES_USER: ily
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "ily", "-d", "ily"]
+      interval: 2s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+  api:
+    build:
+      context: ./backend
+    environment:
+      PGHOST: db
+      PGDATABASE: ily
+      PGUSER: ily
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      SESSION_SECURE: ${SESSION_SECURE:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 3s
+      timeout: 3s
+      retries: 15
+    restart: unless-stopped
+  web:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    ports:
+      - "127.0.0.1:${APP_PORT:-5173}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+volumes:
+  postgres-data:

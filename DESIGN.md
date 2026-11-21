@@ -57,10 +57,11 @@ name, current one outlined in cobalt, step label on the right) → content → a
   lines, then privacy and limits; Back returns to the previous screen).
 - Funnel screens (not on the design board, built from the same tokens): `#/welcome` (the
   default route), `#/signup`, `#/login`, `#/onboarding` (one question per screen, radio rows,
-  Continue in the action bar; the last answer opens Lessons). No plan summary, sign-up
-  step, plan picker or checkout after the quiz.
+  Continue in the action bar; the last answer opens the existing registration form).
+  The forms use email and password, and the action bar and styles follow the existing layout.
   Journey: USER-JOURNEY.md.
-- Lessons → "Continue" goes to the name screen (the design linked straight to Watch).
+- Lessons opens the name screen for a fresh lesson 1, resumes lessons in progress, and shows
+  results for finished lessons.
 - The name typed on the name screen drives the letter tiles, progress strip and the Done title.
 - Logo: the ILY handshape mark from `assets/icons/ily-mark.svg`, same geometry, filled solid white
   on an Ink `#0F1B4D` rounded tile (16:1). No Sun in the mark. Used as the favicon and next to the "ILY" wordmark in the

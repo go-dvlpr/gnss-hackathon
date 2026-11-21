@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { AuthMode } from "./account";
 
 export type Reason = "loved" | "self" | "curious" | "work" | "other";
 export type Who = "partner" | "child" | "parent" | "sibling" | "relative" | "friend";
@@ -15,6 +16,9 @@ export type Profile = {
 export type Funnel = {
   profile: Profile;
   update: (patch: Partial<Profile>) => void;
+  authenticate: (mode: AuthMode, email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  dirty: boolean;
 };
 
 export type Option = { value: string; label: string; hint?: string };
@@ -102,8 +106,12 @@ const WHO_LABEL: Record<Who, string> = {
 /** "your partner", or a neutral phrase when we don't know who. */
 export const lovedOne = (p: Profile) => (p.who ? `your ${WHO_LABEL[p.who]}` : "the one you love");
 
-export const FunnelContext = createContext<Funnel>({ profile: { email: "" }, update: () => {} });
-export const useFunnel = () => useContext(FunnelContext);
+export const FunnelContext = createContext<Funnel | null>(null);
+export function useFunnel() {
+  const funnel = useContext(FunnelContext);
+  if (!funnel) throw new Error("Missing funnel context.");
+  return funnel;
+}
 
 // HACK: funnel events go to the console until we pick an analytics tool.
 export function track(event: string, props: Record<string, unknown> = {}) {
