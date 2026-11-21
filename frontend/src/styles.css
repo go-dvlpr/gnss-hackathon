@@ -9,6 +9,10 @@
   --cobalt-bg: #e7ecfd;
   --cobalt-tint: #f3f6fe;
   --sun: #ffc845;
+  /* Primary action (CTA). Kept apart from cobalt so the button is the only warm thing on screen. */
+  --cta: #f97352;
+  --cta-hover: #ea5a37;
+  --cta-text: var(--ink);
   --surface: #f2f4f8;
   --surface-2: #e9ecf2;
   --line: #dfe3eb;
@@ -112,6 +116,13 @@ figure {
   font-weight: 800;
   font-size: 24px;
   letter-spacing: 0.02em;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.logo-mark {
+  flex: none;
+  display: block;
 }
 
 .nav {
@@ -217,7 +228,12 @@ figure {
   display: flex;
 }
 
+/* Sticky so the primary action is always on screen, even on short laptop viewports. */
 .actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 10;
+  background: #ffffff;
   border-top: 1px solid var(--line);
 }
 .actions .wrap {
@@ -287,8 +303,8 @@ figure {
   gap: 12px;
   border: 0;
   border-radius: 12px;
-  background: var(--cobalt);
-  color: #ffffff;
+  background: var(--cta);
+  color: var(--cta-text);
   font-family: var(--font-ui);
   font-weight: 700;
   font-size: 17px;
@@ -296,8 +312,8 @@ figure {
   cursor: pointer;
 }
 .btn-primary:hover {
-  background: var(--cobalt-hover);
-  color: #ffffff;
+  background: var(--cta-hover);
+  color: var(--cta-text);
 }
 /* Cobalt ring would blend into the cobalt fill; ink is 16.35:1 on white. */
 .btn-primary:focus-visible {
@@ -310,7 +326,7 @@ figure {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #ffffff;
+  background: currentColor;
 }
 
 .btn-secondary {
@@ -913,6 +929,9 @@ figure {
   }
   .nav a {
     padding: 0 8px;
+  }
+  .logo-word {
+    display: none;
   }
   .help-link {
     font-size: 14px;

@@ -22,22 +22,27 @@ export default function Watch() {
             rate={slow ? 0.5 : 1}
             mirror={mirror}
           />
-          {isWord(item) && <div className="controls">
-            <button className="btn-secondary" onClick={() => setPaused((p) => !p)}>
-              {paused ? "Play" : "Pause"}
-            </button>
-            <div role="group" aria-label="Speed" className="segmented">
-              <button aria-pressed={slow} onClick={() => setSlow(true)}>
-                0.5×
-              </button>
-              <button aria-pressed={!slow} onClick={() => setSlow(false)}>
-                1×
-              </button>
-            </div>
+          {/* Letters are static photos: no pause or speed. */}
+          <div className="controls">
+            {isWord(item) && (
+              <>
+                <button className="btn-secondary" onClick={() => setPaused((p) => !p)}>
+                  {paused ? "Play" : "Pause"}
+                </button>
+                <div role="group" aria-label="Speed" className="segmented">
+                  <button aria-pressed={slow} onClick={() => setSlow(true)}>
+                    0.5×
+                  </button>
+                  <button aria-pressed={!slow} onClick={() => setSlow(false)}>
+                    1×
+                  </button>
+                </div>
+              </>
+            )}
             <button className="btn-secondary" aria-pressed={mirror} onClick={() => setMirror((m) => !m)}>
               Mirror
             </button>
-          </div>}
+          </div>
         </section>
 
         <aside className="watch-side">
