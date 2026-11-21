@@ -13,6 +13,8 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 
 Fill these in as soon as they are decided; agents read this file first.
 
+The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
+
 ## Skills (`.claude/skills/`)
 
 Built from the course lectures; each `LOCAL.md` sets hackathon mode (short, in chat, in Ukrainian) and lists the lectures.

@@ -4,7 +4,7 @@ This is a one-day hackathon on Saturday, 2026-11-21, from 10:30 to 20:00. Severa
 
 ## Project context
 
-Read the Project section of [CLAUDE.md](CLAUDE.md) for the idea, hypothesis, success metric, demo steps, stack, local run command, and demo URL. Ask the team when a decision marked TODO blocks your task. Update the shared instructions in the same commit when changing the API, environment variables, or run command that teammates rely on.
+Read the Project section of [CLAUDE.md](CLAUDE.md) for the idea, hypothesis, success metric, demo steps, stack, local run command, and demo URL. Read [PLAN.md](PLAN.md) for the day plan: timeline, roles, judging criteria, the mandatory pitch slides, evals, and the README sections required at code freeze. Ask the team when a decision marked TODO blocks your task. Update the shared instructions in the same commit when changing the API, environment variables, or run command that teammates rely on.
 
 ## Changes and collaboration
 
