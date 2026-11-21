@@ -58,18 +58,33 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 
 ### Free and Premium
 
-Prices: proposal $99.99/year (analyst confirms). Reference: Lingvano $17.99–19.99/month or
-$119.99/year; ASL Bloom $98.99/year.
+Prices: $94.99/year and $15.99/month, just below the leaders: ASL Bloom $98.99/year, Lingvano
+$119.99/year or $17.99–19.99/month. The monthly plan is a proposal; the team confirms.
 
-Unit economics (draft for the slide; ⚠️ = our assumption):
-- Net after Stripe (2.9% + $0.30): $96.79/year. LLM cost (GPT-5 mini, ~400 in + 60 out tokens
-  per hint ⚠️): ~$0.08 per payer per month, ~$0.30 with free users. Margin ≈ $7.77/month.
-- LTV (13 months, 24% first annual renewal in Education, RevenueCat) ≈ $116.
-- Base: $3.03 per signup (iOS CPI proxy ⚠️) ÷ 2.1% freemium conversion (RevenueCat 2026) →
-  CAC ≈ $144, LTV/CAC ≈ 0.8.
-- Target LTV/CAC 2.0: conversion 5.2% with the paywall after the name lesson (hard-paywall
-  median is 10.7%) → CAC ≈ $58. Backup: ≥ 60% organic signups (TikTok) at 2.1%.
-- Replace the token counts with the cost log after 15:00.
+Unit economics for the slide. The model with formulas, the three scenarios and a 24-month P&L
+is [research/asl-unit-economics.xlsx](research/asl-unit-economics.xlsx) (sheet «Слайд»);
+change numbers there first, then here. ⚠️ = our assumption.
+- Net after Stripe (2.9% + $0.30) and 2% refunds: $90.04/year, $14.91/month.
+- LLM cost, GPT-6.2 Sol ($2 in, $0.10 cached in, $10 out per 1M tokens):
+  - a coach hint ≈ $0.004 (~800 in + 250 out ⚠️);
+  - one AI check of a sign as `asl-demo` does it now ≈ $0.011 (~3,700 in, of them ~1,250 cached,
+    plus ~600 out ⚠️);
+  - per payer per month (96 checks + 48 hints): ≈ $1.26, or $0.20 once recognition moves to the
+    browser (DTW);
+  - a free user (~40 checks + 10 hints ⚠️) ≈ $0.48, counted in CAC.
+- LTV (13 months; 24% first annual renewal in Education, RevenueCat; 13.7% monthly churn ⚠️;
+  60% annual plans ⚠️) ≈ $92.
+- CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion,
+  plus the free users' LLM cost.
+- Scenarios:
+  - pessimistic, 2.1% freemium conversion (RevenueCat 2026): CAC ≈ $194, LTV/CAC ≈ 0.5;
+  - base, 5.2% with the paywall after the name lesson, recognition by the LLM: CAC ≈ $77,
+    LTV/CAC ≈ 1.2;
+  - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, recognition in the
+    browser, 20% organic signups (TikTok): LTV ≈ $104, CAC ≈ $35, LTV/CAC ≈ 2.9.
+- Break-even ≈ 1,600 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month ads: first
+  profitable month 13, cumulative profit from month 19, cash need ≈ $30,000.
+- Replace the token counts with the `usage` lines that `asl-demo` logs.
 
 | | Free | Premium |
 |---|---|---|
@@ -79,8 +94,8 @@ Unit economics (draft for the slide; ⚠️ = our assumption):
 | Sign reading mode | — | yes |
 
 AI review stays in Free with a daily limit: it is the feature that sets us apart, so people must
-try it before paying. Recognition runs on the device and costs nothing; the limit exists to sell
-Premium, not to save money. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
+try it before paying. Recognition in the browser costs nothing, but in today's `asl-demo` each
+check is a GPT-6.2 Sol call (≈ $0.011), so the limit also caps the cost of free users. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
 daily free practice instead of a hard paywall. Free-to-Premium conversion is unknown; label it
 an assumption.
 
