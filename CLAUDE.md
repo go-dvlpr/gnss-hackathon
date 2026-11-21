@@ -31,23 +31,44 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 
 ### Learning loop — around the core
 
-- Per sign: watch (reference clip, 0.5× option) → try (3-2-1, 1.5 s) → check → fix → count.
+- Per sign: watch (reference clip, 0.5× option) → quiz (recognise it) → AI review (sign it
+  yourself: 3-2-1, 1.5 s → check → coach hint → retry) → review round at the end.
+- Quiz: show a sign, pick the word or letter from 4 options; or the reverse. The code picks the
+  wrong options from the hard pairs of the eval set (PLEASE gets THANK YOU as an option). No LLM.
 - Stars per sign: ★ first correct; ★★ three correct in a row without a hint; ★★★ correct in the
   mixed review round.
 - Lesson = the letters of your loved one's name, then the finale I LOVE YOU. A missed letter
-  comes back after two others; the lesson ends with spelling the whole name. The eight words
-  are the next lesson.
+  (quiz or camera) comes back after two others; the lesson ends with spelling the whole name.
+  The eight words are the next lesson.
 - Code decides correctness, stars and the review queue. The LLM writes only hints and a
   two-line lesson summary.
+
+### Free and Premium
+
+Prices: TODO (analyst). Reference: Lingvano $17.99–19.99/month or $119.99/year.
+
+| | Free | Premium |
+|---|---|---|
+| Lessons and quizzes | alphabet and the first words | all lessons |
+| AI review of a sign | a few checks per day ("energy") | unlimited |
+| Coach | hints | hints, lesson summary, review plan |
+| Sign reading mode | — | yes |
+
+AI review stays in Free with a daily limit: it is the feature that sets us apart, so people must
+try it before paying. Recognition runs on the device and costs nothing; the limit exists to sell
+Premium, not to save money. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
+daily free practice instead of a hard paywall. Free-to-Premium conversion is unknown; label it
+an assumption.
 
 ### Demo path (= Must)
 
 1. Open the page, allow the webcam, type the loved one's name.
-2. The app builds a lesson from the letters of the name; the first letter's reference shows.
-3. Sign a letter wrong on purpose → coach hint → retry → ★.
+2. Quiz: one question on a letter of the name ("is this L, I or Y?").
+3. AI review: sign a letter wrong on purpose → coach hint → retry → ★.
 4. Spell the rest of the name; a missed letter comes back.
 5. Finale: I LOVE YOU → lesson summary from the coach.
-6. Slide: eval results.
+6. Paywall screen (mock, `HACK:`): "your free checks for today are used up".
+7. Slide: eval results.
 
 Demo name: no J or Z (they move), and few of the fist letters A, E, M, N, S, T, which are
 easy to confuse. LILY works: L, I and Y look nothing alike.
