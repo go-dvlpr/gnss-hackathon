@@ -56,8 +56,8 @@ export default function CheckScreen() {
               <span className={isFinale ? "big-letter big-letter--word" : "big-letter"}>{item}</span>
             </h1>
           </div>
-          {/* HACK: placeholder until reference clips are recorded. */}
-          <Stage label="Reference of the sign, looping" text="[reference, looping]" className="stage--4x3 stage--sm" />
+          {/* HACK: placeholder until the handshape photos are added. */}
+          <Stage label="Reference photo of the handshape" text="[reference photo]" className="stage--4x3 stage--sm" />
           <p className="body-17">{isFinale ? `I love you. ${howTo(item, true)}` : howTo(item, true)}</p>
           <div role="status" className="verdict-slot">
             {earned !== null && (

@@ -19,7 +19,32 @@ export function Check({ color = "#7FE0B0", size = 16 }: { color?: string; size?:
   );
 }
 
-const Logo = () => <span className="logo">ILY</span>;
+/** ILY handshape mark: solid white on an Ink tile (see DESIGN.md › Decisions). */
+export function LogoMark({ size = 32 }: { size?: number }) {
+  return (
+    <svg aria-hidden="true" width={size} height={size} viewBox="0 0 128 128" className="logo-mark">
+      <rect width="128" height="128" rx="30" fill="var(--ink)" />
+      {/* assets/icons/ily-mark.svg geometry, filled solid white. */}
+      <g transform="translate(22 14) scale(0.66)">
+        <g stroke="#FFFFFF" strokeWidth="16" strokeLinecap="round" fill="none">
+          <line x1="46" y1="80" x2="44" y2="18" />
+          <line x1="96" y1="84" x2="99" y2="36" />
+          <line x1="42" y1="106" x2="12" y2="76" />
+          <line x1="62" y1="77" x2="62" y2="75" />
+          <line x1="79" y1="78" x2="79" y2="76" />
+        </g>
+        <rect x="34" y="70" width="72" height="68" rx="22" fill="#FFFFFF" />
+      </g>
+    </svg>
+  );
+}
+
+const Logo = () => (
+  <span className="logo" aria-label="ILY">
+    <LogoMark />
+    <span className="logo-word" aria-hidden="true">ILY</span>
+  </span>
+);
 /** A control whose screen isn't built yet: shown, but not interactive. */
 export function ComingSoon({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (

@@ -29,7 +29,7 @@ export default function Quiz() {
       <LessonProgress step={2} label="quiz" />
       <main className="main quiz">
         {/* HACK: placeholder until reference images are recorded. */}
-        <Stage label="The sign to recognise" text="[sign image or clip]" className="stage--4x3 quiz-media" />
+        <Stage label="The sign to recognise" text="[photo of the handshape]" className="stage--4x3 quiz-media" />
         <section className="quiz-side">
           <h1 tabIndex={-1} className="display h-48">
             Which letter is this?
