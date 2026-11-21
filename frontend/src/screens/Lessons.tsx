@@ -1,9 +1,9 @@
-import { ComingSoon, HomeHeader, Stage } from "../components";
-import { href } from "../router";
+import { HomeHeader, Stage } from "../components";
+import { go, href } from "../router";
 import { useLesson } from "../lesson";
 
 export default function Lessons() {
-  const { letters, stars } = useLesson();
+  const { letters, stars, startWords } = useLesson();
   const learned = letters.filter((l) => (stars[l] ?? 0) > 0).length;
   return (
     <>
@@ -36,14 +36,23 @@ export default function Lessons() {
             </a>
           </li>
           <li className="lesson-row">
-            <Stage label="Lesson 2 image" text="[lesson image]" className="lesson-img lesson-img--locked" />
+            <Stage label="Lesson 2 image" text="[lesson image]" className="lesson-img" />
             <div className="lesson-body">
               <span className="lesson-kicker">Lesson 2</span>
-              <h2 className="lesson-title lesson-title--locked">Your first eight words</h2>
-              <p className="body-17 muted">Hello, goodbye, yes, no, please, thank you, sorry and I love you. Opens after lesson 1.</p>
+              <h2 className="lesson-title">Your first words</h2>
+              <p className="body-17 muted">Hello, yes, no, thank you and I love you.</p>
             </div>
-            {/* HACK: lesson 2 preview is not designed yet. */}
-            <ComingSoon className="btn-text">Preview</ComingSoon>
+            {/* HACK: open for the demo; GOODBYE, PLEASE and SORRY wait until asl-core recognises them. */}
+            <button
+              type="button"
+              className="btn-primary btn-primary--wide"
+              onClick={() => {
+                startWords();
+                go("watch");
+              }}
+            >
+              Start
+            </button>
           </li>
         </ol>
       </main>

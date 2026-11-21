@@ -1,9 +1,10 @@
-import { Actions, BackHeader, LessonProgress, Stage } from "../components";
+import { Actions, BackHeader, LessonProgress, Media, Stage } from "../components";
 import { go, href } from "../router";
-import { useLesson } from "../lesson";
+import { labelOf, useLesson } from "../lesson";
+import { attempt } from "../recognizer";
 
 export default function Coach() {
-  const { retry } = useLesson();
+  const { item = "L", retry } = useLesson();
   return (
     <>
       <BackHeader back="check" />
@@ -11,21 +12,25 @@ export default function Coach() {
       <main className="main coach">
         <div className="coach-head">
           <h1 tabIndex={-1} className="display h-48">Almost. Fix one thing.</h1>
-          {/* HACK: static mock hint for L; the coach API fills this in later. */}
+          {/* The hint comes from the rule that failed; HACK: the LLM does not rephrase it yet. */}
           <p className="coach-hint">
-            <b>Coach:</b> Your thumb is tucked in. Stick it straight out to the side, so your thumb and index finger make
-            an L.
+            <b>Coach:</b> {attempt.hint ?? "Watch the reference once more and copy the handshape."}
+            {attempt.looks && ` To the camera it looked more like ${labelOf(attempt.looks)}.`}
           </p>
         </div>
         <div className="compare">
           <figure>
-            <Stage label="Your attempt, key frame" text="[your attempt, key frame]" className="stage--16x9" />
+            {attempt.image ? (
+              <img src={attempt.image} alt="Your attempt, last frame" className="stage stage--media stage--16x9" />
+            ) : (
+              <Stage label="Your attempt, key frame" text="[your attempt, key frame]" className="stage--16x9" />
+            )}
             <figcaption>
               <b>You</b>
             </figcaption>
           </figure>
           <figure>
-            <Stage label="Reference, same moment" text="[reference, same moment]" className="stage--16x9" />
+            <Media item={item} label={`Reference of ${labelOf(item)}`} className="stage--16x9" />
             <figcaption>
               <b>Reference</b>
             </figcaption>

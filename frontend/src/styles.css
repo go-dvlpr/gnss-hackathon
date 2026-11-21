@@ -1071,3 +1071,47 @@ figure {
     flex-basis: 100%;
   }
 }
+
+/* ---------- Media and live camera ---------- */
+
+.stage--media {
+  padding: 0;
+  overflow: hidden;
+}
+.stage--media > img,
+.stage--media > video,
+img.stage--media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.camera-feed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.camera-mirror {
+  transform: scaleX(-1);
+}
+.camera-prompt {
+  text-shadow: 0 1px 4px rgba(5, 10, 35, 0.8);
+}
+.camera-prompt--count {
+  font-size: 72px;
+  line-height: 80px;
+}
+.camera-meter {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.25);
+}
+.camera-meter > div {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--sun);
+  transition: width 0.1s linear;
+}

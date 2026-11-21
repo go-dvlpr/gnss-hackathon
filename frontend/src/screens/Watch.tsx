@@ -1,26 +1,28 @@
 import { useState } from "react";
-import { Actions, BackHeader, LessonProgress, Stage } from "../components";
+import { Actions, BackHeader, LessonProgress, Media } from "../components";
 import { href } from "../router";
-import { howTo, useLesson } from "../lesson";
+import { howTo, isWord, labelOf, useLesson } from "../lesson";
 
 export default function Watch() {
-  const { item = "L", isFinale } = useLesson();
+  const { item = "L", isFinale, lesson } = useLesson();
   const [paused, setPaused] = useState(false);
   const [slow, setSlow] = useState(true);
   const [mirror, setMirror] = useState(false);
   return (
     <>
-      <BackHeader back="name" />
+      <BackHeader back={lesson === 2 ? "lessons" : "name"} />
       <LessonProgress step={1} label="watch" />
       <main className="main watch">
         <section aria-label="Reference" className="watch-media">
-          {/* HACK: placeholder until reference clips are recorded. */}
-          <Stage
-            label="Reference video of the sign"
-            text="[reference video of the sign, looping]"
+          <Media
+            item={item}
+            label={`Reference of the sign ${labelOf(item)}`}
             className="stage--16x10"
+            paused={paused}
+            rate={slow ? 0.5 : 1}
+            mirror={mirror}
           />
-          <div className="controls">
+          {isWord(item) && <div className="controls">
             <button className="btn-secondary" onClick={() => setPaused((p) => !p)}>
               {paused ? "Play" : "Pause"}
             </button>
@@ -35,7 +37,7 @@ export default function Watch() {
             <button className="btn-secondary" aria-pressed={mirror} onClick={() => setMirror((m) => !m)}>
               Mirror
             </button>
-          </div>
+          </div>}
         </section>
 
         <aside className="watch-side">
@@ -54,7 +56,7 @@ export default function Watch() {
             <>
               <h1 tabIndex={-1} className="watch-title">
                 <span className="sr-only">Watch the sign for </span>
-                <span className="big-letter">{item}</span>
+                <span className={isWord(item) ? "big-letter big-letter--word" : "big-letter"}>{labelOf(item)}</span>
               </h1>
               <p className="lead">{howTo(item)}</p>
               <p className="small muted">Next, pick it out of a few look-alikes, then sign it yourself.</p>
