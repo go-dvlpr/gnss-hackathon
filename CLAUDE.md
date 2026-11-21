@@ -4,10 +4,15 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 
 ## Project
 
+- **Name:** ILY — the ASL handshape for "I love you", which is also the demo finale.
+  Tagline: "Learn to sign to the one you love".
 - **Idea:** A practice game for hearing people in the US who learn ASL for a Deaf loved one
   (partner, friend, relative). The webcam checks each sign you make, and an AI coach says what
   to fix. Leaders (Lingvano, ASL Bloom) already check signs with the camera but only say
-  "wrong"; App Store reviews complain that correct signs are rejected.
+  "wrong"; App Store reviews complain that correct signs are rejected. Fingerspelling.xyz
+  (Hello Monday, 2021, free web) already checks the ASL alphabet by webcam for parents of Deaf
+  children; we differ by the coach that names the fix, words, and stars. Put it on the
+  competitors slide.
 - **Hypothesis:** We believe that feedback naming what to fix, for hearing US adults learning
   ASL for a Deaf loved one, will raise the share of signs done right on the second try, because
   competitors' cameras only say "wrong". Evidence is thin (2 of 717 recent reviews of three
@@ -45,7 +50,18 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 
 ### Free and Premium
 
-Prices: TODO (analyst). Reference: Lingvano $17.99–19.99/month or $119.99/year.
+Prices: proposal $99.99/year (analyst confirms). Reference: Lingvano $17.99–19.99/month or
+$119.99/year; ASL Bloom $98.99/year.
+
+Unit economics (draft for the slide; ⚠️ = our assumption):
+- Net after Stripe (2.9% + $0.30): $96.79/year. LLM cost (GPT-5 mini, ~400 in + 60 out tokens
+  per hint ⚠️): ~$0.08 per payer per month, ~$0.30 with free users. Margin ≈ $7.77/month.
+- LTV (13 months, 24% first annual renewal in Education, RevenueCat) ≈ $116.
+- Base: $3.03 per signup (iOS CPI proxy ⚠️) ÷ 2.1% freemium conversion (RevenueCat 2026) →
+  CAC ≈ $144, LTV/CAC ≈ 0.8.
+- Target LTV/CAC 2.0: conversion 5.2% with the paywall after the name lesson (hard-paywall
+  median is 10.7%) → CAC ≈ $58. Backup: ≥ 60% organic signups (TikTok) at 2.1%.
+- Replace the token counts with the cost log after 15:00.
 
 | | Free | Premium |
 |---|---|---|
