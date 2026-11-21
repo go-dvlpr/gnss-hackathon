@@ -55,7 +55,7 @@ export default function Done() {
         {/* Demo path: lesson 1 → lesson 2 → paywall. */}
         {lesson === 2 ? (
           <a href={href("paywall")} className="btn-primary">
-            Next lesson
+            Unlock lesson 3
           </a>
         ) : (
           <button

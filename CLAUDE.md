@@ -73,9 +73,9 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
   wrong options from the hard pairs of the eval set (PLEASE gets THANK YOU as an option). No LLM.
 - Stars per sign: ★ first correct; ★★ three correct in a row without a hint; ★★★ correct in the
   mixed review round.
-- Lesson = the letters of your loved one's name, then the finale I LOVE YOU. A missed letter
+- Lesson 1 = the letters of your loved one's name (no I LOVE YOU). A missed letter
   (quiz or camera) comes back after two others; the lesson ends with spelling the whole name.
-  The eight words are the next lesson.
+  The words, including I LOVE YOU, are lesson 2.
 - Code decides correctness, stars and the review queue. Hints and the two-line lesson summary
   come from rules (or a free model), never from a paid API.
 
@@ -192,8 +192,9 @@ Title: «Ти вчиш жести для близької людини — і н
 2. Quiz: one question on a letter of the name ("is this L, I or Y?").
 3. AI review: sign a letter wrong on purpose → coach hint → retry → ★.
 4. Spell the rest of the name; a missed letter comes back.
-5. Finale: I LOVE YOU → lesson summary from the coach.
-6. Paywall screen (mock, `HACK:`): "your free checks for today are used up".
+5. Lesson summary from the coach; then I LOVE YOU in lesson 2.
+6. Paywall screen at the end of lesson 2 (mock, `HACK:`): "You finished the free lessons",
+   yearly $94.99 preselected (≈ $7.92/month, save 50%) or monthly $15.99.
 7. Slide: eval results.
 
 Demo name: no J or Z (they move), and few of the fist letters A, E, M, N, S, T, which are
