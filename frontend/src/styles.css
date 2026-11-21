@@ -10,9 +10,9 @@
   --cobalt-tint: #f3f6fe;
   --sun: #ffc845;
   /* Primary action (CTA). Kept apart from cobalt so the button is the only warm thing on screen. */
-  --cta: #f97352;
-  --cta-hover: #ea5a37;
-  --cta-text: var(--ink);
+  --cta: var(--ink);
+  --cta-hover: #22306b; /* "silhouette on the stage" ink from the design system */
+  --cta-text: #ffffff;
   --surface: #f2f4f8;
   --surface-2: #e9ecf2;
   --line: #dfe3eb;
@@ -326,7 +326,7 @@ figure {
 }
 /* Cobalt ring would blend into the cobalt fill; ink is 16.35:1 on white. */
 .btn-primary:focus-visible {
-  outline-color: var(--ink);
+  outline-color: var(--cobalt);
 }
 .btn-primary--wide {
   padding: 0 32px;

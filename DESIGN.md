@@ -11,7 +11,7 @@ lines instead of cards, one blue for actions, yellow only for the camera's "eyes
 | Token | Value | Use |
 |---|---|---|
 | Ink | `#0F1B4D` | Text and the video stage background |
-| CTA (coral) | `#F97352` (hover `#EA5A37`), text Ink (5.9:1) | Primary action button only (`--cta` tokens) |
+| CTA (Ink) | `#0F1B4D` (hover `#22306B`), white text (16:1) | Primary action button (`--cta` tokens), same ink as the logo tile |
 | Cobalt | `#2348E8` (hover `#1A37BD`, bg `#E7ECFD`) | Links, current step, focus ring, big letter |
 | Sun | `#FFC845` | Only the logo and camera overlays: hand frame, points, path |
 | Surface / line | `#F2F4F8` / `#DFE3EB` | Progress strip, dividers |
@@ -64,8 +64,9 @@ name, current one outlined in cobalt, step label on the right) → content → a
 - Logo: the ILY handshape mark from `assets/icons/ily-mark.svg`, same geometry, filled solid white
   on an Ink `#0F1B4D` rounded tile (16:1). No Sun in the mark. Used as the favicon and next to the "ILY" wordmark in the
   header (wordmark hidden under 720px). The orange `#C2410C` from the icon exploration is not used.
-- The primary button moved from cobalt to coral: cobalt was also on the big letter, progress and
-  links, so the CTA didn't stand out. To try another colour, change `--cta*` in styles.css.
+- The primary button is Ink, not cobalt: cobalt is also on the big letter, progress and links, so a
+  cobalt CTA didn't stand out. Coral was tried and dropped (outside the palette). To change it,
+  edit `--cta*` in styles.css.
 - Letters and ILY are static photos: the watch screen has only "Mirror" (no pause / speed).
 - The action bar is sticky at the bottom, so the primary button is always on screen.
 - Mobile: first pass only (16px gutter, smaller headings, stacked columns); the design is desktop.
