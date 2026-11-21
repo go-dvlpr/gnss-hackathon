@@ -25,7 +25,7 @@ export default function Coach() {
             </figcaption>
           </figure>
           <figure>
-            <Stage label="Reference, same moment" text="[reference, same moment]" className="stage--16x9" />
+            <Stage label="Reference photo" text="[reference photo]" className="stage--16x9" />
             <figcaption>
               <b>Reference</b>
             </figcaption>

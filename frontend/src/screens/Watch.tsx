@@ -5,8 +5,6 @@ import { howTo, useLesson } from "../lesson";
 
 export default function Watch() {
   const { item = "L", isFinale } = useLesson();
-  const [paused, setPaused] = useState(false);
-  const [slow, setSlow] = useState(true);
   const [mirror, setMirror] = useState(false);
   return (
     <>
@@ -14,24 +12,13 @@ export default function Watch() {
       <LessonProgress step={1} label="watch" />
       <main className="main watch">
         <section aria-label="Reference" className="watch-media">
-          {/* HACK: placeholder until reference clips are recorded. */}
+          {/* HACK: placeholder until the handshape photos are added. Letters are static photos: no speed/pause. */}
           <Stage
-            label="Reference video of the sign"
-            text="[reference video of the sign, looping]"
+            label={`Photo of the handshape for ${item}`}
+            text="[photo of the handshape]"
             className="stage--16x10"
           />
           <div className="controls">
-            <button className="btn-secondary" onClick={() => setPaused((p) => !p)}>
-              {paused ? "Play" : "Pause"}
-            </button>
-            <div role="group" aria-label="Speed" className="segmented">
-              <button aria-pressed={slow} onClick={() => setSlow(true)}>
-                0.5×
-              </button>
-              <button aria-pressed={!slow} onClick={() => setSlow(false)}>
-                1×
-              </button>
-            </div>
             <button className="btn-secondary" aria-pressed={mirror} onClick={() => setMirror((m) => !m)}>
               Mirror
             </button>
