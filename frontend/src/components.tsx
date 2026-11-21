@@ -1,4 +1,4 @@
-import type { ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { href, type Route } from "./router";
 import { useLesson } from "./lesson";
 
@@ -145,6 +145,58 @@ export function Stage({ label, text, className = "" }: { label: string; text: st
   return (
     <div role="img" aria-label={label} className={`stage ${className}`}>
       {text}
+    </div>
+  );
+}
+
+/**
+ * Reference for a letter (image) or a word (video), from public/media/. Shows the placeholder
+ * until the file exists: letters/{L}.png, signs/{ID}.mp4 (ID as in asl-core, e.g. THANKYOU, ILY).
+ */
+export function Media({
+  item,
+  label,
+  className = "",
+  paused = false,
+  rate = 1,
+  mirror = false,
+}: {
+  item: string;
+  label: string;
+  className?: string;
+  paused?: boolean;
+  rate?: number;
+  mirror?: boolean;
+}) {
+  const [broken, setBroken] = useState(false);
+  const video = useRef<HTMLVideoElement>(null);
+  const isLetter = item.length === 1;
+  useEffect(() => {
+    const v = video.current;
+    if (!v) return;
+    v.playbackRate = rate;
+    if (paused) v.pause();
+    else v.play().catch(() => {});
+  }, [paused, rate]);
+  if (broken) return <Stage label={label} text={isLetter ? "[photo of the handshape]" : `[video of ${item}]`} className={className} />;
+  const style = mirror ? { transform: "scaleX(-1)" } : undefined;
+  return (
+    <div className={`stage stage--media ${className}`}>
+      {isLetter ? (
+        <img src={`/media/letters/${item}.png`} alt={label} style={style} onError={() => setBroken(true)} />
+      ) : (
+        <video
+          ref={video}
+          src={`/media/signs/${item}.mp4`}
+          aria-label={label}
+          style={style}
+          muted
+          loop
+          autoPlay
+          playsInline
+          onError={() => setBroken(true)}
+        />
+      )}
     </div>
   );
 }

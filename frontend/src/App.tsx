@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ComponentType } from "react";
 import { useRoute, type Route } from "./router";
-import { DEFAULT_NAME, FINALE, LessonContext, lettersOf, queueOf, reinsert, starsFor, type Lesson } from "./lesson";
+import { DEFAULT_NAME, FINALE, WORDS, LessonContext, lettersOf, queueOf, reinsert, starsFor, type Lesson } from "./lesson";
 import Lessons from "./screens/Lessons";
 import NameScreen from "./screens/Name";
 import Watch from "./screens/Watch";
@@ -33,6 +33,7 @@ const TITLES: Record<Route, string> = {
 };
 
 type State = {
+  lesson: 1 | 2;
   name: string;
   queue: string[];
   pos: number;
@@ -47,9 +48,10 @@ type State = {
 
 const STORAGE_KEY = "ily.lesson.v1";
 
-const fresh = (name: string): State => ({
+const fresh = (name: string, lesson: 1 | 2 = 1): State => ({
+  lesson,
   name,
-  queue: queueOf(name),
+  queue: lesson === 2 ? WORDS : queueOf(name),
   pos: 0,
   tries: 1,
   hinted: false,
@@ -65,7 +67,7 @@ function load(): State {
     const s = JSON.parse(raw) as Partial<State>;
     if (typeof s.name !== "string" || !Array.isArray(s.queue) || typeof s.pos !== "number") return fresh(DEFAULT_NAME);
     return {
-      ...fresh(s.name),
+      ...fresh(s.name, s.lesson === 2 ? 2 : 1),
       queue: s.queue.filter((x): x is string => typeof x === "string"),
       pos: s.pos,
       stars: s.stars && typeof s.stars === "object" ? s.stars : {},
@@ -82,8 +84,8 @@ export default function App() {
 
   useEffect(() => {
     try {
-      const { name, queue, pos, stars, missed } = s;
-      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ name, queue, pos, stars, missed }));
+      const { lesson, name, queue, pos, stars, missed } = s;
+      window.localStorage.setItem(STORAGE_KEY, JSON.stringify({ lesson, name, queue, pos, stars, missed }));
     } catch {
       // Storage blocked (private mode): the lesson just isn't remembered.
     }
@@ -102,13 +104,15 @@ export default function App() {
           };
     const next = (st: State): State => ({ ...st, pos: st.pos + 1, tries: 1, hinted: false, missedAt: null });
     return {
+      lesson: s.lesson,
+      startWords: () => setS((st) => ({ ...fresh(st.name, 2), stars: st.stars })),
       name: s.name,
       setName: (name) => setS(fresh(name)),
       letters: lettersOf(s.name),
       queue: s.queue,
       pos: s.pos,
       item,
-      isFinale: item === FINALE,
+      isFinale: s.lesson === 1 && item === FINALE,
       isLast: s.pos === s.queue.length - 1,
       tries: s.tries,
       hinted: s.hinted,
@@ -123,7 +127,7 @@ export default function App() {
       next: () => setS(next),
       retry: () => setS((st) => ({ ...st, tries: st.tries + 1, hinted: true })),
       skip: () => setS((st) => next(miss(st))),
-      reset: () => setS((st) => fresh(st.name)),
+      reset: () => setS((st) => fresh(st.name, st.lesson)),
     };
   }, [s]);
 

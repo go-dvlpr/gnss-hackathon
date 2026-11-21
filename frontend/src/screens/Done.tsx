@@ -1,6 +1,6 @@
 import { Actions, BackHeader } from "../components";
 import { go, href } from "../router";
-import { useLesson } from "../lesson";
+import { WORDS, labelOf, useLesson } from "../lesson";
 
 const list = (xs: string[]) =>
   xs.length <= 1 ? xs.join("") : `${xs.slice(0, -1).join(", ")} and ${xs[xs.length - 1]}`;
@@ -21,20 +21,21 @@ function summary(letters: string[], stars: Record<string, number>): string {
 }
 
 export default function Done() {
-  const { name, letters, stars, reset } = useLesson();
+  const { lesson, name, letters: nameLetters, stars, reset } = useLesson();
+  const letters = lesson === 2 ? WORDS : nameLetters;
   return (
     <>
       <BackHeader back="lessons" help={false} />
       <main className="main done">
         <h1 tabIndex={-1} className="display h-72 balance">
-          You can spell {name} in sign
+          {lesson === 2 ? `You can sign ${WORDS.length} words` : `You can spell ${name} in sign`}
         </h1>
         <ol aria-label="Stars per letter" className="star-list">
           {letters.map((l) => {
             const n = stars[l] ?? 0;
             return (
               <li key={l}>
-                <span className="tile tile--lg">{l}</span>
+                <span className="tile tile--lg">{labelOf(l)}</span>
                 <span role="img" aria-label={n ? `${l}: ${n} star${n > 1 ? "s" : ""}` : `${l}: not yet`} className="stars">
                   {n ? "★".repeat(n) : "Not yet"}
                 </span>
@@ -55,7 +56,7 @@ export default function Done() {
             go("watch");
           }}
         >
-          Practice the name again
+          {lesson === 2 ? "Practice the words again" : "Practice the name again"}
         </button>
         <a href={href("paywall")} className="btn-primary">
           Start lesson 2

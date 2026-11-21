@@ -1,24 +1,44 @@
 import { useState } from "react";
-import { Actions, BackHeader, LessonProgress, Stage } from "../components";
+import { Actions, BackHeader, LessonProgress, Media } from "../components";
 import { href } from "../router";
-import { howTo, useLesson } from "../lesson";
+import { howTo, isWord, labelOf, useLesson } from "../lesson";
 
 export default function Watch() {
-  const { item = "L", isFinale } = useLesson();
+  const { item = "L", isFinale, lesson } = useLesson();
+  const [paused, setPaused] = useState(false);
+  const [slow, setSlow] = useState(true);
   const [mirror, setMirror] = useState(false);
   return (
     <>
       <BackHeader />
-      <LessonProgress step={1} label="watch" back="name" />
+      <LessonProgress step={1} label="watch" back={lesson === 2 ? "lessons" : "name"} />
       <main className="main watch">
         <section aria-label="Reference" className="watch-media">
-          {/* HACK: placeholder until the handshape photos are added. Letters are static photos: no speed/pause. */}
-          <Stage
-            label={`Photo of the handshape for ${item}`}
-            text="[photo of the handshape]"
+          <Media
+            item={item}
+            label={`Reference of the sign ${labelOf(item)}`}
             className="stage--16x10"
+            paused={paused}
+            rate={slow ? 0.5 : 1}
+            mirror={mirror}
           />
+          {/* Letters are static photos: no pause or speed. */}
           <div className="controls">
+            {isWord(item) && (
+              <>
+                <button className="btn-secondary" onClick={() => setPaused((p) => !p)}>
+                  {paused ? "Play" : "Pause"}
+                </button>
+                <div role="group" aria-label="Speed" className="segmented">
+                  <button aria-pressed={slow} onClick={() => setSlow(true)}>
+                    0.5×
+                  </button>
+                  <button aria-pressed={!slow} onClick={() => setSlow(false)}>
+                    1×
+                  </button>
+                </div>
+              </>
+            )}
             <button className="btn-secondary" aria-pressed={mirror} onClick={() => setMirror((m) => !m)}>
               Mirror
             </button>
@@ -41,7 +61,7 @@ export default function Watch() {
             <>
               <h1 tabIndex={-1} className="watch-title">
                 <span className="sr-only">Watch the sign for </span>
-                <span className="big-letter">{item}</span>
+                <span className={isWord(item) ? "big-letter big-letter--word" : "big-letter"}>{labelOf(item)}</span>
               </h1>
               <p className="lead">{howTo(item)}</p>
               <p className="small muted">Next, pick it out of a few look-alikes, then sign it yourself.</p>

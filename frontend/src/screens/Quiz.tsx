@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { BackHeader, LessonProgress, Stage } from "../components";
+import { BackHeader, LessonProgress, Media } from "../components";
 import { go } from "../router";
-import { quizOptions, useLesson } from "../lesson";
+import { isWord, labelOf, quizOptions, useLesson } from "../lesson";
 
 export default function Quiz() {
   const { item = "L", isFinale, letters, pos, miss } = useLesson();
@@ -28,11 +28,10 @@ export default function Quiz() {
       <BackHeader />
       <LessonProgress step={2} label="quiz" back="watch" />
       <main className="main quiz">
-        {/* HACK: placeholder until reference images are recorded. */}
-        <Stage label="The sign to recognise" text="[photo of the handshape]" className="stage--4x3 quiz-media" />
+        <Media item={item} label="The sign to recognise" className="stage--4x3 quiz-media" />
         <section className="quiz-side">
           <h1 tabIndex={-1} className="display h-48">
-            Which letter is this?
+            {isWord(item) ? "Which word is this?" : "Which letter is this?"}
           </h1>
           <div role="group" aria-label="Answers" className="answers">
             {options.map((o) => {
@@ -46,7 +45,7 @@ export default function Quiz() {
                   aria-disabled={isWrong || undefined}
                   onClick={isWrong ? undefined : () => pick(o)}
                 >
-                  {o}
+                  {labelOf(o)}
                   {isWrong && <span className="sr-only">, not this one</span>}
                 </button>
               );
@@ -54,7 +53,7 @@ export default function Quiz() {
           </div>
           <p className="small muted quiz-feedback" aria-live="polite">
             {last ? (
-              <span className="fix-text">That's {last}. Look at the thumb and which fingers are up.</span>
+              <span className="fix-text">That's {labelOf(last)}. Look at the thumb and which fingers are up.</span>
             ) : (
               "Look at the thumb and which fingers are up."
             )}
