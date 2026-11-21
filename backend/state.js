@@ -1,7 +1,7 @@
 const sign = /^(?:[A-Z]|ILY|HELLO|YES|NO|THANKYOU)$/;
 const choices = {
   reason: ["loved", "self", "curious", "work", "other"],
-  who: ["partner", "child", "parent", "sibling", "relative", "friend"],
+  who: ["partner", "child", "parent", "sibling", "relative", "friend", "other"],
   level: ["none", "few", "alphabet", "conversation"],
   goal: ["5", "10", "15", "20"],
   source: ["tiktok", "instagram", "youtube", "search", "friend", "deaf-community", "other"],
@@ -10,6 +10,13 @@ const record = (value) => value !== null && typeof value === "object" && !Array.
 const integer = (value, min, max) => Number.isInteger(value) && value >= min && value <= max;
 const signs = (value, limit) => Array.isArray(value) && value.length <= limit
   && value.every((item) => typeof item === "string" && sign.test(item));
+
+function validProfileField(key, value) {
+  if (key === "name") {
+    return typeof value === "string" && value.length <= 80 && /[A-Z]/.test(value.toUpperCase());
+  }
+  return Object.hasOwn(choices, key) && choices[key].includes(value);
+}
 
 function validLesson(value) {
   return record(value) && signs(value.queue, 500)
@@ -26,7 +33,7 @@ function validLesson(value) {
 export function validState(state) {
   if (!record(state) || !record(state.profile) || !record(state.progress)) return false;
   const { profile, progress } = state;
-  return Object.entries(profile).every(([key, value]) => Object.hasOwn(choices, key) && choices[key].includes(value))
+  return Object.entries(profile).every(([key, value]) => validProfileField(key, value))
     && typeof progress.name === "string" && progress.name.length <= 80
     && (progress.active === 1 || progress.active === 2)
     && record(progress.lessons)

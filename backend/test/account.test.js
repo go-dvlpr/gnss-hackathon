@@ -25,7 +25,7 @@ test("account sessions and per-lesson progress through Compose", { skip: !base }
 
   const credentials = { email: `test-${randomUUID()}@example.test`, password: randomUUID() };
   const state = {
-    profile: { reason: "loved", who: "parent" },
+    profile: { reason: "loved", who: "other", name: "Jane", level: "none", goal: "5", source: "other" },
     progress: {
       active: 1,
       name: "Lily",
@@ -50,6 +50,9 @@ test("account sessions and per-lesson progress through Compose", { skip: !base }
   const invalid = structuredClone(state);
   invalid.progress.lessons[1].pos = 999;
   assert.equal((await put({ state: invalid, revision: 0 })).status, 400);
+
+  const invalidName = { ...state, profile: { ...state.profile, name: "A".repeat(81) } };
+  assert.equal((await put({ state: invalidName, revision: 0 })).status, 400);
 
   Object.assign(state.progress.lessons[1], { pos: 4, completed: true, stars: { L: 2, I: 1, Y: 2, ILY: 2 } });
   Object.assign(state.progress.lessons[2], { pos: 1, missed: ["HELLO"] });
