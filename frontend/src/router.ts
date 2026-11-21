@@ -33,3 +33,7 @@ export function useRoute(): Route {
   }, []);
   return route;
 }
+
+export function go(route: Route) {
+  window.location.hash = href(route);
+}

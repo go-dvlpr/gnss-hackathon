@@ -19,7 +19,7 @@
   --fix: #a84700;
   --fix-bg: #fbe8d8;
   --fix-text: #5c2700;
-  --star: #b98900;
+  --star: #8a6600; /* 5.27:1 on white (was #b98900, 3.16:1) */
 
   --font-ui: Onest, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-display: Rubik, Onest, sans-serif;
@@ -46,6 +46,21 @@ a {
 }
 a:hover {
   color: var(--cobalt-hover);
+}
+
+/* Focus ring (WCAG 2.4.7). Cobalt is 6.64:1 on white. */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--cobalt);
+  outline-offset: 3px;
+}
+
+/* Headings focused programmatically on route change (screen readers): no ring. */
+h1[tabindex="-1"]:focus,
+h1[tabindex="-1"]:focus-visible {
+  outline: none;
 }
 
 h1,
@@ -138,6 +153,9 @@ figure {
 }
 
 .help-link {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   font-weight: 600;
 }
 
@@ -281,6 +299,10 @@ figure {
   background: var(--cobalt-hover);
   color: #ffffff;
 }
+/* Cobalt ring would blend into the cobalt fill; ink is 16.35:1 on white. */
+.btn-primary:focus-visible {
+  outline-color: var(--ink);
+}
 .btn-primary--wide {
   padding: 0 32px;
 }
@@ -320,6 +342,13 @@ figure {
 .btn-text:hover {
   color: var(--cobalt-hover);
 }
+/* Optical alignment: the 16px padding stays as hit area, the text lines up with the content edge. */
+.actions--split .btn-text:first-child {
+  margin-left: -16px;
+}
+.lesson-row > .btn-text:last-child {
+  margin-right: -16px;
+}
 
 .segmented {
   display: flex;
@@ -328,7 +357,7 @@ figure {
   overflow: hidden;
 }
 .segmented button {
-  height: 41px;
+  height: 44px;
   padding: 0 16px;
   border: 0;
   background: #ffffff;
@@ -339,6 +368,13 @@ figure {
 .segmented button[aria-pressed="true"] {
   background: var(--ink);
   color: #ffffff;
+}
+/* .segmented clips with overflow: hidden, so the ring goes inside the button. */
+.segmented button:focus-visible {
+  outline-offset: -3px;
+}
+.segmented button[aria-pressed="true"]:focus-visible {
+  outline-color: var(--sun); /* 10.59:1 on ink */
 }
 
 /* ---------- Stage (video / image placeholders) ---------- */
@@ -393,6 +429,10 @@ figure {
 .tile--lg {
   width: 112px;
   height: 136px;
+}
+
+.tile:focus-visible {
+  outline-color: var(--cobalt); /* ring sits on white, 3px away from the ink fill */
 }
 
 .big-letter {
@@ -474,7 +514,7 @@ figure {
   border-radius: 3px;
   background: var(--line-strong);
 }
-.meter div.done {
+.meter div.is-done {
   background: var(--ok);
 }
 
@@ -512,10 +552,6 @@ figure {
   border-radius: 12px;
   font: 600 22px var(--font-ui);
   color: var(--ink);
-  outline: none;
-}
-.field input:focus-visible {
-  box-shadow: 0 0 0 4px var(--cobalt-bg);
 }
 .name-preview {
   flex: 1 1 440px;
@@ -568,7 +604,7 @@ figure {
   padding-bottom: 40px;
   gap: 56px;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
 }
 .quiz-media {
   flex: 1 1 560px;
@@ -719,9 +755,10 @@ figure {
   font-size: 32px;
   line-height: 40px;
 }
-.check-title .big-letter {
-  font-size: 120px;
-  line-height: 100px;
+.check-title .big-letter,
+.check-title h1 .big-letter {
+  font-size: 88px;
+  line-height: 1;
 }
 
 /* ---------- Screen: Coach ---------- */
@@ -759,13 +796,13 @@ figure {
 
 /* ---------- Screen: Done ---------- */
 
-.done {
+.main.done {
   padding-top: 64px;
   padding-bottom: 64px;
   flex-direction: column;
   gap: 40px;
 }
-.done h1 {
+.main.done h1 {
   max-width: 16ch;
 }
 .star-list {
@@ -795,12 +832,15 @@ figure {
 
 /* ---------- Screen: Paywall ---------- */
 
+/* Keeps the 1280 .main container so the left edge matches other screens; content is capped at 1040. */
 .paywall {
-  max-width: 1040px;
   padding-top: 64px;
   padding-bottom: 64px;
   flex-direction: column;
   gap: 36px;
+}
+.paywall > * {
+  max-width: 1040px;
 }
 .paywall-head {
   display: flex;
@@ -850,8 +890,13 @@ figure {
   gap: 24px;
   flex-wrap: wrap;
 }
+.paywall-actions > a:not(.btn-primary) {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
 
-/* ---------- Mobile (HACK: first pass, the design is desktop-only) ---------- */
+/* ---------- Mobile (390px target; the design board is desktop-only) ---------- */
 
 @media (max-width: 720px) {
   :root {
@@ -866,23 +911,91 @@ figure {
   .topbar--home .wrap {
     gap: 12px;
   }
+  .nav a {
+    padding: 0 8px;
+  }
   .help-link {
-    display: none;
+    font-size: 14px;
+    white-space: nowrap;
   }
   .h-72,
   .h-64 {
     font-size: 40px;
-    line-height: 46px;
+    line-height: 44px;
   }
   .h-56,
   .h-48 {
-    font-size: 34px;
+    font-size: 32px;
     line-height: 40px;
+  }
+
+  /* Progress strip: one row */
+  .progress .wrap {
+    gap: 12px;
+    flex-wrap: nowrap;
+  }
+  .progress b {
+    display: none;
+  }
+  .steps {
+    flex-wrap: nowrap;
+    gap: 4px;
+    min-width: 0;
+    overflow-x: auto;
+  }
+  .steps li {
+    flex: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 16px;
+  }
+  .progress-label {
+    font-size: 14px;
+    white-space: nowrap;
+  }
+
+  /* Action bar */
+  .actions .wrap {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px 16px;
+  }
+  .actions .btn-text:first-child {
+    margin-left: -16px;
+  }
+  .actions .btn-primary {
+    margin-left: auto;
+  }
+  .btn-text {
+    flex: 0 1 auto;
+    white-space: normal;
+    height: auto;
+    min-height: 48px;
+    text-align: left;
+  }
+  .btn-primary,
+  .btn-primary--wide {
+    padding: 0 20px;
+  }
+
+  /* Lessons */
+  .lesson-row {
+    gap: 20px;
+  }
+  .lesson-img {
+    width: 100%;
+  }
+  /* The row wraps, so the text button starts a line on the left. */
+  .lesson-row > .btn-text:last-child {
+    margin-right: 0;
+    margin-left: -16px;
   }
   .lesson-title {
     font-size: 26px;
     line-height: 32px;
   }
+
   .tile,
   .tile--lg {
     width: 72px;
@@ -891,21 +1004,57 @@ figure {
   }
   .watch-side .big-letter {
     font-size: 96px;
-    line-height: 90px;
-  }
-  .check-title .big-letter {
-    font-size: 72px;
-    line-height: 64px;
+    line-height: 1;
   }
   .answer {
     height: 88px;
     font-size: 40px;
   }
+
+  /* Check: portrait camera, hand frame centred */
+  .camera-stage {
+    aspect-ratio: 3 / 4;
+  }
+  .corner {
+    width: 36px;
+    height: 36px;
+  }
+  .corner--tl {
+    left: 18%;
+    top: 22%;
+  }
+  .corner--tr {
+    right: 18%;
+    top: 22%;
+  }
+  .corner--bl {
+    left: 18%;
+    bottom: 22%;
+  }
+  .corner--br {
+    right: 18%;
+    bottom: 22%;
+  }
+  .camera-status {
+    right: 16px;
+    gap: 4px 12px;
+    font-size: 13px;
+    padding: 4px 12px;
+  }
   .camera-prompt {
     font-size: 15px;
-    line-height: 22px;
-    bottom: 12px;
+    line-height: 20px;
+    bottom: 16px;
   }
+  .check-title .big-letter,
+  .check-title h1 .big-letter {
+    font-size: 64px;
+  }
+  .check-side .stage {
+    width: 100%;
+    max-width: 200px;
+  }
+
   .plans th,
   .plans td {
     padding: 10px 8px;
