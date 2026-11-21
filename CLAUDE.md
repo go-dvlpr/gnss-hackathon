@@ -148,9 +148,8 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
 ### Not core
 
 - **Should:** the four UI states (empty, loading, error, success), slow-motion reference,
-  streak, backup video of the demo, cost log per LLM call.
-- **Could (after 14:30):** more words, fingerspelling the name, MOM/DAD (needs face landmarks),
-  LLM-planned next lesson.
+  streak, backup video of the demo.
+- **Could (after 14:30):** more words, fingerspelling the name, MOM/DAD (needs face landmarks).
 - **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation, login and
   payments (mock with `HACK:`), push notifications, native mobile app, other sign languages.
 
