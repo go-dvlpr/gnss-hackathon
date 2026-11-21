@@ -16,7 +16,8 @@ docker compose up --build -d --wait
 ```
 
 Open [ILY](http://localhost:5173), choose **Get started**, complete onboarding, and
-register with an email and password. Returning users can log in and resume from **Your
+register with an email and password. The registration link on the login screen also
+starts with onboarding. Returning users can log in and resume from **Your
 lessons**. If the previous version ran on the same origin, registration imports that
 browser's existing lesson data once into the new account.
 

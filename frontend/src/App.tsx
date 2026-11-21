@@ -13,7 +13,7 @@ import How from "./screens/How";
 import Welcome from "./screens/Welcome";
 import { Login, Signup } from "./screens/Auth";
 import Onboarding from "./screens/Onboarding";
-import { FunnelContext, type Profile } from "./funnel";
+import { FunnelContext, QUESTIONS, type Profile } from "./funnel";
 import { useAccount } from "./account";
 import { freshLesson, type LessonNumber, type LessonProgress } from "./progress";
 
@@ -61,6 +61,13 @@ export default function App() {
 
   let route = requested;
   if (!email && !PUBLIC_ROUTES.includes(route)) route = "login";
+  if (!email && route === "signup") {
+    const profile = { ...state.profile, email };
+    const complete = QUESTIONS.every((question) =>
+      (question.when && !question.when(profile)) || question.options.some((option) => option.value === profile[question.key]),
+    );
+    if (!complete) route = "onboarding";
+  }
   if (email && ["welcome", "signup", "login"].includes(route)) route = "lessons";
   if (email && SIGN_ROUTES.includes(route) && current.pos === current.queue.length) {
     route = current.queue.length ? "done" : "name";
