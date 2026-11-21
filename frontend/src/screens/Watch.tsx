@@ -8,8 +8,8 @@ export default function Watch() {
   const [mirror, setMirror] = useState(false);
   return (
     <>
-      <BackHeader back="name" />
-      <LessonProgress step={1} label="watch" />
+      <BackHeader />
+      <LessonProgress step={1} label="watch" back="name" />
       <main className="main watch">
         <section aria-label="Reference" className="watch-media">
           {/* HACK: placeholder until the handshape photos are added. Letters are static photos: no speed/pause. */}

@@ -25,8 +25,8 @@ export default function Quiz() {
 
   return (
     <>
-      <BackHeader back="watch" />
-      <LessonProgress step={2} label="quiz" />
+      <BackHeader />
+      <LessonProgress step={2} label="quiz" back="watch" />
       <main className="main quiz">
         {/* HACK: placeholder until reference images are recorded. */}
         <Stage label="The sign to recognise" text="[photo of the handshape]" className="stage--4x3 quiz-media" />

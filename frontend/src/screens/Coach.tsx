@@ -6,8 +6,8 @@ export default function Coach() {
   const { retry } = useLesson();
   return (
     <>
-      <BackHeader back="check" />
-      <LessonProgress step={3} label="try again" />
+      <BackHeader />
+      <LessonProgress step={3} label="try again" back="check" />
       <main className="main coach">
         <div className="coach-head">
           <h1 tabIndex={-1} className="display h-48">Almost. Fix one thing.</h1>
