@@ -54,7 +54,7 @@ export default function NameScreen() {
               </span>
             )}
             <span id="name-help" className="tiny muted">
-              Their first name. J and Z move, so we'll teach those later.
+              Their first name. For J and Z, you draw the letter in the air.
             </span>
           </form>
         </section>

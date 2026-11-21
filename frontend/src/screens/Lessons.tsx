@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { HomeHeader, Media } from "../components";
-import { go } from "../router";
+import { go, href } from "../router";
 import { useLesson } from "../lesson";
 import { useFunnel } from "../funnel";
 
@@ -91,8 +91,13 @@ export default function Lessons() {
               <div className="lesson-body">
                 <span className="lesson-kicker">Lesson {i + 3}</span>
                 <h2 className="lesson-title lesson-title--locked">{title}</h2>
-                <p className="body-17 muted">{words} Opens after lesson {i + 2}.</p>
+                <p className="body-17 muted">{words} {i === 0 && progress[2].completed ? "Premium." : `Opens after lesson ${i + 2}.`}</p>
               </div>
+              {i === 0 && progress[2].completed && (
+                <a href={href("paywall")} className="btn-primary btn-primary--wide">
+                  Unlock
+                </a>
+              )}
             </li>
           ))}
         </ol>

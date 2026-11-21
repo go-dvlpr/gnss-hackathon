@@ -108,7 +108,7 @@ export default function Onboarding() {
                 </span>
               )}
               <span id="first-name-help" className="tiny muted">
-                J and Z move, so we'll teach those later.
+                For J and Z, you draw the letter in the air.
               </span>
             </div>
           )}

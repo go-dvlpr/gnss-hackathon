@@ -195,7 +195,11 @@ export function watch(video: HTMLVideoElement, canvas: HTMLCanvasElement, item: 
     hint: null as string | null,
     hintKey: "",
     hintAt: 0,
+    // fingertip paths for the moving letters: index tip (8) for Z, pinky tip (20) for J
+    trail: { 8: [], 20: [] } as Record<number, Any[]>,
+    motionAt: 0,
   };
+  const letter = C.BY_ID[item];
 
   const say = (text: string | null, key: string, now: number, immediate = false) => {
     if (key === st.hintKey || (!immediate && now - st.hintAt < HINT_EVERY_MS)) return;
@@ -271,8 +275,25 @@ export function watch(video: HTMLVideoElement, canvas: HTMLCanvasElement, item: 
     const all = C.evaluateAll(main.f, { facing: null });
     const r = all[item];
     draw(ctx, [{ lm: main.lm, parts: C.partDegrees(r) }], null);
-    const j = C.judge(item, all, {});
     const q = qualityKey(main.f);
+
+    if (letter?.motion) {
+      // J and Z: the handshape plus the fingertip drawing the letter in the air (as in asl-trainer).
+      const arr = st.trail[letter.track];
+      arr.push({ t: now, x: main.lm[letter.track].x * W, y: main.lm[letter.track].y * H, s: main.f.palmPx, ok: r.spec >= 0.7 });
+      while (arr.length && now - arr[0].t > 2500) arr.shift();
+      if ((item === "J" ? C.detectJ : C.detectZ)(arr, now)) st.motionAt = now;
+      const done = st.motionAt > 0;
+      const shapeReady = r.score >= 0.7;
+      if (done) say("Hold it", "hold", now, true);
+      else if (q) say(HT[q], "q-" + q, now, true);
+      else if (shapeReady) say(HT[`motion_${item}`], "motion", now, true);
+      else shapeHint(r, now);
+      emit(true, done ? 1 : shapeReady ? 0.5 : 0, done);
+      return;
+    }
+
+    const j = C.judge(item, all, {});
     if (j.ok && !q) {
       st.hold ??= now;
       st.lastOk = now;

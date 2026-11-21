@@ -59,7 +59,7 @@ export default function Welcome() {
               </p>
             </div>
             <figcaption className="small muted">
-              This is “I love you” in ASL. By the end of lesson 1 you will sign it too.
+              This is “I love you” in ASL. In lesson 2 you will sign it too.
             </figcaption>
           </figure>
         </section>

@@ -88,7 +88,7 @@ export default function How() {
             <li>It doesn't check which way your palm faces yet.</li>
             <li>The rules were tuned on a model hand and a few people, so an unusual hand can be rejected. If a sign
               you're sure of keeps failing, watch the reference and try in better light.</li>
-            <li>J and Z (letters that move) and two-handed words are not in the lessons yet.</li>
+            <li>Two-handed words are not in the lessons yet.</li>
           </ul>
         </section>
       </main>

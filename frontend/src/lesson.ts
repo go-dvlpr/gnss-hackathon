@@ -15,9 +15,9 @@ export type Lesson = {
   openLesson: (id: 1 | 2) => void;
   name: string;
   setName: (name: string) => void;
-  /** Teachable unique letters of the name, in order (no J or Z). */
+  /** Teachable unique letters of the name, in order. */
   letters: string[];
-  /** Letters, re-inserted misses, then the finale "ILY". */
+  /** Letters of the name (lesson 1) or the words (lesson 2), plus re-inserted misses. */
   queue: string[];
   pos: number;
   /** Current item, or undefined when the lesson is over. */
@@ -40,8 +40,8 @@ export type Lesson = {
   reset: () => void;
 };
 
-// Letters A–Z only. J and Z move, so we teach them later.
-export const isTeachable = (l: string) => /^[A-Z]$/.test(l) && l !== "J" && l !== "Z";
+// Letters A–Z only. J and Z are checked by the fingertip path (recognizer.ts).
+export const isTeachable = (l: string) => /^[A-Z]$/.test(l);
 
 export function allLettersOf(name: string): string[] {
   return name.toUpperCase().replace(/[^A-Z]/g, "").split("");
@@ -52,8 +52,8 @@ export function lettersOf(name: string): string[] {
 }
 
 export function queueOf(name: string): string[] {
-  const letters = lettersOf(name);
-  return letters.length ? [...letters, FINALE] : [];
+  // I LOVE YOU is taught in lesson 2 with the words, not at the end of the name.
+  return lettersOf(name);
 }
 
 /** Where a missed item goes: after two others, but always before the finale. */
