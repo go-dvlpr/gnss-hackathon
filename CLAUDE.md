@@ -115,11 +115,14 @@ easy to confuse. LILY works: L, I and Y look nothing alike.
      forehead vs the chin), PLEASE vs SORRY (circle on the chest, flat hand vs fist), YES vs SORRY
      (fist, nod vs circle). The rest of the team's list is the pitch slide "next".
 - **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout, hosted
-  on Vercel. MediaPipe Tasks Vision runs in the browser. Frameworks: TODO. LLM provider: OpenAI
+  on Vercel. MediaPipe Tasks Vision runs in the browser. Frontend: Vite + React + TypeScript in
+  [frontend/](frontend/) (hash routes, one file per screen in `frontend/src/screens/`; design
+  notes in [DESIGN.md](DESIGN.md)). Backend framework: TODO. LLM provider: OpenAI
   (key in `.env` and Vercel env vars, name in `.env.example`; called from the backend only).
 - **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
   the result here.
-- **Run locally:** TODO
+- **Run locally:** `cd frontend && npm install && npm run dev` → http://localhost:5173.
+  Vercel: set Root Directory to `frontend` (Vite preset, build `npm run build`, output `dist`).
 - **Deploy / demo URL:** Vercel; URL TODO
 
 ### ASL recognition prototype
