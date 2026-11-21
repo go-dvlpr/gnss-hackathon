@@ -58,18 +58,33 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 
 ### Free and Premium
 
-Prices: proposal $99.99/year (analyst confirms). Reference: Lingvano $17.99–19.99/month or
-$119.99/year; ASL Bloom $98.99/year.
+Prices: $94.99/year and $15.99/month, just below the leaders: ASL Bloom $98.99/year, Lingvano
+$119.99/year or $17.99–19.99/month. The monthly plan is a proposal; the team confirms.
 
-Unit economics (draft for the slide; ⚠️ = our assumption):
-- Net after Stripe (2.9% + $0.30): $96.79/year. LLM cost (GPT-5 mini, ~400 in + 60 out tokens
-  per hint ⚠️): ~$0.08 per payer per month, ~$0.30 with free users. Margin ≈ $7.77/month.
-- LTV (13 months, 24% first annual renewal in Education, RevenueCat) ≈ $116.
-- Base: $3.03 per signup (iOS CPI proxy ⚠️) ÷ 2.1% freemium conversion (RevenueCat 2026) →
-  CAC ≈ $144, LTV/CAC ≈ 0.8.
-- Target LTV/CAC 2.0: conversion 5.2% with the paywall after the name lesson (hard-paywall
-  median is 10.7%) → CAC ≈ $58. Backup: ≥ 60% organic signups (TikTok) at 2.1%.
-- Replace the token counts with the cost log after 15:00.
+Unit economics for the slide. The model with formulas, the three scenarios and a 24-month P&L
+is [research/asl-unit-economics.xlsx](research/asl-unit-economics.xlsx) (sheet «Слайд»);
+change numbers there first, then here. ⚠️ = our assumption.
+- Net after Stripe (2.9% + $0.30) and 2% refunds: $90.04/year, $14.91/month.
+- LLM cost, GPT-6.2 Sol ($2 in, $0.10 cached in, $10 out per 1M tokens):
+  - a coach hint ≈ $0.004 (~800 in + 250 out ⚠️);
+  - one AI check of a sign as `asl-demo` does it now ≈ $0.011 (~3,700 in, of them ~1,250 cached,
+    plus ~600 out ⚠️);
+  - per payer per month (96 checks + 48 hints): ≈ $1.26, or $0.20 once recognition moves to the
+    browser (DTW);
+  - a free user (~40 checks + 10 hints ⚠️) ≈ $0.48, counted in CAC.
+- LTV (13 months; 24% first annual renewal in Education, RevenueCat; 13.7% monthly churn ⚠️;
+  60% annual plans ⚠️) ≈ $92.
+- CAC: Meta CPC $0.70 ÷ 20% click to signup ⚠️ = ~$3.50 per signup, ÷ signup-to-paid conversion,
+  plus the free users' LLM cost.
+- Scenarios:
+  - pessimistic, 2.1% freemium conversion (RevenueCat 2026): CAC ≈ $194, LTV/CAC ≈ 0.5;
+  - base, 5.2% with the paywall after the name lesson, recognition by the LLM: CAC ≈ $77,
+    LTV/CAC ≈ 1.2;
+  - target, 8% conversion (hard-paywall median is 10.7%), 70% annual plans, recognition in the
+    browser, 20% organic signups (TikTok): LTV ≈ $104, CAC ≈ $35, LTV/CAC ≈ 2.9.
+- Break-even ≈ 1,600 payers on $15,000/month overhead ⚠️. Target P&L with $10,000/month ads: first
+  profitable month 13, cumulative profit from month 19, cash need ≈ $30,000.
+- Replace the token counts with the `usage` lines that `asl-demo` logs.
 
 | | Free | Premium |
 |---|---|---|
@@ -79,10 +94,46 @@ Unit economics (draft for the slide; ⚠️ = our assumption):
 | Sign reading mode | — | yes |
 
 AI review stays in Free with a daily limit: it is the feature that sets us apart, so people must
-try it before paying. Recognition runs on the device and costs nothing; the limit exists to sell
-Premium, not to save money. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
+try it before paying. Recognition in the browser costs nothing, but in today's `asl-demo` each
+check is a GPT-6.2 Sol call (≈ $0.011), so the limit also caps the cost of free users. Evidence: App Store reviews of Ziggy and ASL Bloom ask for limited
 daily free practice instead of a hard paywall. Free-to-Premium conversion is unknown; label it
 an assumption.
+
+### Problem slide (numbers checked 2026-11-21)
+
+Title: «Ти вчиш жести для близької людини — і не знаєш, чи показуєш їх правильно».
+- **Who:** hearing people in the US with a Deaf loved one. Over 90% of Deaf children are born to
+  hearing parents ([NIDCD](https://www.nidcd.nih.gov/health/statistics/quick-statistics-hearing),
+  citing Mitchell & Karchmer 2004). Over 6,000 US babies a year are found to have permanent
+  hearing loss ([CDC](https://www.cdc.gov/hearing-loss-children/data/index.html), 2022: 1.7 per
+  1,000 screened).
+- **Problem:** apps teach you to read signs but do not check how you sign; where a camera checks,
+  it only says "wrong".
+- **Evidence:**
+  - Demand: Lingvano grew from 500,000 learners in 2022 to 2.5 million in October 2024
+    ([press release](https://www.eschoolnews.com/newsline/2024/10/08/sign-language-learning-app-reaches-2-5-million-learners-milestone/));
+    85% are in the US and Canada ([Apple Developer](https://developer.apple.com/articles/lingvano/)).
+    Duolingo has no ASL course (October 2026).
+  - Trends (Google Trends, US, 5 years; team data from 2026-11-21, not rechecked): "learn ASL"
+    +30%, "duolingo asl" a breakout query.
+  - Reviews ([App Store, Lingvano](https://apps.apple.com/us/app/lingvano-learn-sign-language/id1547252782?see-all=reviews)):
+    2024-09-24, Echo.Works wants the app to "record you signing sometimes to make sure you're
+    signing correctly"; 2024-10-12, "Alarm loss alarming" misses a way to practise signs
+    themselves; 2023-12-17, powerful_princes expected the camera to recognise the sign. Copy the
+    exact wording for the slide from the link.
+- **Cost:** people pay about $100–120 a year (Lingvano $119.99, ASL Bloom about $99) and still do
+  not learn whether they sign correctly.
+- **Footnote:** «Доказів поки мало: скарг саме на "камера каже лише неправильно" — 2 з 717
+  нещодавніх відгуків трьох лідерів (21.11.2026)».
+- **Do not use:** "~95%" (say "over 90%"); Lingvano "5 million" (App Store marketing only; Lingvano
+  and [Expo](https://expo.dev/blog/scaling-sign-language-education-to-4-million-learners-with-expo)
+  say 4 million+); Lingvano revenue of $550,000 a month (a third-party estimate); "ASL is growing in
+  colleges" (third place in the [MLA census, fall 2021](https://www.mla.org/content/download/191324/file/Enrollments-in-Languages-Other-Than-English-in-US-Institutions-of-Higher-Education-Fall-2021.pdf),
+  but only +0.8% in five years: say "steadily third").
+- **For jury questions:** Lingvano already checks signs with AI and the camera (App Store review of
+  2026-01-05), so our difference is the coach that names the fix. The same reviewer dropped the
+  subscription over generative AI. Our answer: the LLM never decides right or wrong; it only
+  phrases the hint.
 
 ### Demo path (= Must)
 
