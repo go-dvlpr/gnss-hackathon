@@ -10,8 +10,8 @@ export default function Watch() {
   const [mirror, setMirror] = useState(false);
   return (
     <>
-      <BackHeader back={lesson === 2 ? "lessons" : "name"} />
-      <LessonProgress step={1} label="watch" />
+      <BackHeader />
+      <LessonProgress step={1} label="watch" back={lesson === 2 ? "lessons" : "name"} />
       <main className="main watch">
         <section aria-label="Reference" className="watch-media">
           <Media

@@ -73,14 +73,21 @@ export function HomeHeader() {
   );
 }
 
-export function BackHeader({ back, help = true }: { back: Route; help?: boolean }) {
+export function BackLink({ to }: { to: Route }) {
+  return (
+    <a href={href(to)} className="back" aria-label="Back">
+      <ArrowLeft />
+      <span className="back-label">Back</span>
+    </a>
+  );
+}
+
+/** Lesson screens pass no `back`: their Back lives in the progress strip. */
+export function BackHeader({ back, help = true }: { back?: Route; help?: boolean }) {
   return (
     <header className="topbar">
       <div className="wrap">
-        <a href={href(back)} className="back">
-          <ArrowLeft />
-          Back
-        </a>
+        {back && <BackLink to={back} />}
         <Logo />
         {help && (
           <>
@@ -93,11 +100,12 @@ export function BackHeader({ back, help = true }: { back: Route; help?: boolean 
   );
 }
 
-export function LessonProgress({ step, label }: { step: 1 | 2 | 3; label: string }) {
+export function LessonProgress({ step, label, back }: { step: 1 | 2 | 3; label: string; back: Route }) {
   const { name, queue, pos } = useLesson();
   return (
     <nav aria-label="Lesson progress" className="progress">
       <div className="wrap">
+        <BackLink to={back} />
         <b>Lesson 1: {name}</b>
         <ol className="steps">
           {queue.map((l, i) => {

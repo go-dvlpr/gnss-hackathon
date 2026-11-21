@@ -162,6 +162,15 @@ figure {
   color: var(--ink);
   background: var(--surface);
 }
+/* In the grey progress strip the Back button sits on white so it reads as a button. */
+.progress .back {
+  flex: none;
+  background: #ffffff;
+  border-color: var(--line-strong);
+}
+.progress .back:hover {
+  background: var(--surface-2);
+}
 
 .help-link {
   min-height: 44px;
@@ -915,6 +924,15 @@ figure {
 /* ---------- Mobile (390px target; the design board is desktop-only) ---------- */
 
 @media (max-width: 720px) {
+  /* Icon-only Back in the progress strip, so the letter chips keep one row. */
+  .progress .back {
+    width: 44px;
+    padding: 0;
+    justify-content: center;
+  }
+  .progress .back-label {
+    display: none;
+  }
   :root {
     --gutter: 16px;
   }
