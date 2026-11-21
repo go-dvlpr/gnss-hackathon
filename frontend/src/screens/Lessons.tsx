@@ -1,6 +1,8 @@
+import { useState } from "react";
 import { HomeHeader, Media } from "../components";
-import { go, href } from "../router";
+import { go } from "../router";
 import { useLesson } from "../lesson";
+import { useFunnel } from "../funnel";
 
 // HACK: teaser videos reuse lesson-2 clips until we record these signs.
 const LOCKED: [title: string, words: string, video: string][] = [
@@ -10,7 +12,24 @@ const LOCKED: [title: string, words: string, video: string][] = [
 ];
 
 export default function Lessons() {
-  const { letters, stars, startWords } = useLesson();
+  const { letters, openLesson, progress } = useLesson();
+  const { logout, dirty } = useFunnel();
+  const [signingOut, setSigningOut] = useState(false);
+  const [signOutError, setSignOutError] = useState(false);
+  const { stars } = progress[1];
+
+  async function signOut() {
+    setSigningOut(true);
+    setSignOutError(false);
+    try {
+      await logout();
+      go("welcome");
+    } catch {
+      setSignOutError(true);
+    } finally {
+      setSigningOut(false);
+    }
+  }
   const learned = letters.filter((l) => (stars[l] ?? 0) > 0).length;
   return (
     <>
@@ -45,9 +64,9 @@ export default function Lessons() {
                 </span>
               </div>
             </div>
-            <a href={href("name")} className="btn-primary btn-primary--wide">
-              Continue
-            </a>
+            <button type="button" className="btn-primary btn-primary--wide" onClick={() => openLesson(1)}>
+              {progress[1].completed ? "View results" : "Continue"}
+            </button>
           </li>
           <li className="lesson-row">
             <Media item="HELLO" label="Lesson 2: the sign for hello" className="lesson-img" />
@@ -60,12 +79,9 @@ export default function Lessons() {
             <button
               type="button"
               className="btn-primary btn-primary--wide"
-              onClick={() => {
-                startWords();
-                go("watch");
-              }}
+              onClick={() => openLesson(2)}
             >
-              Start
+              {progress[2].completed ? "View results" : progress[2].pos ? "Continue" : "Start"}
             </button>
           </li>
           {/* HACK: locked teasers for the levels after the demo; asl-core already knows these signs. */}
@@ -80,6 +96,10 @@ export default function Lessons() {
             </li>
           ))}
         </ol>
+        <button type="button" className="btn-text" onClick={signOut} disabled={dirty || signingOut}>
+          {signingOut ? "Logging out…" : "Log out"}
+        </button>
+        {signOutError && <p className="field-error" role="alert">Couldn't log out. Try again.</p>}
       </main>
     </>
   );

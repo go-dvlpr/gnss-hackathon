@@ -1,5 +1,6 @@
 import { ArrowLeft, Logo } from "../components";
 import { href } from "../router";
+import { useFunnel } from "../funnel";
 
 // Facts on this page mirror recognizer.ts and vendor/asl-core.js; update both together.
 const STEPS: { title: string; body: string }[] = [
@@ -31,13 +32,14 @@ const STEPS: { title: string; body: string }[] = [
 ];
 
 export default function How() {
+  const { profile } = useFunnel();
   return (
     <>
       <header className="topbar">
         <div className="wrap">
           {/* Back returns to wherever the link was opened (a lesson step or Lessons). */}
           <a
-            href={href("lessons")}
+            href={href(profile.email ? "lessons" : "welcome")}
             className="back"
             aria-label="Back"
             onClick={(e) => {
@@ -58,8 +60,8 @@ export default function How() {
           How checking works
         </h1>
         <p className="lead">
-          Everything happens on your device. Your video never leaves the browser, and no chatbot decides whether you
-          signed it right: clear rules do, and the same rules write the coach's hint.
+          Sign recognition happens on your device. Your video stays in the browser. The rules that check your sign also
+          write the coach's hint.
         </p>
 
         <ol className="how-steps">
@@ -76,7 +78,7 @@ export default function How() {
           <p className="body-17">
             The video is processed frame by frame in your browser and is not recorded or uploaded. The browser
             downloads the hand model from a public site once; after that, recognition runs on your computer. Your lesson
-            progress is kept only in this browser.
+            progress is saved to your account so you can resume on another device.
           </p>
         </section>
 

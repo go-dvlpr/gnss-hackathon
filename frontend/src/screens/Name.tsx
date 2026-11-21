@@ -6,7 +6,7 @@ import { lovedOne, useFunnel } from "../funnel";
 const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
 export default function NameScreen() {
-  const { name, setName, letters, reset } = useLesson();
+  const { name, setName, letters, item, lesson } = useLesson();
   const { profile } = useFunnel();
   const canStart = letters.length > 0;
   const tiles = allLettersOf(name);
@@ -28,8 +28,8 @@ export default function NameScreen() {
             onSubmit={(e) => {
               e.preventDefault();
               if (!canStart) return;
-              reset();
-              go("watch");
+              if (lesson === 2) setName(name);
+              go(lesson === 1 && !item ? "done" : "watch");
             }}
           >
             <label htmlFor="name">
@@ -44,6 +44,7 @@ export default function NameScreen() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               autoComplete="off"
+              maxLength={80}
               aria-invalid={canStart ? undefined : true}
               aria-describedby={canStart ? "name-help" : "name-error name-help"}
             />

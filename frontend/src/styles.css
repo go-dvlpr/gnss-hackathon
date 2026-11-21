@@ -1553,3 +1553,7 @@ img.stage--media {
   color: var(--ok);
   font-weight: 600;
 }
+/* Lesson cards: the clip fills the card, no letterbox bars. */
+.lesson-img.stage--media > video {
+  object-fit: cover;
+}

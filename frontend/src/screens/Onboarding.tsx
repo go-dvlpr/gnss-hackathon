@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Actions, ArrowLeft, BackLink, Logo } from "../components";
 import { go } from "../router";
-import { QUESTIONS, track, useFunnel, type Profile } from "../funnel";
+import { QUESTIONS, isAnswered, track, useFunnel, type Profile } from "../funnel";
 import { lettersOf, useLesson } from "../lesson";
 
 export default function Onboarding() {
@@ -15,16 +15,15 @@ export default function Onboarding() {
   const last = step === total - 1;
   const name = profile.name ?? "";
   const nameOk = lettersOf(name).length > 0;
-  const ready = (q.options.length === 0 || !!answer) && (!q.askName || nameOk);
+  const ready = isAnswered(q, profile);
 
   const next = () => {
-    // The typed name is personal data: it never goes to analytics.
-    track("onboarding_answered", { question: q.key, answer: q.key === "name" ? undefined : answer });
+    track("onboarding_answered", { question: q.key });
     if (last) {
       // Set at the end: setName resets the lesson, which remounts this screen.
       if (nameOk) setName(name.trim());
-      track("onboarding_completed", { ...profile, email: undefined, name: undefined });
-      go("lessons");
+      track("onboarding_completed");
+      go(profile.email ? "lessons" : "signup");
     } else {
       setStep(step + 1);
       window.scrollTo(0, 0);

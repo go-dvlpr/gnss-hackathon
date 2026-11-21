@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { Progress } from "./progress";
 
 export const DEFAULT_NAME = "Lily";
 export const FINALE = "ILY";
@@ -11,8 +12,7 @@ export const isWord = (id: string) => id.length > 1;
 export type Lesson = {
   /** 1 = the letters of the name, 2 = words. */
   lesson: 1 | 2;
-  /** Start lesson 2 from its first word. */
-  startWords: () => void;
+  openLesson: (id: 1 | 2) => void;
   name: string;
   setName: (name: string) => void;
   /** Teachable unique letters of the name, in order (no J or Z). */
@@ -29,6 +29,7 @@ export type Lesson = {
   /** The coach gave a hint for the current item. */
   hinted: boolean;
   stars: Record<string, number>;
+  progress: Progress["lessons"];
   /** Record a correct sign; returns the stars earned for it. */
   pass: () => number;
   /** Mark the current item missed: it comes back after two others. */
@@ -116,27 +117,10 @@ export function quizOptions(item: string, letters: string[], pos: number): strin
   return [...opts.slice(k), ...opts.slice(0, k)];
 }
 
-const noop = () => {};
-export const LessonContext = createContext<Lesson>({
-  lesson: 1,
-  startWords: noop,
-  name: DEFAULT_NAME,
-  setName: noop,
-  letters: lettersOf(DEFAULT_NAME),
-  queue: queueOf(DEFAULT_NAME),
-  pos: 0,
-  item: queueOf(DEFAULT_NAME)[0],
-  isFinale: false,
-  isLast: false,
-  tries: 1,
-  hinted: false,
-  stars: {},
-  pass: () => 0,
-  miss: noop,
-  next: noop,
-  retry: noop,
-  skip: noop,
-  reset: noop,
-});
+export const LessonContext = createContext<Lesson | null>(null);
 
-export const useLesson = () => useContext(LessonContext);
+export function useLesson() {
+  const lesson = useContext(LessonContext);
+  if (!lesson) throw new Error("Missing lesson context.");
+  return lesson;
+}

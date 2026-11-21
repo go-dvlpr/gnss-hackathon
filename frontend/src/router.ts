@@ -21,7 +21,7 @@ export type Route = (typeof ROUTES)[number];
 
 export const href = (route: Route) => `#/${route}`;
 
-function readRoute(): Route {
+export function readRoute(): Route {
   const r = window.location.hash.replace(/^#\/?/, "");
   return (ROUTES as readonly string[]).includes(r) ? (r as Route) : "welcome";
 }
