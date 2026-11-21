@@ -15,8 +15,8 @@ One-day hackathon project (Sat 2026-11-21, 10:30–20:00). Several people and se
 - **Demo metric:** recognition accuracy on people the references never saw
   (leave-one-person-out), plus false accepts on random movement. No retention or revenue claims.
 - **Stop bar (checkpoint 14:30, before the lunch merge):** TODO — team confirms. Proposal:
-  false rejects ≤ 15%, false accepts ≤ 5% on held-out people. If the MediaPipe spike cannot
-  tell the words apart, fall back to static handshapes (letters + "I love you").
+  false rejects ≤ 15%, false accepts ≤ 5% on held-out people. If words cannot be told apart,
+  the demo stays on letters + "I love you".
 
 ### Core feature — build this first, nothing else until it works
 
@@ -57,14 +57,22 @@ verdict and confidence → if wrong, the coach names what to fix → retry.
 - **Won't (pitch slide "next"):** video lessons, dictionary, sentences or translation, login and
   payments (mock with `HACK:`), push notifications, native mobile app, other sign languages.
 
-- **Words:** TODO (5–6 ASL words with distinct movement, e.g. HELLO, THANK YOU, YES, NO, PLEASE;
-  references recorded from a video dictionary).
-- **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout.
-  MediaPipe Tasks Vision runs in the browser. Frameworks: TODO. LLM provider: TODO (key in
-  `.env`, name in `.env.example`).
-- **Status:** MediaPipe feasibility spike in progress (TODO: who, branch); record the result here.
+- **What we teach, in order** (references recorded from a video dictionary):
+  1. The ASL alphabet, all letters. J and Z have movement; the other letters are static
+     handshapes.
+  2. Basic words and phrases: hello, goodbye, yes, no, please, thank you, sorry, help, stop,
+     more, good, bad, water, hungry, bathroom, friend, I love you, what, where, who, when, why,
+     how, nice to meet you, name, my, your, understand, don't understand, know, don't know, want,
+     need, like, love, eat, drink, sleep, work, home, family, mom, dad, child, happy, sad, tired,
+     sick, today, tomorrow. Many use two hands or a place on the face, so they need
+     `numHands: 2` and face landmarks; add them in small batches, each checked on held-out people.
+- **Stack:** full-stack TypeScript; a web app for desktop with a mobile-adapted layout, hosted
+  on Vercel. MediaPipe Tasks Vision runs in the browser. Frameworks: TODO. LLM provider: OpenAI
+  (key in `.env` and Vercel env vars, name in `.env.example`; called from the backend only).
+- **Status:** MediaPipe feasibility spike in progress by Vladyslav Hirko (branch: TODO); record
+  the result here.
 - **Run locally:** TODO
-- **Deploy / demo URL:** TODO
+- **Deploy / demo URL:** Vercel; URL TODO
 
 The day plan is in [PLAN.md](PLAN.md) (Ukrainian): timeline, roles, how we cover each judging criterion, the three mandatory slides (architecture, evals, unit economics), evals and the README sections required at code freeze.
 
